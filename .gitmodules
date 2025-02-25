@@ -1,0 +1,3 @@
+[submodule "wirebare-kernel"]
+	path = wirebare-kernel
+	url = https://github.com/Kokomi7QAQ/wirebare-kernel

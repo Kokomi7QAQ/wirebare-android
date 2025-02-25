@@ -15,5 +15,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "wirebare-android"
 include(":app")
-include(":wirebare-core")
+include(":wirebare-kernel")
  
