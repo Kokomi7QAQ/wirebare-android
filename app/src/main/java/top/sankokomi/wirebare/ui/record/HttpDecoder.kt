@@ -5,8 +5,8 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import top.sankokomi.wirebare.core.util.unzipBrotli
-import top.sankokomi.wirebare.core.util.unzipGzip
+import top.sankokomi.wirebare.kernel.util.unzipBrotli
+import top.sankokomi.wirebare.kernel.util.unzipGzip
 
 private const val TAG = "HttpDecoder"
 

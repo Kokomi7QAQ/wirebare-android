@@ -6,8 +6,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import top.sankokomi.wirebare.core.interceptor.http.HttpRequest
-import top.sankokomi.wirebare.core.interceptor.http.HttpResponse
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
 import top.sankokomi.wirebare.ui.util.Global
 import java.io.File
 import java.nio.ByteBuffer

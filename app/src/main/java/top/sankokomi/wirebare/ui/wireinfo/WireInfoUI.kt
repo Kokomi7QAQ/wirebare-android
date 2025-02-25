@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import top.sankokomi.wirebare.core.interceptor.http.HttpRequest
-import top.sankokomi.wirebare.core.interceptor.http.HttpResponse
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
 
 class WireInfoUI : ComponentActivity() {

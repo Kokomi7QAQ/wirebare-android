@@ -1,12 +1,12 @@
 package top.sankokomi.wirebare.ui.wireinfo
 
-import top.sankokomi.wirebare.core.interceptor.http.async.AsyncHttpIndexedInterceptor
-import top.sankokomi.wirebare.core.interceptor.http.async.AsyncHttpInterceptChain
-import top.sankokomi.wirebare.core.interceptor.http.async.AsyncHttpInterceptor
-import top.sankokomi.wirebare.core.interceptor.http.async.AsyncHttpInterceptorFactory
-import top.sankokomi.wirebare.core.interceptor.http.HttpRequest
-import top.sankokomi.wirebare.core.interceptor.http.HttpResponse
-import top.sankokomi.wirebare.core.interceptor.http.HttpSession
+import top.sankokomi.wirebare.kernel.interceptor.http.async.AsyncHttpIndexedInterceptor
+import top.sankokomi.wirebare.kernel.interceptor.http.async.AsyncHttpInterceptChain
+import top.sankokomi.wirebare.kernel.interceptor.http.async.AsyncHttpInterceptor
+import top.sankokomi.wirebare.kernel.interceptor.http.async.AsyncHttpInterceptorFactory
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpSession
 import top.sankokomi.wirebare.ui.record.HttpRecorder
 import java.nio.ByteBuffer
 

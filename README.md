@@ -1,8 +1,8 @@
-# WireBare
+# wirebare-kernel
 
 WireBare 是一个基于 Android VPN Service 开发的 Android 抓包框架
 
-整个项目是一个完整的 Android 应用程序，其中的 [wirebare-core](https://github.com/Kokomi7QAQ/wirebare-core) 模块为核心的抓包模块，app 模块则提供了一些拓展功能和简单的用户界面
+整个项目是一个完整的 Android 应用程序，其中的 [wirebare-kernel](https://github.com/Kokomi7QAQ/wirebare-kernel) 模块为核心的抓包模块，app 模块则提供了一些拓展功能和简单的用户界面
 
 在高版本的 Android 系统中的 HTTPS 的拦截抓包功能需要先安装代理服务器根证书到 Android 系统的根证书目录下
 
@@ -43,13 +43,13 @@ class SimpleWireBareProxyService : WireBareProxyService()
 ```xml
 <application>
     <service
-        android:name="top.sankokomi.wirebare.core.service.SimpleWireBareProxyService"
+        android:name="top.sankokomi.wirebare.kernel.service.SimpleWireBareProxyService"
         android:exported="false"
         android:permission="android.permission.BIND_VPN_SERVICE">
         <intent-filter>
             <action android:name="android.net.VpnService" />
-            <action android:name="top.sankokomi.wirebare.core.action.Start" />
-            <action android:name="top.sankokomi.wirebare.core.action.Stop" />
+            <action android:name="top.sankokomi.wirebare.kernel.action.Start" />
+            <action android:name="top.sankokomi.wirebare.kernel.action.Stop" />
         </intent-filter>
     </service>
 </application>
@@ -116,8 +116,17 @@ fun start() {
     
     // 配置 WireBare 日志等级
     WireBare.logLevel = Level.SILENT
+    
+    // 配置动态配置属性
+    // 以下配置可以动态配置实时生效
+    // 模拟丢包概率，取值范围 [0, 100]
+    WireBare.dynamicConfiguration.mockPacketLossProbability = 0
     // 配置并启动代理服务
+    // 以下配置需要修改时需要重启代理服务
     WireBare.startProxy {
+        // 如果需要支持 HTTPS 抓包，则需要配置密钥信息
+        jks = JKS(...)
+        
         // 代理服务传输单元大小，单位：字节（默认 4096）
         mtu = 10 * 1024
         
