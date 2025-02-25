@@ -26,6 +26,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -37,6 +38,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -302,6 +304,93 @@ fun LargeColorfulText(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(text = subText, color = textColor, fontSize = 14.sp, lineHeight = 16.sp)
+    }
+}
+
+@Composable
+fun CornerSlideBar(
+    mainText: String,
+    subText: String,
+    backgroundColor: Color,
+    textColor: Color,
+    barColor: Color,
+    barBackgroundColor: Color,
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    onValueChange: (Float) -> Unit = {},
+    valueText: (Float) -> String = { "${(it * 100).toInt()}%" }
+) {
+    RealColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(backgroundColor)
+            .clip(RoundedCornerShape(6.dp))
+            .padding(vertical = 12.dp)
+    ) {
+        Text(
+            modifier = Modifier.padding(horizontal = 20.dp),
+            text = mainText,
+            color = textColor,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 20.sp
+        )
+        RealRow {
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .align(Alignment.Bottom),
+                text = subText,
+                color = textColor,
+                fontSize = 14.sp,
+                lineHeight = 16.sp
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                text = valueText(value),
+                color = textColor,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 16.sp
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        RealBox {
+            Slider(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth()
+                    .height(32.dp)
+                    .alpha(0f),
+                value = value,
+                valueRange = valueRange,
+                onValueChange = onValueChange
+            )
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth()
+                    .height(32.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(barBackgroundColor)
+            )
+            Row {
+                val percentage = value / (valueRange.endInclusive - valueRange.start)
+                if (percentage > 0f) {
+                    Spacer(modifier = Modifier.weight(percentage))
+                }
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(barColor)
+                )
+                if (percentage < 1f) {
+                    Spacer(modifier = Modifier.weight(1 - percentage))
+                }
+            }
+        }
     }
 }
 

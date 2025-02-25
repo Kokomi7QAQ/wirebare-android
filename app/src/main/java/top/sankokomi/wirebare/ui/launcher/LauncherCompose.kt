@@ -1,7 +1,11 @@
 package top.sankokomi.wirebare.ui.launcher
 
 import android.content.Intent
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.sankokomi.wirebare.core.common.EventSynopsis
 import top.sankokomi.wirebare.core.common.ProxyStatus
+import top.sankokomi.wirebare.core.common.WireBare
 import top.sankokomi.wirebare.core.interceptor.http.HttpRequest
 import top.sankokomi.wirebare.core.interceptor.http.HttpResponse
 import top.sankokomi.wirebare.ui.R
@@ -46,14 +51,18 @@ import top.sankokomi.wirebare.ui.record.HttpRecorder
 import top.sankokomi.wirebare.ui.record.id
 import top.sankokomi.wirebare.ui.resources.AppNavigationBar
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
+import top.sankokomi.wirebare.ui.resources.CornerSlideBar
 import top.sankokomi.wirebare.ui.resources.DeepPureRed
 import top.sankokomi.wirebare.ui.resources.ImageButton
 import top.sankokomi.wirebare.ui.resources.LargeColorfulText
+import top.sankokomi.wirebare.ui.resources.Pink80
 import top.sankokomi.wirebare.ui.resources.Purple40
 import top.sankokomi.wirebare.ui.resources.Purple80
+import top.sankokomi.wirebare.ui.resources.Purple80ToPurpleGrey40
 import top.sankokomi.wirebare.ui.resources.PurpleGrey40
 import top.sankokomi.wirebare.ui.resources.SmallColorfulText
 import top.sankokomi.wirebare.ui.wireinfo.WireInfoUI
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -92,6 +101,7 @@ private fun LauncherUI.PageControlCenter() {
     val isBanFilter by ProxyPolicyDataStore.banAutoFilter.collectAsState()
     val enableIpv6 by ProxyPolicyDataStore.enableIpv6.collectAsState()
     val enableSSL by ProxyPolicyDataStore.enableSSL.collectAsState()
+    val mockPacketLossProbability by ProxyPolicyDataStore.mockPacketLossProbability.collectAsState()
     var maybeUnsupportedIpv6 by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         proxyStatusFlow.collect {
@@ -120,55 +130,64 @@ private fun LauncherUI.PageControlCenter() {
                 .clip(RoundedCornerShape(6.dp))
                 .padding(horizontal = 24.dp, vertical = 8.dp)
         ) {
-            val mainText: String
-            val subText: String
-            val backgroundColor: Color
-            val textColor: Color
-            val onClick: () -> Unit
-            when (wireBareStatus) {
-                ProxyStatus.DEAD -> {
-                    mainText = "已停止"
-                    subText = "点此启动"
-                    backgroundColor = PurpleGrey40
-                    textColor = Color.White
-                    onClick = ::startProxy
-                }
-
-                ProxyStatus.STARTING -> {
-                    mainText = "正在启动"
-                    subText = "请稍后"
-                    backgroundColor = Purple40
-                    textColor = Color.White
-                    onClick = ::stopProxy
-                }
-
-                ProxyStatus.ACTIVE -> {
-                    mainText = "已启动"
-                    subText = "点此停止"
-                    backgroundColor = Purple80
-                    textColor = Color.Black
-                    onClick = ::stopProxy
-                }
-
-                ProxyStatus.DYING -> {
-                    mainText = "正在停止"
-                    subText = "请稍后"
-                    backgroundColor = Purple40
-                    textColor = Color.White
-                    onClick = ::stopProxy
-                }
-            }
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
             ) {
-                LargeColorfulText(
-                    mainText = mainText,
-                    subText = subText,
-                    backgroundColor = backgroundColor,
-                    textColor = textColor,
-                    onClick = onClick
-                )
+                AnimatedContent(
+                    targetState = wireBareStatus,
+                    transitionSpec = {
+                        fadeIn().togetherWith(fadeOut())
+                    },
+                    label = "WireBareStatus"
+                ) { status ->
+                    val mainText: String
+                    val subText: String
+                    val backgroundColor: Color
+                    val textColor: Color
+                    val onClick: () -> Unit
+                    when (status) {
+                        ProxyStatus.DEAD -> {
+                            mainText = "已停止"
+                            subText = "点此启动"
+                            backgroundColor = PurpleGrey40
+                            textColor = Color.White
+                            onClick = ::startProxy
+                        }
+
+                        ProxyStatus.STARTING -> {
+                            mainText = "正在启动"
+                            subText = "请稍后"
+                            backgroundColor = Purple80ToPurpleGrey40
+                            textColor = Color.White
+                            onClick = ::stopProxy
+                        }
+
+                        ProxyStatus.ACTIVE -> {
+                            mainText = "已启动"
+                            subText = "点此停止"
+                            backgroundColor = Purple80
+                            textColor = Color.Black
+                            onClick = ::stopProxy
+                        }
+
+                        ProxyStatus.DYING -> {
+                            mainText = "正在停止"
+                            subText = "请稍后"
+                            backgroundColor = Purple80ToPurpleGrey40
+                            textColor = Color.White
+                            onClick = ::stopProxy
+                        }
+                    }
+                    LargeColorfulText(
+                        mainText = mainText,
+                        subText = subText,
+                        backgroundColor = backgroundColor,
+                        textColor = textColor,
+                        onClick = onClick
+                    )
+                }
+
             }
             Spacer(modifier = Modifier.height(4.dp))
             AnimatedVisibility(
@@ -233,6 +252,44 @@ private fun LauncherUI.PageControlCenter() {
                     }
                 )
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+            ) {
+                AnimatedContent(
+                    targetState = enableSSL,
+                    transitionSpec = {
+                        fadeIn().togetherWith(fadeOut())
+                    },
+                    label = "SslTlsStatus"
+                ) { enable ->
+                    val sslMainText: String
+                    val sslSubText: String
+                    val sslBackgroundColor: Color
+                    val sslTextColor: Color
+                    if (enable) {
+                        sslMainText = "SSL/TLS 已启用"
+                        sslSubText = "进行 SSL/TLS 握手并解密 HTTPS"
+                        sslBackgroundColor = Purple80
+                        sslTextColor = Color.Black
+                    } else {
+                        sslMainText = "SSL/TLS 已禁用"
+                        sslSubText = "仅对 HTTPS 透明代理"
+                        sslBackgroundColor = PurpleGrey40
+                        sslTextColor = Color.White
+                    }
+                    LargeColorfulText(
+                        mainText = sslMainText,
+                        subText = sslSubText,
+                        backgroundColor = sslBackgroundColor,
+                        textColor = sslTextColor,
+                        onClick = {
+                            ProxyPolicyDataStore.enableSSL.value = !enableSSL
+                        }
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(4.dp))
             AnimatedVisibility(
                 visible = enableSSL
@@ -247,62 +304,60 @@ private fun LauncherUI.PageControlCenter() {
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
-            val sslMainText: String
-            val sslSubText: String
-            val sslBackgroundColor: Color
-            val sslTextColor: Color
-            if (enableSSL) {
-                sslMainText = "SSL/TLS 已启用"
-                sslSubText = "进行 SSL/TLS 握手并解密 HTTPS"
-                sslBackgroundColor = Purple80
-                sslTextColor = Color.Black
-            } else {
-                sslMainText = "SSL/TLS 已禁用"
-                sslSubText = "仅对 HTTPS 透明代理"
-                sslBackgroundColor = PurpleGrey40
-                sslTextColor = Color.White
-            }
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
             ) {
-                LargeColorfulText(
-                    mainText = sslMainText,
-                    subText = sslSubText,
-                    backgroundColor = sslBackgroundColor,
-                    textColor = sslTextColor,
-                    onClick = {
-                        ProxyPolicyDataStore.enableSSL.value = !enableSSL
+                AnimatedContent(
+                    targetState = enableIpv6,
+                    transitionSpec = {
+                        fadeIn().togetherWith(fadeOut())
+                    },
+                    label = "Ipv6Status"
+                ) { enable ->
+                    val i6MainText: String
+                    val i6SubText: String
+                    val i6BackgroundColor: Color
+                    val i6TextColor: Color
+                    if (enable) {
+                        i6MainText = "IPv6 代理已启用"
+                        i6SubText = "代理 IPv4 和 IPv6 数据包"
+                        i6BackgroundColor = Purple80
+                        i6TextColor = Color.Black
+                    } else {
+                        i6MainText = "IPv6 代理已禁用"
+                        i6SubText = "仅代理 IPv4 数据包"
+                        i6BackgroundColor = PurpleGrey40
+                        i6TextColor = Color.White
                     }
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            val i6MainText: String
-            val i6SubText: String
-            val i6BackgroundColor: Color
-            val i6TextColor: Color
-            if (enableIpv6) {
-                i6MainText = "IPv6 代理已启用"
-                i6SubText = "代理 IPv4 和 IPv6 数据包"
-                i6BackgroundColor = Purple80
-                i6TextColor = Color.Black
-            } else {
-                i6MainText = "IPv6 代理已禁用"
-                i6SubText = "仅代理 IPv4 数据包"
-                i6BackgroundColor = PurpleGrey40
-                i6TextColor = Color.White
+                    LargeColorfulText(
+                        mainText = i6MainText,
+                        subText = i6SubText,
+                        backgroundColor = i6BackgroundColor,
+                        textColor = i6TextColor,
+                        onClick = {
+                            ProxyPolicyDataStore.enableIpv6.value = !enableIpv6
+                        }
+                    )
+                }
             }
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
             ) {
-                LargeColorfulText(
-                    mainText = i6MainText,
-                    subText = i6SubText,
-                    backgroundColor = i6BackgroundColor,
-                    textColor = i6TextColor,
-                    onClick = {
-                        ProxyPolicyDataStore.enableIpv6.value = !enableIpv6
+                CornerSlideBar(
+                    mainText = "随机丢包概率",
+                    subText = "调整后立即生效",
+                    backgroundColor = Color.Transparent,
+                    textColor = Color.Black,
+                    barColor = Purple40,
+                    barBackgroundColor = Pink80,
+                    value = mockPacketLossProbability / 100f,
+                    valueRange = 0f..1f,
+                    onValueChange = {
+                        val probability = (it * 100).roundToInt()
+                        ProxyPolicyDataStore.mockPacketLossProbability.value = probability
+                        WireBare.dynamicConfiguration.mockPacketLossProbability = probability
                     }
                 )
             }

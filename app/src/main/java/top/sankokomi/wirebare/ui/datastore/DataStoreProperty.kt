@@ -5,6 +5,8 @@ import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +30,20 @@ abstract class AppDataStore(
     suspend fun edit(transform: suspend (MutablePreferences) -> Unit) {
         Global.appContext.dataStore.edit(transform)
     }
+}
+
+class AppFloatPref(
+    keyName: String,
+    default: Float = 0f
+) : AppPreferenceProperty<Float>(default) {
+    override val prefKey: Preferences.Key<Float> = floatPreferencesKey(keyName)
+}
+
+class AppIntPref(
+    keyName: String,
+    default: Int = 0
+) : AppPreferenceProperty<Int>(default) {
+    override val prefKey: Preferences.Key<Int> = intPreferencesKey(keyName)
 }
 
 class AppBooleanPref(

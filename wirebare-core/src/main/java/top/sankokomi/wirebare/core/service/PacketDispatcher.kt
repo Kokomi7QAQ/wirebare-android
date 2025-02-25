@@ -8,7 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import top.sankokomi.wirebare.core.common.WireBare
 import top.sankokomi.wirebare.core.common.WireBareConfiguration
+import top.sankokomi.wirebare.core.common.WireBareDynamicConfiguration
 import top.sankokomi.wirebare.core.net.IIpHeader
 import top.sankokomi.wirebare.core.net.IpHeader
 import top.sankokomi.wirebare.core.net.IpVersion
@@ -24,6 +26,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InterruptedIOException
 import java.util.concurrent.LinkedBlockingQueue
+import kotlin.math.roundToInt
+import kotlin.random.Random
 
 /**
  * ip 包调度者，负责从代理服务的输入流中获取 ip 包并根据 ip 头的信息分配给对应的 [PacketInterceptor]
@@ -91,6 +95,21 @@ internal class PacketDispatcher private constructor(
                     }
 
                     if (length <= 0) continue
+
+                    val mockPacketLossProbability = WireBare.dynamicConfiguration.mockPacketLossProbability
+                    if (mockPacketLossProbability == 100) {
+                        WireBareLogger.info("模拟丢包 全丢!")
+                        continue
+                    } else if (
+                        mockPacketLossProbability in 1..100
+                    ) {
+                        when ((Random.nextInt() % 100) + 1) {
+                            in 1..mockPacketLossProbability -> {
+                                WireBareLogger.info("模拟丢包 丢!")
+                                continue
+                            }
+                        }
+                    }
 
                     val packet = Packet(buffer, length)
 

@@ -21,4 +21,10 @@ object ProxyPolicyDataStore : AppDataStore("proxy_policy") {
      * true：显示系统应用，false：不显示系统应用
      * */
     val showSystemApp by AppBooleanPref("ban_system_app")
+
+    /**
+     * 模拟丢包概率
+     * 0 表示不丢包，100 表示全丢
+     * */
+    val mockPacketLossProbability by AppIntPref("mock_packet_loss_probability")
 }
