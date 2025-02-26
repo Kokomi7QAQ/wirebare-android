@@ -1,0 +1,42 @@
+[versions]
+androidxCoreKtx = "1.12.0"
+androidxAppcompat = "1.6.1"
+androidMeterial = "1.10.0"
+androidxLifecycleRuntimeKtx = "2.6.1"
+activityCompose = "1.8.0"
+composeBom = "2023.03.00"
+datastore = "1.0.0"
+coilComposeKt = "2.5.0"
+brotliDec = "0.1.2"
+kotlinxCoroutines = "1.6.4"
+bouncycastle = "1.67"
+
+agp = "8.1.4"
+kotlin = "1.8.10"
+
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
+android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMeterial" }
+androidx-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycleRuntimeKtx" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+datastore-preference = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+coil-compose-kt = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilComposeKt" }
+ktx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+bouncycastle-bcpkix = { group = "org.bouncycastle", name = "bcpkix-jdk15on", version.ref = "bouncycastle" }
+bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk15on", version.ref = "bouncycastle" }
+brotli-dec = { group = "org.brotli", name = "dec", version.ref = "brotliDec" }
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
