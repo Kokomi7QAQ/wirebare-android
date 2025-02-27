@@ -1,18 +1,22 @@
 [versions]
-androidxCoreKtx = "1.12.0"
-androidxAppcompat = "1.6.1"
-androidMeterial = "1.10.0"
-androidxLifecycleRuntimeKtx = "2.6.1"
-activityCompose = "1.8.0"
-composeBom = "2023.03.00"
-datastore = "1.0.0"
+minSdk = "24"
+targetSdk = "35"
+
+androidxCoreKtx = "1.15.0"
+androidxAppcompat = "1.7.0"
+androidMeterial = "1.12.0"
+androidxLifecycleRuntimeKtx = "2.8.7"
+jetpackCompose = "1.7.8"
+activityCompose = "1.10.1"
+composeBom = "2025.02.00"
+datastore = "1.1.3"
 coilComposeKt = "2.5.0"
 brotliDec = "0.1.2"
-kotlinxCoroutines = "1.6.4"
+kotlinxCoroutines = "1.9.0"
 bouncycastle = "1.67"
 
-agp = "8.1.4"
-kotlin = "1.8.10"
+agp = "8.5.2"
+kotlin = "2.1.10"
 
 
 [libraries]
@@ -39,4 +43,5 @@ brotli-dec = { group = "org.brotli", name = "dec", version.ref = "brotliDec" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

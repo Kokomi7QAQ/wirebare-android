@@ -3,6 +3,7 @@ package top.sankokomi.wirebare.ui.wireinfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -18,6 +19,7 @@ class WireInfoUI : ComponentActivity() {
         val request = intent.getSerializableExtra("request") as? HttpRequest
         val response = intent.getSerializableExtra("response") as? HttpResponse
         val sessionId = intent.getStringExtra("session_id")
+        enableEdgeToEdge()
         setContent {
             WirebareUITheme(
                 isShowNavigationBar = false

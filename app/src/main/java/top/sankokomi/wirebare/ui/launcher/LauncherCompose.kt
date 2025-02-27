@@ -75,7 +75,7 @@ fun LauncherUI.WireBareUIPage() {
         AppTitleBar()
         HorizontalPager(
             state = pagerState,
-            beyondBoundsPageCount = 3,
+            beyondViewportPageCount = 3,
             modifier = Modifier.weight(1F)
         ) {
             when (it) {
