@@ -2,26 +2,31 @@ package top.sankokomi.wirebare.ui.util
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.Icon
 
 data class AppData(
     val appName: String,
     val packageName: String,
     val isSystemApp: Boolean
-)
+) : Comparable<AppData> {
+    val appIcon by lazy {
+        Global.appContext.packageManager.getApplicationIcon(packageName)
+    }
 
-fun requireAppDataList(filter: (AppData) -> Boolean = { true }): List<AppData> {
+    override fun compareTo(other: AppData): Int {
+        return packageName.compareTo(other.packageName)
+    }
+}
+
+fun requireAppDataList(): List<AppData> {
     return Global.appContext.packageManager.getInstalledApplications(
         PackageManager.MATCH_UNINSTALLED_PACKAGES
-    ).mapNotNull {
-        val appData = AppData(
+    ).map {
+        AppData(
             Global.appContext.packageManager.getApplicationLabel(it).toString(),
             it.packageName,
             it.flags and ApplicationInfo.FLAG_SYSTEM != 0
         )
-        if (filter(appData)) {
-            appData
-        } else {
-            null
-        }
     }
 }

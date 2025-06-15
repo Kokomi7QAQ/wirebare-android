@@ -63,7 +63,7 @@ class LauncherUI : VpnPrepareActivity() {
             // 提前设定状态为正在启动
             _proxyStatusFlow.value = ProxyStatus.STARTING
             val showSystemApp = ProxyPolicyDataStore.showSystemApp.value
-            val appList = requireAppDataList {
+            val appList = requireAppDataList().filter {
                 if (!showSystemApp) {
                     !it.isSystemApp
                 } else {

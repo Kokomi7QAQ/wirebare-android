@@ -6,7 +6,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -64,7 +63,6 @@ import top.sankokomi.wirebare.ui.resources.SmallColorfulText
 import top.sankokomi.wirebare.ui.wireinfo.WireInfoUI
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LauncherUI.WireBareUIPage() {
     val pagerState = rememberPagerState { 3 }

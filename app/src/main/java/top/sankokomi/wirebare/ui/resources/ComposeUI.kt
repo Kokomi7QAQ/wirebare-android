@@ -24,18 +24,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -43,7 +39,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -66,33 +61,43 @@ fun AppStatusBar(color: Color = Color.Transparent) {
 
 @Composable
 fun AppTitleBar(
-    icon: Any = R.mipmap.ic_wirebare,
+    icon: Any? = null,
     text: String = stringResource(id = R.string.app_name),
+    startContent: @Composable BoxScope.() -> Unit = {},
     endContent: @Composable BoxScope.() -> Unit = {}
 ) {
-    RealColumn(
-        modifier = Modifier.shadow(2.dp)
-    ) {
-        AppStatusBar(Color.White)
+    RealColumn {
+        AppStatusBar(Color.Transparent)
         RealBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White)
-                .padding(horizontal = 24.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 4.dp),
             contentAlignment = Alignment.CenterStart
         ) {
+            RealBox(
+                modifier = Modifier.align(Alignment.CenterStart),
+                content = startContent
+            )
             RealRow(
+                modifier = Modifier.align(Alignment.Center),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AsyncImage(
-                    model = icon,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentDescription = null
-                )
+                if (icon != null) {
+                    AsyncImage(
+                        model = icon,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentDescription = null
+                    )
+                }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = text, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    text = text,
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
             RealBox(
                 modifier = Modifier.align(Alignment.CenterEnd),
@@ -102,53 +107,56 @@ fun AppTitleBar(
     }
 }
 
+@Stable
+class CheckableMenuItem(
+    val itemName: State<String>,
+    val checked: MutableState<Boolean>,
+    val icon: Any
+)
+
 @Composable
-fun AppCheckBoxItemMenuPopup(
-    itemList: List<Pair<State<String>, MutableState<Boolean>>>,
+fun AppCheckableMenu(
+    itemList: List<CheckableMenuItem>,
     size: Int = itemList.size
 ) {
-    var isMenuExpanded by remember { mutableStateOf(false) }
-    Box {
-        Image(
-            painter = painterResource(id = R.drawable.ic_more),
-            modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(6.dp))
-                .clickable {
-                    isMenuExpanded = true
-                },
-            contentDescription = null
-        )
-        DropdownMenu(
-            expanded = isMenuExpanded,
-            modifier = Modifier
-                .background(Purple80)
-                .padding(vertical = 2.dp, horizontal = 10.dp),
-            onDismissRequest = {
-                isMenuExpanded = false
-            }
-        ) {
-            for (i in 0 until size) {
-                val item = itemList[i].first
-                val checked = itemList[i].second
+    RealColumn {
+        for (i in 0 until size) {
+            val item = itemList[i]
+            val name = item.itemName
+            val checked = item.checked
+            val icon = item.icon
+            RealColumn(
+                modifier = Modifier.background(
+                    if (checked.value) LightGreen else Color.Transparent
+                )
+            ) {
+                if (i != 0) {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp)
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(LightGrey)
+                    )
+                }
                 RealRow(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
                         .clickable {
                             checked.value = !checked.value
-                            isMenuExpanded = false
                         }
-                        .padding(vertical = 2.dp)
-                        .padding(end = 8.dp),
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Checkbox(
-                        checked = checked.value,
-                        onCheckedChange = null
+                    AsyncImage(
+                        model = icon,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .size(24.dp),
+                        contentDescription = null
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
                     Text(
-                        text = item.value,
+                        text = name.value,
                         modifier = Modifier.fillMaxWidth(),
                         color = Color.Black
                     )
@@ -158,7 +166,6 @@ fun AppCheckBoxItemMenuPopup(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppNavigationBar(
     pagerState: PagerState,
@@ -201,6 +208,21 @@ fun AppNavigationBar(
             }
         }
     }
+}
+
+@Composable
+fun AppRoundCornerBox(
+    background: Color = Color.White,
+    content: @Composable BoxScope.() -> Unit
+) {
+    RealBox(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .background(background),
+        content = content
+    )
 }
 
 @Composable
@@ -258,7 +280,7 @@ fun SmallColorfulText(
                 .fillMaxWidth(),
             color = textColor,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Bold,
             lineHeight = 15.sp,
             overflow = TextOverflow.Ellipsis,
             maxLines = 2
