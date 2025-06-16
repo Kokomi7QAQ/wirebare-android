@@ -26,6 +26,8 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -47,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import top.sankokomi.wirebare.ui.R
+import top.sankokomi.wirebare.ui.util.injectTouchEffect
 import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
 @Composable
@@ -90,12 +93,12 @@ fun AppTitleBar(
                             .clip(RoundedCornerShape(12.dp)),
                         contentDescription = null
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
-                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = text,
                     color = Color.Black,
-                    fontSize = 16.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -125,40 +128,50 @@ fun AppCheckableMenu(
             val name = item.itemName
             val checked = item.checked
             val icon = item.icon
-            RealColumn(
-                modifier = Modifier.background(
-                    if (checked.value) LightGreen else Color.Transparent
-                )
-            ) {
+            RealColumn {
                 if (i != 0) {
                     HorizontalDivider(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp)
+                            .padding(start = 48.dp, end = 16.dp)
                             .fillMaxWidth()
-                            .height(1.dp)
+                            .height(0.2.dp)
                             .background(LightGrey)
                     )
                 }
                 RealRow(
                     modifier = Modifier
-                        .clickable {
-                            checked.value = !checked.value
-                        }
-                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                        .injectTouchEffect(normalBackground = Color.White)
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     AsyncImage(
                         model = icon,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .size(24.dp),
+                            .size(16.dp),
                         contentDescription = null
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
                     Text(
                         text = name.value,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 16.dp),
                         color = Color.Black
+                    )
+                    Switch(
+                        checked = checked.value,
+                        thumbContent = {
+                            Spacer(modifier = Modifier.size(999.dp))
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedTrackColor = MediumGreen,
+                            uncheckedBorderColor = LightGrey,
+                            uncheckedTrackColor = LightGrey,
+                            uncheckedThumbColor = Color.White
+                        ),
+                        onCheckedChange = {
+                            checked.value = !checked.value
+                        }
                     )
                 }
             }

@@ -4,7 +4,9 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
+import androidx.compose.runtime.Stable
 
+@Stable
 data class AppData(
     val appName: String,
     val packageName: String,
