@@ -35,7 +35,8 @@ val Int.composeColor: Color get() = Color(this)
 @Composable
 fun Modifier.injectTouchEffect(
     touchedBackground: Color = LMGrey,
-    normalBackground: Color = Color.Transparent
+    normalBackground: Color = Color.Transparent,
+    onClick: () -> Unit = {}
 ): Modifier {
     val interactionSource = remember { MutableInteractionSource() }
     val touched = interactionSource.collectIsHoveredAsState().value ||
@@ -43,5 +44,5 @@ fun Modifier.injectTouchEffect(
     return this
         .background(if (touched) touchedBackground else normalBackground)
         .hoverable(interactionSource)
-        .clickable(interactionSource = interactionSource, indication = null, onClick = {})
+        .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
 }

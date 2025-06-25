@@ -196,16 +196,20 @@ fun AccessControlUI.AccessControlUIPage() {
             }
             items(accessControlList.size) { index ->
                 val accessControl = accessControlList[index]
-                val itemShape = when (index) {
-                    0 -> {
-                        RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                    }
+                val itemShape = if (accessControlList.size == 1) {
+                    RoundedCornerShape(size = 24.dp)
+                } else {
+                    when (index) {
+                        0 -> {
+                            RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                        }
 
-                    accessControlList.size - 1 -> {
-                        RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
-                    }
+                        accessControlList.size - 1 -> {
+                            RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                        }
 
-                    else -> RectangleShape
+                        else -> RectangleShape
+                    }
                 }
                 RealColumn(
                     modifier = Modifier

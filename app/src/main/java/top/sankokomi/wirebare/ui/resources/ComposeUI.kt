@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -234,6 +235,21 @@ fun AppRoundCornerBox(
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(background),
+        content = content
+    )
+}
+
+@Composable
+fun Tag(
+    borderColor: Color,
+    corner: Dp,
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(corner))
+            .background(borderColor)
+            .padding(2.dp),
         content = content
     )
 }
