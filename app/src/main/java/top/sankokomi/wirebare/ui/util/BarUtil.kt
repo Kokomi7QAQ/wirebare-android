@@ -14,6 +14,15 @@ val statusBarHeightDp: Dp
         (getDimensionPixelSize(id) / displayMetrics.density + 0.5F).dp
     } ?: 0.dp
 
+val navigationBarHeightDp: Dp
+    @Suppress("InternalInsetResource", "DiscouragedApi")
+    get() = Global.appContext.resources?.run {
+        val id = getIdentifier(
+            "navigation_bar_height", "dimen", "android"
+        )
+        (getDimensionPixelSize(id) / displayMetrics.density + 0.5F).dp
+    } ?: 0.dp
+
 /**
  * 隐藏状态栏
  * */
