@@ -39,8 +39,8 @@ fun Modifier.injectTouchEffect(
     onClick: () -> Unit = {}
 ): Modifier {
     val interactionSource = remember { MutableInteractionSource() }
-    val touched = interactionSource.collectIsHoveredAsState().value ||
-            interactionSource.collectIsPressedAsState().value
+    val touched = interactionSource.collectIsPressedAsState().value ||
+            interactionSource.collectIsHoveredAsState().value
     return this
         .background(if (touched) touchedBackground else normalBackground)
         .hoverable(interactionSource)

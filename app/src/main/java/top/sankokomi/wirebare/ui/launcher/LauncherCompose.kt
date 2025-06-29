@@ -3,9 +3,12 @@ package top.sankokomi.wirebare.ui.launcher
 import android.content.Intent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,65 +18,51 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import top.sankokomi.wirebare.kernel.common.EventSynopsis
 import top.sankokomi.wirebare.kernel.common.ProxyStatus
 import top.sankokomi.wirebare.kernel.common.WireBare
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.accesscontrol.AccessControlUI
 import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
-import top.sankokomi.wirebare.ui.record.HttpRecorder
-import top.sankokomi.wirebare.ui.record.id
-import top.sankokomi.wirebare.ui.resources.AppNavigationBar
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.CornerSlideBar
 import top.sankokomi.wirebare.ui.resources.DeepPureRed
-import top.sankokomi.wirebare.ui.resources.ImageButton
 import top.sankokomi.wirebare.ui.resources.LargeColorfulText
-import top.sankokomi.wirebare.ui.resources.LightGreen
 import top.sankokomi.wirebare.ui.resources.LightGrey
-import top.sankokomi.wirebare.ui.resources.MediumGreen
-import top.sankokomi.wirebare.ui.resources.MediumGrey
 import top.sankokomi.wirebare.ui.resources.Pink80
 import top.sankokomi.wirebare.ui.resources.Purple40
 import top.sankokomi.wirebare.ui.resources.Purple80
 import top.sankokomi.wirebare.ui.resources.Purple80ToPurpleGrey40
 import top.sankokomi.wirebare.ui.resources.PurpleGrey40
+import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
-import top.sankokomi.wirebare.ui.resources.SmallColorfulText
-import top.sankokomi.wirebare.ui.resources.Tag
-import top.sankokomi.wirebare.ui.util.injectTouchEffect
-import top.sankokomi.wirebare.ui.wireinfo.WireInfoUI
 import kotlin.math.roundToInt
 
 @Composable
@@ -82,12 +71,17 @@ fun LauncherUI.WireBareUIPage() {
     val painterControlRes = painterResource(R.drawable.ic_wirebare)
     val painterRequestRes = painterResource(R.drawable.ic_request)
     val painterResponseRes = painterResource(R.drawable.ic_response)
-    Column {
+    val anim = remember { Animatable(1f) }
+    RealColumn(modifier = Modifier.background(LightGrey)) {
         AppTitleBar()
         HorizontalPager(
             state = pagerState,
+            userScrollEnabled = false,
             beyondViewportPageCount = 3,
-            modifier = Modifier.weight(1F)
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = ((1f - anim.value) * 6).dp)
+                .alpha(1f - ((1f - anim.value)))
         ) {
             when (it) {
                 0 -> PageControlCenter()
@@ -95,14 +89,59 @@ fun LauncherUI.WireBareUIPage() {
                 2 -> PageProxyResponseResult()
             }
         }
-        AppNavigationBar(
-            pagerState = pagerState,
-            navigationItems = listOf(
-                (painterControlRes to "控制中心") to (painterControlRes to "控制中心"),
-                (painterRequestRes to "  请求  ") to (painterRequestRes to "  请求  "),
-                (painterResponseRes to "  响应  ") to (painterResponseRes to "  响应  ")
-            )
+        val navigationItems = listOf(
+            (painterControlRes to "控制中心") to (painterControlRes to "控制中心"),
+            (painterRequestRes to "  请求  ") to (painterRequestRes to "  请求  "),
+            (painterResponseRes to "  响应  ") to (painterResponseRes to "  响应  ")
         )
+        val rememberScope = rememberCoroutineScope()
+        RealRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(4.dp)
+                .background(Purple80)
+                .padding(vertical = 2.dp)
+        ) {
+            for (index in navigationItems.indices) {
+                val item = navigationItems[index]
+                RealBox(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.weight(1F)
+                ) {
+                    val (painter, _) = if (pagerState.currentPage != index) {
+                        item.first
+                    } else {
+                        item.second
+                    }
+                    Box(
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .clip(RoundedCornerShape(6.dp))
+                            .clickable {
+                                if (pagerState.currentPage != index) {
+                                    rememberScope.launch {
+                                        anim.stop()
+                                        anim.animateTo(0f, tween(100))
+                                        pagerState.animateScrollToPage(
+                                            index,
+                                            animationSpec = tween(0)
+                                        )
+                                        anim.animateTo(1f, tween(100))
+                                    }
+                                }
+                            }
+                    ) {
+                        Image(
+                            painter = painter,
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .size(32.dp),
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -392,266 +431,6 @@ private fun LauncherUI.PageControlCenter() {
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
-        }
-    }
-}
-
-@Composable
-private fun LauncherUI.PageProxyRequestResult() {
-    val isBanFilter by ProxyPolicyDataStore.banAutoFilter.collectAsState()
-    val requestList = remember { mutableStateListOf<HttpRequest>() }
-    LaunchedEffect(Unit) {
-        requestFlow.collect {
-            if (!isBanFilter) {
-                if (it.url == null) return@collect
-//                if (it.httpVersion?.startsWith("HTTP") != true) return@collect
-            }
-            requestList.add(it)
-        }
-    }
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            items(requestList.size) { i ->
-                val index = requestList.size - i - 1
-                val request = requestList[index]
-                val itemShape = if (requestList.size == 1) {
-                    RoundedCornerShape(size = 24.dp)
-                } else {
-                    when (i) {
-                        0 -> {
-                            RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                        }
-
-                        requestList.size - 1 -> {
-                            RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
-                        }
-
-                        else -> RectangleShape
-                    }
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .clip(itemShape)
-                ) {
-                    RealColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(itemShape)
-                            .animateItem()
-                    ) {
-                        if (i != 0) {
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .background(Color.White)
-                                    .padding(start = 16.dp, end = 16.dp)
-                                    .fillMaxWidth()
-                                    .height(0.2.dp)
-                                    .background(LightGrey)
-                            )
-                        }
-                        RealRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .injectTouchEffect(normalBackground = Color.White) {
-                                    startActivity(
-                                        Intent(
-                                            this@PageProxyRequestResult,
-                                            WireInfoUI::class.java
-                                        ).apply {
-                                            putExtra("request", request)
-                                            putExtra("session_id", request.id)
-                                        }
-                                    )
-                                }
-                                .padding(horizontal = 16.dp, vertical = 16.dp)
-                        ) {
-                            RealColumn(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterVertically)
-                            ) {
-                                Text(
-                                    text = request.url ?: request.destinationAddress ?: "[格式化 URL 失败]",
-                                    modifier = Modifier.fillMaxWidth(),
-                                    color = Color.Black,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    lineHeight = 18.sp,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 2
-                                )
-                                Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = request.formatHead?.getOrNull(0) ?: "[格式化请求头失败]",
-                                    modifier = Modifier.fillMaxWidth(),
-                                    color = MediumGrey,
-                                    fontSize = 12.sp,
-                                    lineHeight = 12.sp,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 2
-                                )
-                                Spacer(modifier = Modifier.height(6.dp))
-                                RealRow {
-                                    Tag(
-                                        borderColor = MediumGreen,
-                                        corner = 6.dp
-                                    ) {
-                                        Text(
-                                            text = request.method ?: "",
-                                            fontSize = 12.sp,
-                                            lineHeight = 16.sp,
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(4.dp))
-                                                .background(LightGreen)
-                                                .padding(horizontal = 4.dp)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Tag(
-                                        borderColor = MediumGreen,
-                                        corner = 6.dp
-                                    ) {
-                                        Text(
-                                            text = request.httpVersion ?: "",
-                                            fontSize = 12.sp,
-                                            lineHeight = 16.sp,
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(4.dp))
-                                                .background(LightGreen)
-                                                .padding(horizontal = 4.dp)
-                                        )
-                                    }
-                                    if (request.isHttps == true) {
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Tag(
-                                            borderColor = MediumGreen,
-                                            corner = 6.dp
-                                        ) {
-                                            Text(
-                                                text = "HTTPS",
-                                                fontSize = 12.sp,
-                                                lineHeight = 16.sp,
-                                                modifier = Modifier
-                                                    .clip(RoundedCornerShape(4.dp))
-                                                    .background(LightGreen)
-                                                    .padding(horizontal = 4.dp)
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .padding(24.dp)
-                .align(Alignment.BottomEnd)
-                .shadow(1.dp, RoundedCornerShape(6.dp), true)
-                .background(Purple80)
-                .clickable {
-                    requestList.clear()
-                }
-                .padding(horizontal = 12.dp, vertical = 4.dp)
-        ) {
-            ImageButton(
-                painter = painterResource(id = R.drawable.ic_clear),
-                str = "清空"
-            )
-        }
-    }
-}
-
-@Composable
-private fun LauncherUI.PageProxyResponseResult() {
-    val isBanFilter by ProxyPolicyDataStore.banAutoFilter.collectAsState()
-    val responseList = remember { mutableStateListOf<HttpResponse>() }
-    LaunchedEffect(Unit) {
-        responseFlow.collect {
-            if (!isBanFilter) {
-                if (it.url == null) return@collect
-//                if (it.httpVersion?.startsWith("HTTP") != true) return@collect
-            }
-            responseList.add(it)
-        }
-    }
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-            items(responseList.size) { i ->
-                val index = responseList.size - i - 1
-                val response = responseList[index]
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                        .clickable {
-                            startActivity(
-                                Intent(
-                                    this@PageProxyResponseResult,
-                                    WireInfoUI::class.java
-                                ).apply {
-                                    putExtra("response", response)
-                                    putExtra("session_id", response.id)
-                                }
-                            )
-                        }
-                ) {
-                    SmallColorfulText(
-                        mainText = response.url ?: response.destinationAddress ?: "",
-                        subText = (response.formatHead?.getOrNull(0) ?: "") +
-                                System.lineSeparator() +
-                                (response.contentType ?: "") +
-                                System.lineSeparator() +
-                                (response.contentEncoding ?: "identity"),
-                        backgroundColor = Purple80,
-                        textColor = Color.Black
-                    )
-                }
-            }
-            item {
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-        }
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .padding(24.dp)
-                .align(Alignment.BottomEnd)
-                .shadow(1.dp, RoundedCornerShape(6.dp), true)
-                .background(Purple80)
-                .clickable {
-                    HttpRecorder.clearRewardsAsync()
-                    responseList.clear()
-                }
-                .padding(horizontal = 12.dp, vertical = 4.dp)
-        ) {
-            ImageButton(
-                painter = painterResource(id = R.drawable.ic_clear),
-                str = "清空"
-            )
         }
     }
 }

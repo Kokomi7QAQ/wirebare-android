@@ -2,13 +2,21 @@ package top.sankokomi.wirebare.ui.resources
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -20,9 +28,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Slider
@@ -30,16 +39,17 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,7 +58,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import kotlinx.coroutines.launch
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.util.injectTouchEffect
 import top.sankokomi.wirebare.ui.util.statusBarHeightDp
@@ -71,11 +80,10 @@ fun AppTitleBar(
     endContent: @Composable BoxScope.() -> Unit = {}
 ) {
     RealColumn {
-        AppStatusBar(Color.Transparent)
         RealBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
+                .height(40.dp),
             contentAlignment = Alignment.CenterStart
         ) {
             RealBox(
@@ -181,50 +189,6 @@ fun AppCheckableMenu(
 }
 
 @Composable
-fun AppNavigationBar(
-    pagerState: PagerState,
-    navigationItems: List<Pair<Pair<Painter, String>, Pair<Painter, String>>>
-) {
-    val rememberScope = rememberCoroutineScope()
-    RealRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .shadow(4.dp)
-            .background(Purple80)
-            .padding(vertical = 2.dp)
-    ) {
-        for (index in navigationItems.indices) {
-            val item = navigationItems[index]
-            RealBox(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.weight(1F)
-            ) {
-                val (painter, str) = if (pagerState.currentPage != index) {
-                    item.first
-                } else {
-                    item.second
-                }
-                Box(
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                        .clickable {
-                            rememberScope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        }
-                ) {
-                    ImageButton(
-                        painter = painter,
-                        str = str
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun AppRoundCornerBox(
     background: Color = Color.White,
     content: @Composable BoxScope.() -> Unit
@@ -257,22 +221,44 @@ fun Tag(
 @Composable
 fun ImageButton(
     painter: Painter,
-    str: String
+    clickable: () -> Unit
 ) {
-    RealColumn(
-        horizontalAlignment = Alignment.CenterHorizontally
+    val interactionSource = remember { MutableInteractionSource() }
+    val touched = interactionSource.collectIsPressedAsState().value ||
+            interactionSource.collectIsHoveredAsState().value
+    val anim = remember { Animatable(initialValue = 40f) }
+    LaunchedEffect(touched) {
+        anim.stop()
+        anim.animateTo(
+            targetValue = if (touched) 64f else 48f,
+            animationSpec = spring(
+                dampingRatio = 0.4f,
+                stiffness = 800f
+            )
+        )
+    }
+    Box(
+        modifier = Modifier.requiredSize(80.dp)
     ) {
-        Image(
-            painter = painter,
-            modifier = Modifier.size(32.dp),
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(
-            text = str,
-            fontSize = 14.sp,
-            color = Color.Black
-        )
+        Box(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(anim.value.dp)
+                .clip(CircleShape)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = clickable
+                )
+                .background(LightGreen),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painter,
+                modifier = Modifier.size((0.6f * anim.value).dp),
+                contentDescription = null
+            )
+        }
     }
 }
 
@@ -285,6 +271,31 @@ fun VisibleFadeInFadeOutAnimation(
         visible = visible,
         enter = fadeIn(),
         exit = fadeOut(),
+        content = content
+    )
+}
+
+@Composable
+fun VisibleDynamicEffectAnimation(
+    visible: Boolean = true,
+    content: @Composable (AnimatedVisibilityScope.() -> Unit)
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(
+            animationSpec = tween(50)
+        ) + scaleIn(
+            animationSpec = tween(50),
+            initialScale = 1.01f,
+            transformOrigin = TransformOrigin(0.5f, 1f)
+        ),
+        exit = fadeOut(
+            animationSpec = tween(50)
+        ) + scaleOut(
+            animationSpec = tween(50),
+            targetScale = 1.01f,
+            transformOrigin = TransformOrigin(0.5f, 1f)
+        ),
         content = content
     )
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import top.sankokomi.wirebare.ui.resources.LightGrey
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
 
 class AccessControlUI: ComponentActivity() {
@@ -17,6 +18,7 @@ class AccessControlUI: ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WirebareUITheme(
+                isShowStatusBar = false,
                 isShowNavigationBar = false
             ) {
                 Surface(

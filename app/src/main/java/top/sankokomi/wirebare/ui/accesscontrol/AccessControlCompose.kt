@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -45,10 +46,10 @@ import top.sankokomi.wirebare.ui.resources.AppCheckableMenu
 import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.CheckableMenuItem
+import top.sankokomi.wirebare.ui.resources.ImageButton
 import top.sankokomi.wirebare.ui.resources.LightGrey
 import top.sankokomi.wirebare.ui.resources.MediumGreen
 import top.sankokomi.wirebare.ui.resources.MediumGrey
-import top.sankokomi.wirebare.ui.resources.Purple80
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
@@ -58,6 +59,7 @@ import top.sankokomi.wirebare.ui.util.Global
 import top.sankokomi.wirebare.ui.util.injectTouchEffect
 import top.sankokomi.wirebare.ui.util.mix
 import top.sankokomi.wirebare.ui.util.requireAppDataList
+import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
 @Stable
 data class AccessControlData(
@@ -163,8 +165,16 @@ fun AccessControlUI.AccessControlUIPage() {
     RealColumn(
         Modifier.background(LightGrey)
     ) {
+        Spacer(modifier = Modifier.height(statusBarHeightDp))
         AppTitleBar(
-            text = "访问控制"
+            text = "访问控制",
+            startContent = {
+                ImageButton(
+                    painter = painterResource(id = R.drawable.ic_back)
+                ) {
+                    finish()
+                }
+            }
         )
         RealBox(
             modifier = Modifier.height(6.dp)
@@ -172,7 +182,7 @@ fun AccessControlUI.AccessControlUIPage() {
             VisibleFadeInFadeOutAnimation(visible = accessControlList.isEmpty()) {
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(),
-                    color = Purple80,
+                    color = MediumGreen,
                     trackColor = Color.Transparent
                 )
             }
