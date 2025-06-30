@@ -14,9 +14,11 @@ coilComposeKt = "2.5.0"
 brotliDec = "0.1.2"
 kotlinxCoroutines = "1.9.0"
 bouncycastle = "1.67"
+androidxRoom = "2.7.2"
 
 agp = "8.5.2"
 kotlin = "2.1.10"
+ksp = "2.1.10-1.0.29"
 
 
 [libraries]
@@ -38,10 +40,14 @@ ktx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-a
 bouncycastle-bcpkix = { group = "org.bouncycastle", name = "bcpkix-jdk15on", version.ref = "bouncycastle" }
 bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk15on", version.ref = "bouncycastle" }
 brotli-dec = { group = "org.brotli", name = "dec", version.ref = "brotliDec" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom"}
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom"}
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom"}
 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-symbol-processing = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 
