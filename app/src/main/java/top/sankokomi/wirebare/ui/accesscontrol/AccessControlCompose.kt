@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -162,156 +164,168 @@ fun AccessControlUI.AccessControlUIPage() {
         selectAllAppItem.checked.value = accessCount == accessControlList.size
         listOperateMutex.unlock()
     }
-    RealColumn(
+    RealBox(
         Modifier.background(LightGrey)
     ) {
-        Spacer(modifier = Modifier.height(statusBarHeightDp))
-        AppTitleBar(
-            text = "访问控制",
-            startContent = {
-                ImageButton(
-                    painter = painterResource(id = R.drawable.ic_back)
-                ) {
-                    finish()
-                }
-            }
-        )
-        RealBox(
-            modifier = Modifier.height(6.dp)
+        RealColumn(
+            modifier = Modifier.zIndex(1f)
         ) {
-            VisibleFadeInFadeOutAnimation(visible = accessControlList.isEmpty()) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MediumGreen,
-                    trackColor = Color.Transparent
-                )
-            }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(statusBarHeightDp)
+                    .background(LightGrey)
+            )
+            AppTitleBar(
+                text = "访问控制",
+                startContent = {
+                    ImageButton(
+                        painter = painterResource(id = R.drawable.ic_back)
+                    ) {
+                        finish()
+                    }
+                }
+            )
         }
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                AppRoundCornerBox {
-                    AppCheckableMenu(
-                        itemList = listOf(
-                            showSystemAppItem,
-                            selectAllAppItem
-                        )
-                    )
-                }
-            }
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-            items(accessControlList.size) { index ->
-                val accessControl = accessControlList[index]
-                val itemShape = if (accessControlList.size == 1) {
-                    RoundedCornerShape(size = 24.dp)
-                } else {
-                    when (index) {
-                        0 -> {
-                            RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+        RealColumn {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(56.dp + statusBarHeightDp))
+                    RealBox(
+                        modifier = Modifier.height(6.dp)
+                    ) {
+                        VisibleFadeInFadeOutAnimation(visible = accessControlList.isEmpty()) {
+                            LinearProgressIndicator(
+                                modifier = Modifier.fillMaxWidth(),
+                                color = MediumGreen,
+                                trackColor = Color.Transparent
+                            )
                         }
-
-                        accessControlList.size - 1 -> {
-                            RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
-                        }
-
-                        else -> RectangleShape
                     }
-                }
-                RealColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .clip(itemShape)
-                        .animateItem()
-                ) {
-                    if (index != 0) {
-                        HorizontalDivider(
-                            modifier = Modifier
-                                .background(Color.White)
-                                .padding(start = 56.dp, end = 16.dp)
-                                .fillMaxWidth()
-                                .height(0.2.dp)
-                                .background(LightGrey)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    AppRoundCornerBox {
+                        AppCheckableMenu(
+                            itemList = listOf(
+                                showSystemAppItem,
+                                selectAllAppItem
+                            )
                         )
                     }
-                    RealRow(
+                }
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+                items(accessControlList.size) { index ->
+                    val accessControl = accessControlList[index]
+                    val itemShape = if (accessControlList.size == 1) {
+                        RoundedCornerShape(size = 24.dp)
+                    } else {
+                        when (index) {
+                            0 -> {
+                                RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                            }
+
+                            accessControlList.size - 1 -> {
+                                RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                            }
+
+                            else -> RectangleShape
+                        }
+                    }
+                    RealColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .injectTouchEffect(normalBackground = Color.White)
-                            .padding(horizontal = 16.dp, vertical = 6.dp)
+                            .padding(horizontal = 16.dp)
+                            .clip(itemShape)
+                            .animateItem()
                     ) {
-                        AsyncImage(
-                            model = accessControl.appData.appIcon,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .size(24.dp),
-                            contentDescription = accessControl.appData.appName
-                        )
-                        RealColumn(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = 16.dp)
-                                .align(Alignment.CenterVertically)
-                        ) {
-                            Text(
-                                text = accessControl.appData.appName,
+                        if (index != 0) {
+                            HorizontalDivider(
                                 modifier = Modifier
+                                    .background(Color.White)
+                                    .padding(start = 56.dp, end = 16.dp)
                                     .fillMaxWidth()
-                                    .basicMarquee(),
-                                color = Color.Black,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                lineHeight = 14.sp,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
-                            Spacer(modifier = Modifier.height(1.dp))
-                            Text(
-                                text = accessControl.appData.packageName,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .basicMarquee(),
-                                color = MediumGrey,
-                                fontSize = 10.sp,
-                                lineHeight = 10.sp,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
+                                    .height(0.2.dp)
+                                    .background(LightGrey)
                             )
                         }
-                        Switch(
-                            checked = accessControl.allow,
-                            thumbContent = {
-                                Spacer(modifier = Modifier.size(999.dp))
-                            },
-                            colors = SwitchDefaults.colors(
-                                checkedTrackColor = MediumGreen,
-                                uncheckedBorderColor = LightGrey,
-                                uncheckedTrackColor = LightGrey,
-                                uncheckedThumbColor = Color.White
-                            ),
-                            onCheckedChange = {
-                                rememberScope.launch(Dispatchers.IO) {
-                                    listOperateMutex.lock()
-                                    val allow = accessControl.allow
-                                    withContext(Dispatchers.Main) {
-                                        accessControlList[index] =
-                                            accessControl.copy(allow = !allow)
-                                        if (!allow) accessCount++ else accessCount--
-                                    }
-                                    AccessControlDataStore.emit(accessControl.appData.packageName to !allow)
-                                    listOperateMutex.unlock()
-                                }
+                        RealRow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .injectTouchEffect(normalBackground = Color.White)
+                                .padding(horizontal = 16.dp, vertical = 6.dp)
+                        ) {
+                            AsyncImage(
+                                model = accessControl.appData.appIcon,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .size(24.dp),
+                                contentDescription = accessControl.appData.appName
+                            )
+                            RealColumn(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = 16.dp)
+                                    .align(Alignment.CenterVertically)
+                            ) {
+                                Text(
+                                    text = accessControl.appData.appName,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .basicMarquee(),
+                                    color = Color.Black,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    lineHeight = 14.sp,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
+                                Spacer(modifier = Modifier.height(1.dp))
+                                Text(
+                                    text = accessControl.appData.packageName,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .basicMarquee(),
+                                    color = MediumGrey,
+                                    fontSize = 10.sp,
+                                    lineHeight = 10.sp,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
+                                )
                             }
-                        )
+                            Switch(
+                                checked = accessControl.allow,
+                                thumbContent = {
+                                    Spacer(modifier = Modifier.size(999.dp))
+                                },
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = MediumGreen,
+                                    uncheckedBorderColor = LightGrey,
+                                    uncheckedTrackColor = LightGrey,
+                                    uncheckedThumbColor = Color.White
+                                ),
+                                onCheckedChange = {
+                                    rememberScope.launch(Dispatchers.IO) {
+                                        listOperateMutex.lock()
+                                        val allow = accessControl.allow
+                                        withContext(Dispatchers.Main) {
+                                            accessControlList[index] =
+                                                accessControl.copy(allow = !allow)
+                                            if (!allow) accessCount++ else accessCount--
+                                        }
+                                        AccessControlDataStore.emit(accessControl.appData.packageName to !allow)
+                                        listOperateMutex.unlock()
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
-            }
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
+                item {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }

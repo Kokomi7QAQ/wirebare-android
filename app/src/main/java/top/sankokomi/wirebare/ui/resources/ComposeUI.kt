@@ -48,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.painter.Painter
@@ -79,11 +80,20 @@ fun AppTitleBar(
     startContent: @Composable BoxScope.() -> Unit = {},
     endContent: @Composable BoxScope.() -> Unit = {}
 ) {
-    RealColumn {
+    RealColumn(
+        modifier = Modifier.background(
+            Brush.verticalGradient(
+                listOf(
+                    LightGrey,
+                    Color.Transparent
+                )
+            )
+        )
+    ) {
         RealBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp),
+                .height(56.dp),
             contentAlignment = Alignment.CenterStart
         ) {
             RealBox(
