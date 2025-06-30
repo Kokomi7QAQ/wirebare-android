@@ -22,13 +22,12 @@ import top.sankokomi.wirebare.kernel.common.ImportantEvent
 import top.sankokomi.wirebare.kernel.common.ProxyStatus
 import top.sankokomi.wirebare.kernel.common.VpnPrepareActivity
 import top.sankokomi.wirebare.kernel.common.WireBare
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
 import top.sankokomi.wirebare.ui.datastore.AccessControlDataStore
 import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
 import top.sankokomi.wirebare.ui.record.HttpRecorder
+import top.sankokomi.wirebare.ui.record.HttpReq
+import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.LightGrey
-import top.sankokomi.wirebare.ui.resources.Purple40
 import top.sankokomi.wirebare.ui.resources.Purple80
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
 import top.sankokomi.wirebare.ui.util.requireAppDataList
@@ -41,9 +40,9 @@ class LauncherUI : VpnPrepareActivity() {
         0, 1, BufferOverflow.SUSPEND
     )
 
-    private val _requestFlow = MutableSharedFlow<HttpRequest>()
+    private val _requestFlow = MutableSharedFlow<HttpReq>()
 
-    private val _responseFlow = MutableSharedFlow<HttpResponse>()
+    private val _responseFlow = MutableSharedFlow<HttpRsp>()
 
     val proxyStatusFlow = _proxyStatusFlow.asStateFlow()
 
@@ -82,12 +81,12 @@ class LauncherUI : VpnPrepareActivity() {
                     accessList.toTypedArray(),
                     onRequest = {
                         lifecycleScope.launch {
-                            _requestFlow.emit(it)
+                            _requestFlow.emit(HttpReq.from(it))
                         }
                     },
                     onResponse = {
                         lifecycleScope.launch {
-                            _responseFlow.emit(it)
+                            _responseFlow.emit(HttpRsp.from(it))
                         }
                     }
                 )
@@ -130,8 +129,16 @@ class LauncherUI : VpnPrepareActivity() {
                 }
             }
         }
+    }
+
+    fun queryRecord() {
         lifecycleScope.launch {
-            HttpRecorder.clearRewards()
+            HttpRecorder.queryRequestRecord().forEach {
+                _requestFlow.emit(it)
+            }
+            HttpRecorder.queryResponseRecord().forEach {
+                _responseFlow.emit(it)
+            }
         }
     }
 

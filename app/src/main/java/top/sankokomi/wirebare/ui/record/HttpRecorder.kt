@@ -1,10 +1,6 @@
 package top.sankokomi.wirebare.ui.record
 
-import android.util.Log
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
@@ -21,9 +17,9 @@ private val recordDir by lazy {
     }
 }
 
-val HttpRequest.id: String get() = "req_${requestTime}_${hashCode()}"
+val HttpRequest.id: String get() = "req|${requestTime}|${sequence}"
 
-val HttpResponse.id: String get() = "rsp_${requestTime}_${hashCode()}"
+val HttpResponse.id: String get() = "rsp|${requestTime}|${sequence}"
 
 fun getHttpRecordFileById(id: String): File = File(recordDir, id)
 
@@ -47,10 +43,24 @@ object HttpRecorder {
         return dest
     }
 
+    suspend fun queryRequestRecord(): List<HttpReq> {
+        return withContext(Dispatchers.IO) {
+            httpRoom.httpDao().queryHttpReqList()
+        }
+    }
+
+    suspend fun queryResponseRecord(): List<HttpRsp> {
+        return withContext(Dispatchers.IO) {
+            httpRoom.httpDao().queryHttpRspList()
+        }
+    }
+
     suspend fun addRequestRecord(request: HttpRequest, buffer: ByteBuffer?) {
         withContext(Dispatchers.IO) {
             runCatching {
-                val id = request.id
+                val req = HttpReq.from(request)
+                httpRoom.httpDao().insertHttpReq(listOf(req))
+                val id = req.id
                 if (buffer == null) {
                     writers.remove(id)?.close()
                     return@withContext
@@ -59,7 +69,6 @@ object HttpRecorder {
                     ConcurrentFileWriter(parseRequestRecordFile(request))
                 }.writeBytes(buffer)
             }.onFailure {
-                Log.e(TAG, "addHttpRequestReward FAILED", it)
             }
         }
     }
@@ -67,7 +76,9 @@ object HttpRecorder {
     suspend fun addResponseRecord(response: HttpResponse, buffer: ByteBuffer?) {
         withContext(Dispatchers.IO) {
             runCatching {
-                val id = response.id
+                val rsp = HttpRsp.from(response)
+                httpRoom.httpDao().insertHttpRsp(listOf(rsp))
+                val id = rsp.id
                 if (buffer == null) {
                     writers.remove(id)?.close()
                     return@withContext
@@ -76,28 +87,26 @@ object HttpRecorder {
                     ConcurrentFileWriter(parseResponseRecordFile(response))
                 }.writeBytes(buffer)
             }.onFailure {
-                Log.e(TAG, "addHttpResponseReward FAILED", it)
             }
         }
     }
 
-    suspend fun clearRewards() {
+    suspend fun clearReqRecord() {
         withContext(Dispatchers.IO) {
             runCatching {
-                recordDir.listFiles()?.forEach(File::delete)
+                httpRoom.httpDao().clearHttpReq()
+                recordDir.listFiles()?.filter { it.name.startsWith("req") }?.forEach(File::delete)
             }.onFailure {
-                Log.e(TAG, "clearHttpRewards FAILED", it)
             }
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    fun clearRewardsAsync() {
-        GlobalScope.launch(Dispatchers.IO) {
+    suspend fun clearRspRecord() {
+        withContext(Dispatchers.IO) {
             runCatching {
-                recordDir.listFiles()?.forEach(File::delete)
+                httpRoom.httpDao().clearHttpRsp()
+                recordDir.listFiles()?.filter { it.name.startsWith("rsp") }?.forEach(File::delete)
             }.onFailure {
-                Log.e(TAG, "clearHttpRewards FAILED", it)
             }
         }
     }

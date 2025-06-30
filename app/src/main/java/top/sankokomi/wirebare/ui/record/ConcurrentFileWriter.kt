@@ -21,6 +21,7 @@ class ConcurrentFileWriter(
         )
     }
 
+    @Synchronized
     fun writeBytes(buffer: ByteBuffer) {
         output.write(
             buffer.array(),

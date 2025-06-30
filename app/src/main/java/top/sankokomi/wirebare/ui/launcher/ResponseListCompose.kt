@@ -11,40 +11,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.ui.R
-import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
 import top.sankokomi.wirebare.ui.record.HttpRecorder
-import top.sankokomi.wirebare.ui.record.id
+import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.ImageButton
 import top.sankokomi.wirebare.ui.resources.Purple80
 import top.sankokomi.wirebare.ui.resources.SmallColorfulText
 import top.sankokomi.wirebare.ui.wireinfo.WireInfoUI
 
 @Composable
-fun LauncherUI.PageProxyResponseResult() {
-    val isBanFilter by ProxyPolicyDataStore.banAutoFilter.collectAsState()
-    val responseList = remember { mutableStateListOf<HttpResponse>() }
-    LaunchedEffect(Unit) {
-        responseFlow.collect {
-            if (!isBanFilter) {
-                if (it.url == null) return@collect
-//                if (it.httpVersion?.startsWith("HTTP") != true) return@collect
-            }
-            responseList.add(it)
-        }
-    }
+fun LauncherUI.PageProxyResponseResult(responseList: SnapshotStateList<HttpRsp>) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -93,11 +80,16 @@ fun LauncherUI.PageProxyResponseResult() {
         Box(
             modifier = Modifier.align(Alignment.BottomEnd)
         ) {
+            val rememberScope = rememberCoroutineScope()
             ImageButton(
                 painter = painterResource(id = R.drawable.ic_clear)
             ) {
-                HttpRecorder.clearRewardsAsync()
-                responseList.clear()
+                rememberScope.launch {
+                    withContext(Dispatchers.IO) {
+                        HttpRecorder.clearRspRecord()
+                    }
+                    responseList.clear()
+                }
             }
         }
     }

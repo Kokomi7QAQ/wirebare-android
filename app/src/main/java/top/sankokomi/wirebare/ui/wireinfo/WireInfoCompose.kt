@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
+import top.sankokomi.wirebare.ui.record.HttpReq
+import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.AppStatusBar
 import top.sankokomi.wirebare.ui.resources.LargeColorfulText
 import top.sankokomi.wirebare.ui.resources.Purple80
@@ -25,7 +25,7 @@ import top.sankokomi.wirebare.ui.util.showToast
 
 @Composable
 fun WireInfoUI.WireInfoUIPage(
-    request: HttpRequest,
+    request: HttpReq,
     sessionId: String
 ) {
     Box {
@@ -145,7 +145,7 @@ fun WireInfoUI.WireInfoUIPage(
 
 @Composable
 fun WireInfoUI.WireInfoUIPage(
-    response: HttpResponse,
+    response: HttpRsp,
     sessionId: String
 ) {
     Box {

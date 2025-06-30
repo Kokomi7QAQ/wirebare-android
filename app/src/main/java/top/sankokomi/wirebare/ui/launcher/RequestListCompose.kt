@@ -14,11 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,10 +26,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.ui.R
-import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
-import top.sankokomi.wirebare.ui.record.id
+import top.sankokomi.wirebare.ui.record.HttpRecorder
+import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.resources.ImageButton
 import top.sankokomi.wirebare.ui.resources.LightGreen
 import top.sankokomi.wirebare.ui.resources.LightGrey
@@ -45,18 +44,7 @@ import top.sankokomi.wirebare.ui.util.injectTouchEffect
 import top.sankokomi.wirebare.ui.wireinfo.WireInfoUI
 
 @Composable
-fun LauncherUI.PageProxyRequestResult() {
-    val isBanFilter by ProxyPolicyDataStore.banAutoFilter.collectAsState()
-    val requestList = remember { mutableStateListOf<HttpRequest>() }
-    LaunchedEffect(Unit) {
-        requestFlow.collect {
-            if (!isBanFilter) {
-                if (it.url == null) return@collect
-//                if (it.httpVersion?.startsWith("HTTP") != true) return@collect
-            }
-            requestList.add(it)
-        }
-    }
+fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -128,7 +116,8 @@ fun LauncherUI.PageProxyRequestResult() {
                                     .align(Alignment.CenterVertically)
                             ) {
                                 Text(
-                                    text = request.url ?: request.destinationAddress ?: "[格式化 URL 失败]",
+                                    text = request.url ?: request.destinationAddress
+                                    ?: "[格式化 URL 失败]",
                                     modifier = Modifier.fillMaxWidth(),
                                     color = Color.Black,
                                     fontSize = 18.sp,
@@ -208,10 +197,16 @@ fun LauncherUI.PageProxyRequestResult() {
         Box(
             modifier = Modifier.align(Alignment.BottomEnd)
         ) {
+            val rememberScope = rememberCoroutineScope()
             ImageButton(
                 painter = painterResource(id = R.drawable.ic_clear)
             ) {
-                requestList.clear()
+                rememberScope.launch {
+                    withContext(Dispatchers.IO) {
+                        HttpRecorder.clearReqRecord()
+                    }
+                    requestList.clear()
+                }
             }
         }
     }

@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -50,6 +50,8 @@ import top.sankokomi.wirebare.kernel.common.WireBare
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.accesscontrol.AccessControlUI
 import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
+import top.sankokomi.wirebare.ui.record.HttpReq
+import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.CornerSlideBar
 import top.sankokomi.wirebare.ui.resources.DeepPureRed
@@ -71,6 +73,28 @@ fun LauncherUI.WireBareUIPage() {
     val painterControlRes = painterResource(R.drawable.ic_wirebare)
     val painterRequestRes = painterResource(R.drawable.ic_request)
     val painterResponseRes = painterResource(R.drawable.ic_response)
+    val isBanFilter by ProxyPolicyDataStore.banAutoFilter.collectAsState()
+    val requestList = remember { mutableStateListOf<HttpReq>() }
+    LaunchedEffect(Unit) {
+        requestFlow.collect {
+            if (!isBanFilter) {
+                if (it.url == null) return@collect
+//                if (it.httpVersion?.startsWith("HTTP") != true) return@collect
+            }
+            requestList.add(it)
+        }
+    }
+    val responseList = remember { mutableStateListOf<HttpRsp>() }
+    LaunchedEffect(Unit) {
+        responseFlow.collect {
+            if (!isBanFilter) {
+                if (it.url == null) return@collect
+//                if (it.httpVersion?.startsWith("HTTP") != true) return@collect
+            }
+            responseList.add(it)
+        }
+    }
+    queryRecord()
     val anim = remember { Animatable(1f) }
     RealColumn(modifier = Modifier.background(LightGrey)) {
         AppTitleBar()
@@ -80,13 +104,13 @@ fun LauncherUI.WireBareUIPage() {
             beyondViewportPageCount = 3,
             modifier = Modifier
                 .weight(1f)
-                .padding(top = ((1f - anim.value) * 6).dp)
+                .padding(top = ((1f - anim.value) * 4).dp)
                 .alpha(1f - ((1f - anim.value)))
         ) {
             when (it) {
                 0 -> PageControlCenter()
-                1 -> PageProxyRequestResult()
-                2 -> PageProxyResponseResult()
+                1 -> PageProxyRequestResult(requestList)
+                2 -> PageProxyResponseResult(responseList)
             }
         }
         val navigationItems = listOf(
