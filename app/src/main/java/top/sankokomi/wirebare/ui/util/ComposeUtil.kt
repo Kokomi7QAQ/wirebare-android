@@ -11,7 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import top.sankokomi.wirebare.ui.resources.LMGrey
+import top.sankokomi.wirebare.ui.resources.Colors
+import top.sankokomi.wirebare.ui.resources.LGrayB
 import kotlin.random.Random
 
 /**
@@ -33,7 +34,7 @@ val Int.composeColor: Color get() = Color(this)
 
 @Composable
 fun Modifier.injectTouchEffect(
-    touchedBackground: Color = LMGrey,
+    touchedBackground: Color = Colors.surfaceVariant,
     normalBackground: Color = Color.Transparent,
     onClick: () -> Unit = {}
 ): Modifier {

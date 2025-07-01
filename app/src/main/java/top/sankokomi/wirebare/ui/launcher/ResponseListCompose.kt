@@ -26,7 +26,7 @@ import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.record.HttpRecorder
 import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.ImageButton
-import top.sankokomi.wirebare.ui.resources.LGreen
+import top.sankokomi.wirebare.ui.resources.LGreenA
 import top.sankokomi.wirebare.ui.resources.SmallColorfulText
 import top.sankokomi.wirebare.ui.wireinfo.WireInfoUI
 
@@ -68,7 +68,7 @@ fun LauncherUI.PageProxyResponseResult(responseList: SnapshotStateList<HttpRsp>)
                                 (response.contentType ?: "") +
                                 System.lineSeparator() +
                                 (response.contentEncoding ?: "identity"),
-                        backgroundColor = LGreen,
+                        backgroundColor = LGreenA,
                         textColor = Color.Black
                     )
                 }

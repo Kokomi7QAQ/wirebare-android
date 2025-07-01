@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
@@ -26,37 +24,11 @@ import androidx.core.view.WindowCompat
 import top.sankokomi.wirebare.ui.util.navigationBarHeightDp
 import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
-private val LightColorScheme = lightColorScheme(
-    primary = LGreen,
-    onPrimary = MGreen,
-    primaryContainer = DWhite,
-    onPrimaryContainer = DBlack,
-    background = LGrey,
-    onBackground = DWhite,
-    surface = LGrey,
-    onSurface = DWhite,
-    error = DRed,
-    onError = DWhite,
-)
-
-private val DarkColorScheme = darkColorScheme(
-    primary = DGreen,
-    onPrimary = MGreen,
-    primaryContainer = DBlack,
-    onPrimaryContainer = DWhite,
-    background = LGrey,
-    onBackground = MDGrey,
-    surface = LGrey,
-    onSurface = MDGrey,
-    error = DRed,
-    onError = DBlack,
-)
-
 @Composable
 fun WirebareUITheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     isShowStatusBar: Boolean = false,
     isShowNavigationBar: Boolean = true,
     statusBarColor: Color = Color.Black,

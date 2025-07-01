@@ -11,9 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,10 +29,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import kotlinx.coroutines.Dispatchers
@@ -48,10 +44,13 @@ import top.sankokomi.wirebare.ui.resources.AppCheckableMenu
 import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.CheckableMenuItem
+import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.ImageButton
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
+import top.sankokomi.wirebare.ui.resources.SwitchColors
+import top.sankokomi.wirebare.ui.resources.Typographies
 import top.sankokomi.wirebare.ui.resources.VisibleFadeInFadeOutAnimation
 import top.sankokomi.wirebare.ui.util.AppData
 import top.sankokomi.wirebare.ui.util.Global
@@ -162,7 +161,7 @@ fun AccessControlUI.AccessControlUIPage() {
         listOperateMutex.unlock()
     }
     RealBox(
-        Modifier.background(MaterialTheme.colorScheme.background)
+        Modifier.background(Colors.background)
     ) {
         RealColumn(
             modifier = Modifier.zIndex(1f)
@@ -171,7 +170,7 @@ fun AccessControlUI.AccessControlUIPage() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(statusBarHeightDp)
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(Colors.background)
             )
             AppTitleBar(
                 text = "访问控制",
@@ -196,7 +195,7 @@ fun AccessControlUI.AccessControlUIPage() {
                         VisibleFadeInFadeOutAnimation(visible = accessControlList.isEmpty()) {
                             LinearProgressIndicator(
                                 modifier = Modifier.fillMaxWidth(),
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                color = Colors.onPrimary,
                                 trackColor = Color.Transparent
                             )
                         }
@@ -241,17 +240,16 @@ fun AccessControlUI.AccessControlUIPage() {
                         if (index != 0) {
                             HorizontalDivider(
                                 modifier = Modifier
-                                    .background(Color.White)
+                                    .background(Colors.onBackground)
                                     .padding(start = 56.dp, end = 16.dp)
                                     .fillMaxWidth()
                                     .height(0.2.dp)
-                                    .background(MaterialTheme.colorScheme.background)
                             )
                         }
                         RealRow(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .injectTouchEffect(normalBackground = Color.White)
+                                .injectTouchEffect(normalBackground = Colors.onBackground)
                                 .padding(horizontal = 16.dp, vertical = 6.dp)
                         ) {
                             AsyncImage(
@@ -272,10 +270,7 @@ fun AccessControlUI.AccessControlUIPage() {
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .basicMarquee(),
-                                    color = Color.Black,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    lineHeight = 14.sp,
+                                    style = Typographies.titleSmall,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1
                                 )
@@ -285,9 +280,7 @@ fun AccessControlUI.AccessControlUIPage() {
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .basicMarquee(),
-                                    color = MaterialTheme.colorScheme.background,
-                                    fontSize = 10.sp,
-                                    lineHeight = 10.sp,
+                                    style = Typographies.bodySmall,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1
                                 )
@@ -297,12 +290,7 @@ fun AccessControlUI.AccessControlUIPage() {
                                 thumbContent = {
                                     Spacer(modifier = Modifier.size(999.dp))
                                 },
-                                colors = SwitchDefaults.colors(
-                                    checkedTrackColor = MaterialTheme.colorScheme.onPrimary,
-                                    uncheckedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                                    uncheckedTrackColor = MaterialTheme.colorScheme.surface,
-                                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurface
-                                ),
+                                colors = SwitchColors,
                                 onCheckedChange = {
                                     rememberScope.launch(Dispatchers.IO) {
                                         listOperateMutex.lock()

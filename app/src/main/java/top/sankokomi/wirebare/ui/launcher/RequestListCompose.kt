@@ -33,10 +33,10 @@ import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.record.HttpRecorder
 import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.resources.ImageButton
-import top.sankokomi.wirebare.ui.resources.LGreen
-import top.sankokomi.wirebare.ui.resources.LGrey
-import top.sankokomi.wirebare.ui.resources.MGreen
-import top.sankokomi.wirebare.ui.resources.MGrey
+import top.sankokomi.wirebare.ui.resources.LGreenA
+import top.sankokomi.wirebare.ui.resources.LGrayA
+import top.sankokomi.wirebare.ui.resources.LGreenB
+import top.sankokomi.wirebare.ui.resources.LGrayC
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
 import top.sankokomi.wirebare.ui.resources.Tag
@@ -91,7 +91,7 @@ fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
                                     .padding(start = 16.dp, end = 16.dp)
                                     .fillMaxWidth()
                                     .height(0.2.dp)
-                                    .background(LGrey)
+                                    .background(LGrayA)
                             )
                         }
                         RealRow(
@@ -130,7 +130,7 @@ fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
                                 Text(
                                     text = request.formatHead?.getOrNull(0) ?: "[格式化请求头失败]",
                                     modifier = Modifier.fillMaxWidth(),
-                                    color = MGrey,
+                                    color = LGrayC,
                                     fontSize = 12.sp,
                                     lineHeight = 12.sp,
                                     overflow = TextOverflow.Ellipsis,
@@ -139,7 +139,7 @@ fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
                                 Spacer(modifier = Modifier.height(6.dp))
                                 RealRow {
                                     Tag(
-                                        borderColor = MGreen,
+                                        borderColor = LGreenB,
                                         corner = 6.dp
                                     ) {
                                         Text(
@@ -148,13 +148,13 @@ fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
                                             lineHeight = 16.sp,
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(4.dp))
-                                                .background(LGreen)
+                                                .background(LGreenA)
                                                 .padding(horizontal = 4.dp)
                                         )
                                     }
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Tag(
-                                        borderColor = MGreen,
+                                        borderColor = LGreenB,
                                         corner = 6.dp
                                     ) {
                                         Text(
@@ -163,14 +163,14 @@ fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
                                             lineHeight = 16.sp,
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(4.dp))
-                                                .background(LGreen)
+                                                .background(LGreenA)
                                                 .padding(horizontal = 4.dp)
                                         )
                                     }
                                     if (request.isHttps == true) {
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Tag(
-                                            borderColor = MGreen,
+                                            borderColor = LGreenB,
                                             corner = 6.dp
                                         ) {
                                             Text(
@@ -179,7 +179,7 @@ fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
                                                 lineHeight = 16.sp,
                                                 modifier = Modifier
                                                     .clip(RoundedCornerShape(4.dp))
-                                                    .background(LGreen)
+                                                    .background(LGreenA)
                                                     .padding(horizontal = 4.dp)
                                             )
                                         }

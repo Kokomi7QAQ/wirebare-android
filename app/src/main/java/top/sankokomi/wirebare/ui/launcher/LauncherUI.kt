@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
@@ -27,8 +26,9 @@ import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
 import top.sankokomi.wirebare.ui.record.HttpRecorder
 import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
-import top.sankokomi.wirebare.ui.resources.LGrey
-import top.sankokomi.wirebare.ui.resources.LGreen
+import top.sankokomi.wirebare.ui.resources.Colors
+import top.sankokomi.wirebare.ui.resources.LGrayA
+import top.sankokomi.wirebare.ui.resources.LGreenA
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
 import top.sankokomi.wirebare.ui.util.requireAppDataList
 
@@ -118,12 +118,12 @@ class LauncherUI : VpnPrepareActivity() {
         setContent {
             WirebareUITheme(
                 isShowStatusBar = true,
-                navigationBarColor = LGreen,
-                statusBarColor = LGrey
+                navigationBarColor = LGreenA,
+                statusBarColor = LGrayA
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Colors.background
                 ) {
                     WireBareUIPage()
                 }

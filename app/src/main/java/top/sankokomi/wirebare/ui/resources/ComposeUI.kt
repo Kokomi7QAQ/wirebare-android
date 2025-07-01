@@ -4,11 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,7 +34,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,7 +47,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -85,7 +80,7 @@ fun AppTitleBar(
         modifier = Modifier.background(
             Brush.verticalGradient(
                 listOf(
-                    LGrey,
+                    Colors.background,
                     Color.Transparent
                 )
             )
@@ -117,7 +112,7 @@ fun AppTitleBar(
                 }
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.headlineMedium
                 )
             }
             RealBox(
@@ -153,12 +148,12 @@ fun AppCheckableMenu(
                             .padding(start = 48.dp, end = 16.dp)
                             .fillMaxWidth()
                             .height(0.2.dp)
-                            .background(LGrey)
+                            .background(LGrayA)
                     )
                 }
                 RealRow(
                     modifier = Modifier
-                        .injectTouchEffect(normalBackground = Color.White)
+                        .injectTouchEffect(normalBackground = Colors.onBackground)
                         .padding(horizontal = 16.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -174,19 +169,14 @@ fun AppCheckableMenu(
                         modifier = Modifier
                             .weight(1f)
                             .padding(horizontal = 16.dp),
-                        color = Color.Black
+                        style = Typographies.titleSmall
                     )
                     Switch(
                         checked = checked.value,
                         thumbContent = {
                             Spacer(modifier = Modifier.size(999.dp))
                         },
-                        colors = SwitchDefaults.colors(
-                            checkedTrackColor = MGreen,
-                            uncheckedBorderColor = LGrey,
-                            uncheckedTrackColor = LGrey,
-                            uncheckedThumbColor = Color.White
-                        ),
+                        colors = SwitchColors,
                         onCheckedChange = {
                             checked.value = !checked.value
                         }
@@ -199,7 +189,7 @@ fun AppCheckableMenu(
 
 @Composable
 fun AppRoundCornerBox(
-    background: Color = Color.White,
+    background: Color = Colors.onBackground,
     content: @Composable BoxScope.() -> Unit
 ) {
     RealBox(
@@ -259,7 +249,7 @@ fun ImageButton(
                     indication = null,
                     onClick = clickable
                 )
-                .background(LGreen),
+                .background(Colors.primary),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -280,31 +270,6 @@ fun VisibleFadeInFadeOutAnimation(
         visible = visible,
         enter = fadeIn(),
         exit = fadeOut(),
-        content = content
-    )
-}
-
-@Composable
-fun VisibleDynamicEffectAnimation(
-    visible: Boolean = true,
-    content: @Composable (AnimatedVisibilityScope.() -> Unit)
-) {
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(
-            animationSpec = tween(50)
-        ) + scaleIn(
-            animationSpec = tween(50),
-            initialScale = 1.01f,
-            transformOrigin = TransformOrigin(0.5f, 1f)
-        ),
-        exit = fadeOut(
-            animationSpec = tween(50)
-        ) + scaleOut(
-            animationSpec = tween(50),
-            targetScale = 1.01f,
-            transformOrigin = TransformOrigin(0.5f, 1f)
-        ),
         content = content
     )
 }
