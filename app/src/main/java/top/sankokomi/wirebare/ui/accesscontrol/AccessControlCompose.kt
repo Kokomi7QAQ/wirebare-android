@@ -189,17 +189,6 @@ fun AccessControlUI.AccessControlUIPage() {
             ) {
                 item {
                     Spacer(modifier = Modifier.height(56.dp + statusBarHeightDp))
-                    RealBox(
-                        modifier = Modifier.height(6.dp)
-                    ) {
-                        VisibleFadeInFadeOutAnimation(visible = accessControlList.isEmpty()) {
-                            LinearProgressIndicator(
-                                modifier = Modifier.fillMaxWidth(),
-                                color = Colors.onPrimary,
-                                trackColor = Color.Transparent
-                            )
-                        }
-                    }
                     Spacer(modifier = Modifier.height(8.dp))
                     AppRoundCornerBox {
                         AppCheckableMenu(
@@ -211,7 +200,21 @@ fun AccessControlUI.AccessControlUIPage() {
                     }
                 }
                 item {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    RealColumn {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        RealBox(
+                            modifier = Modifier.height(4.dp)
+                        ) {
+                            VisibleFadeInFadeOutAnimation(visible = accessControlList.isEmpty()) {
+                                LinearProgressIndicator(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    color = Colors.primaryContainer,
+                                    trackColor = Color.Transparent
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
                 }
                 items(accessControlList.size) { index ->
                     val accessControl = accessControlList[index]
