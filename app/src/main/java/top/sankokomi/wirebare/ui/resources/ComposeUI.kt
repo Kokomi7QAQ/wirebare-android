@@ -242,14 +242,14 @@ fun TextTag(
 }
 
 @Composable
-fun ImageButton(
+fun DynamicFloatImageButton(
     painter: Painter,
-    clickable: () -> Unit
+    clickable: () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val touched = interactionSource.collectIsPressedAsState().value ||
             interactionSource.collectIsHoveredAsState().value
-    val anim = remember { Animatable(initialValue = 40f) }
+    val anim = remember { Animatable(initialValue = 48f) }
     LaunchedEffect(touched) {
         anim.stop()
         anim.animateTo(
@@ -279,6 +279,47 @@ fun ImageButton(
             Image(
                 painter = painter,
                 modifier = Modifier.size((0.6f * anim.value).dp),
+                contentDescription = null
+            )
+        }
+    }
+}
+
+@Composable
+fun DynamicImageButton(
+    painter: Painter,
+    clickable: () -> Unit = {}
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val touched = interactionSource.collectIsPressedAsState().value ||
+            interactionSource.collectIsHoveredAsState().value
+    val anim = remember { Animatable(initialValue = 48f) }
+    LaunchedEffect(touched) {
+        anim.stop()
+        anim.animateTo(
+            targetValue = if (touched) 64f else 48f,
+            animationSpec = spring(
+                dampingRatio = 0.4f,
+                stiffness = 800f
+            )
+        )
+    }
+    Box(
+        modifier = Modifier.requiredSize(64.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onClick = clickable
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painter,
+                modifier = Modifier.size((0.8f * anim.value).dp),
                 contentDescription = null
             )
         }

@@ -29,7 +29,7 @@ import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.record.HttpRecorder
 import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.Colors
-import top.sankokomi.wirebare.ui.resources.ImageButton
+import top.sankokomi.wirebare.ui.resources.DynamicFloatImageButton
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
 import top.sankokomi.wirebare.ui.resources.TextTag
@@ -159,7 +159,7 @@ fun LauncherUI.PageProxyResponseResult(responseList: SnapshotStateList<HttpRsp>)
             modifier = Modifier.align(Alignment.BottomEnd)
         ) {
             val rememberScope = rememberCoroutineScope()
-            ImageButton(
+            DynamicFloatImageButton(
                 painter = painterResource(id = R.drawable.ic_clear)
             ) {
                 rememberScope.launch {

@@ -45,7 +45,7 @@ import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.CheckableMenuItem
 import top.sankokomi.wirebare.ui.resources.Colors
-import top.sankokomi.wirebare.ui.resources.ImageButton
+import top.sankokomi.wirebare.ui.resources.DynamicFloatImageButton
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
@@ -175,7 +175,7 @@ fun AccessControlUI.AccessControlUIPage() {
             AppTitleBar(
                 text = "访问控制",
                 startContent = {
-                    ImageButton(
+                    DynamicFloatImageButton(
                         painter = painterResource(id = R.drawable.ic_back)
                     ) {
                         finish()

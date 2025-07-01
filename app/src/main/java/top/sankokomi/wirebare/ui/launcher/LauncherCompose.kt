@@ -8,9 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -55,6 +52,7 @@ import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.CornerSlideBar
+import top.sankokomi.wirebare.ui.resources.DynamicImageButton
 import top.sankokomi.wirebare.ui.resources.LGrayC
 import top.sankokomi.wirebare.ui.resources.LGreenA
 import top.sankokomi.wirebare.ui.resources.LGreenC
@@ -137,31 +135,18 @@ fun LauncherUI.WireBareUIPage() {
                     } else {
                         item.second
                     }
-                    Box(
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .clip(RoundedCornerShape(6.dp))
-                            .clickable {
-                                if (pagerState.currentPage != index) {
-                                    rememberScope.launch {
-                                        anim.stop()
-                                        anim.animateTo(0f, tween(100))
-                                        pagerState.animateScrollToPage(
-                                            index,
-                                            animationSpec = tween(0)
-                                        )
-                                        anim.animateTo(1f, tween(100))
-                                    }
-                                }
+                    DynamicImageButton(painter = painter) {
+                        if (pagerState.currentPage != index) {
+                            rememberScope.launch {
+                                anim.stop()
+                                anim.animateTo(0f, tween(100))
+                                pagerState.animateScrollToPage(
+                                    index,
+                                    animationSpec = tween(0)
+                                )
+                                anim.animateTo(1f, tween(100))
                             }
-                    ) {
-                        Image(
-                            painter = painter,
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .size(32.dp),
-                            contentDescription = null
-                        )
+                        }
                     }
                 }
             }
