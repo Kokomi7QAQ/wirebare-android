@@ -20,7 +20,8 @@ class WireDetailUI : ComponentActivity() {
         setContent {
             WirebareUITheme(
                 isShowStatusBar = true,
-                isShowNavigationBar = false
+                isShowNavigationBar = false,
+                statusBarColor = { it.background }
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

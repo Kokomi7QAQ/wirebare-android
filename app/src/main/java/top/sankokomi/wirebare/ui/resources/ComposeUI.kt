@@ -218,6 +218,30 @@ fun Tag(
 }
 
 @Composable
+fun TextTag(
+    text: String?,
+    borderColor: Color,
+    corner: Dp,
+    space: Dp
+) {
+    if (text.isNullOrEmpty()) return
+    Spacer(modifier = Modifier.width(space))
+    Tag(
+        borderColor = borderColor,
+        corner = corner
+    ) {
+        Text(
+            text = text,
+            style = Typographies.labelMedium,
+            modifier = Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .background(Colors.primary)
+                .padding(horizontal = 4.dp)
+        )
+    }
+}
+
+@Composable
 fun ImageButton(
     painter: Painter,
     clickable: () -> Unit

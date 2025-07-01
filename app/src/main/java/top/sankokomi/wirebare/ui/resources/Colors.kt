@@ -24,9 +24,8 @@ val SwitchColors
 
 val LightColorScheme = lightColorScheme(
     primary = LGreenA,
-    onPrimary = LGreenB,
-    primaryContainer = WhiteZ,
-    onPrimaryContainer = BlackZ,
+    onPrimary = WhiteZ,
+    primaryContainer = LGreenB,
     background = LGrayA,
     onBackground = WhiteZ,
     surface = LGrayB,
@@ -37,10 +36,9 @@ val LightColorScheme = lightColorScheme(
 )
 
 val DarkColorScheme = darkColorScheme(
-    primary = LGreenC,
-    onPrimary = LGreenB,
-    primaryContainer = BlackZ,
-    onPrimaryContainer = WhiteZ,
+    primary = LGreenB,
+    onPrimary = LGreenA,
+    primaryContainer = LGreenD,
     background = BlackZ,
     onBackground = DGrayA,
     surface = DGrayD,

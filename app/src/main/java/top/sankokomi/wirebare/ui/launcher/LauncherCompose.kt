@@ -53,16 +53,17 @@ import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
 import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
+import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.CornerSlideBar
-import top.sankokomi.wirebare.ui.resources.LGreenC
-import top.sankokomi.wirebare.ui.resources.RedZ
-import top.sankokomi.wirebare.ui.resources.LGreenA
-import top.sankokomi.wirebare.ui.resources.LGrayA
-import top.sankokomi.wirebare.ui.resources.LargeColorfulText
 import top.sankokomi.wirebare.ui.resources.LGrayC
+import top.sankokomi.wirebare.ui.resources.LGreenA
+import top.sankokomi.wirebare.ui.resources.LGreenC
+import top.sankokomi.wirebare.ui.resources.LargeColorfulText
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
+import top.sankokomi.wirebare.ui.resources.RedZ
+import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 import kotlin.math.roundToInt
 
 @Composable
@@ -94,7 +95,8 @@ fun LauncherUI.WireBareUIPage() {
     }
     queryRecord()
     val anim = remember { Animatable(1f) }
-    RealColumn(modifier = Modifier.background(LGrayA)) {
+    RealColumn(modifier = Modifier.background(Colors.background)) {
+        Spacer(modifier = Modifier.height(statusBarHeightDp))
         AppTitleBar()
         HorizontalPager(
             state = pagerState,
@@ -121,7 +123,7 @@ fun LauncherUI.WireBareUIPage() {
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(4.dp)
-                .background(LGreenA)
+                .background(Colors.primary)
                 .padding(vertical = 2.dp)
         ) {
             for (index in navigationItems.indices) {

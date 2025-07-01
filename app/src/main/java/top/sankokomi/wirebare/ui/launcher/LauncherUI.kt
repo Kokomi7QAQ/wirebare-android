@@ -27,8 +27,6 @@ import top.sankokomi.wirebare.ui.record.HttpRecorder
 import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.Colors
-import top.sankokomi.wirebare.ui.resources.LGrayA
-import top.sankokomi.wirebare.ui.resources.LGreenA
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
 import top.sankokomi.wirebare.ui.util.requireAppDataList
 
@@ -117,9 +115,8 @@ class LauncherUI : VpnPrepareActivity() {
         enableEdgeToEdge()
         setContent {
             WirebareUITheme(
-                isShowStatusBar = true,
-                navigationBarColor = LGreenA,
-                statusBarColor = LGrayA
+                statusBarColor = { it.background },
+                navigationBarColor = { it.primary }
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

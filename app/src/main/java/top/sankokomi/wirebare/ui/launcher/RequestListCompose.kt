@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -19,27 +18,22 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.record.HttpRecorder
 import top.sankokomi.wirebare.ui.record.HttpReq
+import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.ImageButton
-import top.sankokomi.wirebare.ui.resources.LGreenA
-import top.sankokomi.wirebare.ui.resources.LGrayA
-import top.sankokomi.wirebare.ui.resources.LGreenB
-import top.sankokomi.wirebare.ui.resources.LGrayC
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
-import top.sankokomi.wirebare.ui.resources.Tag
+import top.sankokomi.wirebare.ui.resources.TextTag
+import top.sankokomi.wirebare.ui.resources.Typographies
 import top.sankokomi.wirebare.ui.util.injectTouchEffect
 import top.sankokomi.wirebare.ui.wireinfo.WireInfoUI
 
@@ -87,17 +81,16 @@ fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
                         if (i != 0) {
                             HorizontalDivider(
                                 modifier = Modifier
-                                    .background(Color.White)
+                                    .background(Colors.onBackground)
                                     .padding(start = 16.dp, end = 16.dp)
                                     .fillMaxWidth()
                                     .height(0.2.dp)
-                                    .background(LGrayA)
                             )
                         }
                         RealRow(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .injectTouchEffect(normalBackground = Color.White) {
+                                .injectTouchEffect(normalBackground = Colors.onBackground) {
                                     startActivity(
                                         Intent(
                                             this@PageProxyRequestResult,
@@ -117,73 +110,41 @@ fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
                             ) {
                                 Text(
                                     text = request.url ?: request.destinationAddress
-                                    ?: "[格式化 URL 失败]",
+                                    ?: "[format URL failed]",
                                     modifier = Modifier.fillMaxWidth(),
-                                    color = Color.Black,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    lineHeight = 18.sp,
+                                    style = Typographies.titleMedium,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 2
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(
-                                    text = request.formatHead?.getOrNull(0) ?: "[格式化请求头失败]",
+                                    text = request.formatHead?.getOrNull(0)
+                                        ?: "[format head failed]",
                                     modifier = Modifier.fillMaxWidth(),
-                                    color = LGrayC,
-                                    fontSize = 12.sp,
-                                    lineHeight = 12.sp,
+                                    style = Typographies.bodyMedium,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 2
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 RealRow {
-                                    Tag(
-                                        borderColor = LGreenB,
-                                        corner = 6.dp
-                                    ) {
-                                        Text(
-                                            text = request.method ?: "",
-                                            fontSize = 12.sp,
-                                            lineHeight = 16.sp,
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(4.dp))
-                                                .background(LGreenA)
-                                                .padding(horizontal = 4.dp)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Tag(
-                                        borderColor = LGreenB,
-                                        corner = 6.dp
-                                    ) {
-                                        Text(
-                                            text = request.httpVersion ?: "",
-                                            fontSize = 12.sp,
-                                            lineHeight = 16.sp,
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(4.dp))
-                                                .background(LGreenA)
-                                                .padding(horizontal = 4.dp)
-                                        )
-                                    }
-                                    if (request.isHttps == true) {
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Tag(
-                                            borderColor = LGreenB,
-                                            corner = 6.dp
-                                        ) {
-                                            Text(
-                                                text = "HTTPS",
-                                                fontSize = 12.sp,
-                                                lineHeight = 16.sp,
-                                                modifier = Modifier
-                                                    .clip(RoundedCornerShape(4.dp))
-                                                    .background(LGreenA)
-                                                    .padding(horizontal = 4.dp)
-                                            )
-                                        }
-                                    }
+                                    TextTag(
+                                        text = request.method,
+                                        borderColor = Colors.primaryContainer,
+                                        corner = 6.dp,
+                                        space = 0.dp
+                                    )
+                                    TextTag(
+                                        text = if (request.isHttps == true) "SSL/TLS" else null,
+                                        borderColor = Colors.primaryContainer,
+                                        corner = 6.dp,
+                                        space = 8.dp
+                                    )
+                                    TextTag(
+                                        text = request.httpVersion,
+                                        borderColor = Colors.primaryContainer,
+                                        corner = 6.dp,
+                                        space = 8.dp
+                                    )
                                 }
                             }
                         }

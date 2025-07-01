@@ -26,5 +26,6 @@ val DGrayG = Color(0xFF545454)
 val DGrayH = Color(0xFF5E5E5E)
 
 val LGreenA = Color(0XFFD8EBBD)
-val LGreenB = Color(0XFF7E9D40)
-val LGreenC = Color(0xFF4D6F08)
+val LGreenB = Color(0xFFBAD18B)
+val LGreenC = Color(0xFF93B34F)
+val LGreenD = Color(0xFF83AA38)

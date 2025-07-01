@@ -31,8 +31,8 @@ fun WirebareUITheme(
     dynamicColor: Boolean = false,
     isShowStatusBar: Boolean = false,
     isShowNavigationBar: Boolean = true,
-    statusBarColor: Color = Color.Black,
-    navigationBarColor: Color = Color.Black,
+    statusBarColor: (ColorScheme) -> Color = { it.background },
+    navigationBarColor: (ColorScheme) -> Color = { it.background },
     content: @Composable () -> Unit
 ) {
     val colorScheme: ColorScheme
@@ -77,7 +77,7 @@ fun WirebareUITheme(
             if (isShowStatusBar) {
                 Spacer(
                     modifier = Modifier
-                        .background(statusBarColor)
+                        .background(statusBarColor(colorScheme))
                         .fillMaxWidth()
                         .height(statusBarHeightDp)
                 )
@@ -88,7 +88,7 @@ fun WirebareUITheme(
             if (isShowNavigationBar) {
                 Spacer(
                     modifier = Modifier
-                        .background(navigationBarColor)
+                        .background(navigationBarColor(colorScheme))
                         .fillMaxWidth()
                         .height(navigationBarHeightDp)
                 )
