@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -49,9 +49,6 @@ import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.CheckableMenuItem
 import top.sankokomi.wirebare.ui.resources.ImageButton
-import top.sankokomi.wirebare.ui.resources.LightGrey
-import top.sankokomi.wirebare.ui.resources.MediumGreen
-import top.sankokomi.wirebare.ui.resources.MediumGrey
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
@@ -165,7 +162,7 @@ fun AccessControlUI.AccessControlUIPage() {
         listOperateMutex.unlock()
     }
     RealBox(
-        Modifier.background(LightGrey)
+        Modifier.background(MaterialTheme.colorScheme.background)
     ) {
         RealColumn(
             modifier = Modifier.zIndex(1f)
@@ -174,7 +171,7 @@ fun AccessControlUI.AccessControlUIPage() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(statusBarHeightDp)
-                    .background(LightGrey)
+                    .background(MaterialTheme.colorScheme.background)
             )
             AppTitleBar(
                 text = "访问控制",
@@ -199,7 +196,7 @@ fun AccessControlUI.AccessControlUIPage() {
                         VisibleFadeInFadeOutAnimation(visible = accessControlList.isEmpty()) {
                             LinearProgressIndicator(
                                 modifier = Modifier.fillMaxWidth(),
-                                color = MediumGreen,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 trackColor = Color.Transparent
                             )
                         }
@@ -248,7 +245,7 @@ fun AccessControlUI.AccessControlUIPage() {
                                     .padding(start = 56.dp, end = 16.dp)
                                     .fillMaxWidth()
                                     .height(0.2.dp)
-                                    .background(LightGrey)
+                                    .background(MaterialTheme.colorScheme.background)
                             )
                         }
                         RealRow(
@@ -288,7 +285,7 @@ fun AccessControlUI.AccessControlUIPage() {
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .basicMarquee(),
-                                    color = MediumGrey,
+                                    color = MaterialTheme.colorScheme.background,
                                     fontSize = 10.sp,
                                     lineHeight = 10.sp,
                                     overflow = TextOverflow.Ellipsis,
@@ -301,10 +298,10 @@ fun AccessControlUI.AccessControlUIPage() {
                                     Spacer(modifier = Modifier.size(999.dp))
                                 },
                                 colors = SwitchDefaults.colors(
-                                    checkedTrackColor = MediumGreen,
-                                    uncheckedBorderColor = LightGrey,
-                                    uncheckedTrackColor = LightGrey,
-                                    uncheckedThumbColor = Color.White
+                                    checkedTrackColor = MaterialTheme.colorScheme.onPrimary,
+                                    uncheckedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                                    uncheckedTrackColor = MaterialTheme.colorScheme.surface,
+                                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurface
                                 ),
                                 onCheckedChange = {
                                     rememberScope.launch(Dispatchers.IO) {

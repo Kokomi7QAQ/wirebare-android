@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import top.sankokomi.wirebare.ui.resources.LMGrey
-import top.sankokomi.wirebare.ui.resources.MediumGrey
 import kotlin.random.Random
 
 /**

@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -84,7 +85,7 @@ fun AppTitleBar(
         modifier = Modifier.background(
             Brush.verticalGradient(
                 listOf(
-                    LightGrey,
+                    LGrey,
                     Color.Transparent
                 )
             )
@@ -116,9 +117,7 @@ fun AppTitleBar(
                 }
                 Text(
                     text = text,
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
             RealBox(
@@ -154,7 +153,7 @@ fun AppCheckableMenu(
                             .padding(start = 48.dp, end = 16.dp)
                             .fillMaxWidth()
                             .height(0.2.dp)
-                            .background(LightGrey)
+                            .background(LGrey)
                     )
                 }
                 RealRow(
@@ -183,9 +182,9 @@ fun AppCheckableMenu(
                             Spacer(modifier = Modifier.size(999.dp))
                         },
                         colors = SwitchDefaults.colors(
-                            checkedTrackColor = MediumGreen,
-                            uncheckedBorderColor = LightGrey,
-                            uncheckedTrackColor = LightGrey,
+                            checkedTrackColor = MGreen,
+                            uncheckedBorderColor = LGrey,
+                            uncheckedTrackColor = LGrey,
                             uncheckedThumbColor = Color.White
                         ),
                         onCheckedChange = {
@@ -260,7 +259,7 @@ fun ImageButton(
                     indication = null,
                     onClick = clickable
                 )
-                .background(LightGreen),
+                .background(LGreen),
             contentAlignment = Alignment.Center
         ) {
             Image(

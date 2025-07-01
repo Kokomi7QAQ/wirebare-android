@@ -27,8 +27,8 @@ import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
 import top.sankokomi.wirebare.ui.record.HttpRecorder
 import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
-import top.sankokomi.wirebare.ui.resources.LightGrey
-import top.sankokomi.wirebare.ui.resources.Purple80
+import top.sankokomi.wirebare.ui.resources.LGrey
+import top.sankokomi.wirebare.ui.resources.LGreen
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
 import top.sankokomi.wirebare.ui.util.requireAppDataList
 
@@ -118,8 +118,8 @@ class LauncherUI : VpnPrepareActivity() {
         setContent {
             WirebareUITheme(
                 isShowStatusBar = true,
-                navigationBarColor = Purple80,
-                statusBarColor = LightGrey
+                navigationBarColor = LGreen,
+                statusBarColor = LGrey
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

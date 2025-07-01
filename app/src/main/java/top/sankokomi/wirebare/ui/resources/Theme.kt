@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -20,35 +22,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import top.sankokomi.wirebare.ui.util.hideNavigationBar
-import top.sankokomi.wirebare.ui.util.hideStatusBar
 import top.sankokomi.wirebare.ui.util.navigationBarHeightDp
-import top.sankokomi.wirebare.ui.util.showNavigationBar
-import top.sankokomi.wirebare.ui.util.showStatusBar
 import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+private val LightColorScheme = lightColorScheme(
+    primary = LGreen,
+    onPrimary = MGreen,
+    primaryContainer = DWhite,
+    onPrimaryContainer = DBlack,
+    background = LGrey,
+    onBackground = DWhite,
+    surface = LGrey,
+    onSurface = DWhite,
+    error = DRed,
+    onError = DWhite,
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val DarkColorScheme = darkColorScheme(
+    primary = DGreen,
+    onPrimary = MGreen,
+    primaryContainer = DBlack,
+    onPrimaryContainer = DWhite,
+    background = LGrey,
+    onBackground = MDGrey,
+    surface = LGrey,
+    onSurface = MDGrey,
+    error = DRed,
+    onError = DBlack,
 )
 
 @Composable
@@ -62,14 +63,29 @@ fun WirebareUITheme(
     navigationBarColor: Color = Color.Black,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
+    val colorScheme: ColorScheme
+    val typography: Typography
+    when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (darkTheme) {
+                typography = DarkTypography
+                colorScheme = dynamicDarkColorScheme(context)
+            } else {
+                typography = LightTypography
+                colorScheme = dynamicLightColorScheme(context)
+            }
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> {
+            typography = DarkTypography
+            colorScheme = DarkColorScheme
+        }
+
+        else -> {
+            typography = LightTypography
+            colorScheme = LightColorScheme
+        }
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -83,7 +99,7 @@ fun WirebareUITheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography
+        typography = typography
     ) {
         Column {
             if (isShowStatusBar) {

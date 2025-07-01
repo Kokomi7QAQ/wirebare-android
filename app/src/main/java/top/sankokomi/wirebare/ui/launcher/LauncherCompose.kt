@@ -54,14 +54,12 @@ import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.CornerSlideBar
-import top.sankokomi.wirebare.ui.resources.DeepPureRed
+import top.sankokomi.wirebare.ui.resources.DGreen
+import top.sankokomi.wirebare.ui.resources.DRed
+import top.sankokomi.wirebare.ui.resources.LGreen
+import top.sankokomi.wirebare.ui.resources.LGrey
 import top.sankokomi.wirebare.ui.resources.LargeColorfulText
-import top.sankokomi.wirebare.ui.resources.LightGrey
-import top.sankokomi.wirebare.ui.resources.Pink80
-import top.sankokomi.wirebare.ui.resources.Purple40
-import top.sankokomi.wirebare.ui.resources.Purple80
-import top.sankokomi.wirebare.ui.resources.Purple80ToPurpleGrey40
-import top.sankokomi.wirebare.ui.resources.PurpleGrey40
+import top.sankokomi.wirebare.ui.resources.MGrey
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
@@ -96,7 +94,7 @@ fun LauncherUI.WireBareUIPage() {
     }
     queryRecord()
     val anim = remember { Animatable(1f) }
-    RealColumn(modifier = Modifier.background(LightGrey)) {
+    RealColumn(modifier = Modifier.background(LGrey)) {
         AppTitleBar()
         HorizontalPager(
             state = pagerState,
@@ -123,7 +121,7 @@ fun LauncherUI.WireBareUIPage() {
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(4.dp)
-                .background(Purple80)
+                .background(LGreen)
                 .padding(vertical = 2.dp)
         ) {
             for (index in navigationItems.indices) {
@@ -224,7 +222,7 @@ private fun LauncherUI.PageControlCenter() {
                         ProxyStatus.DEAD -> {
                             mainText = "已停止"
                             subText = "点此启动"
-                            backgroundColor = PurpleGrey40
+                            backgroundColor = DGreen
                             textColor = Color.White
                             onClick = ::startProxy
                         }
@@ -232,7 +230,7 @@ private fun LauncherUI.PageControlCenter() {
                         ProxyStatus.STARTING -> {
                             mainText = "正在启动"
                             subText = "请稍后"
-                            backgroundColor = Purple80ToPurpleGrey40
+                            backgroundColor = MGrey
                             textColor = Color.White
                             onClick = ::stopProxy
                         }
@@ -240,7 +238,7 @@ private fun LauncherUI.PageControlCenter() {
                         ProxyStatus.ACTIVE -> {
                             mainText = "已启动"
                             subText = "点此停止"
-                            backgroundColor = Purple80
+                            backgroundColor = LGreen
                             textColor = Color.Black
                             onClick = ::stopProxy
                         }
@@ -248,7 +246,7 @@ private fun LauncherUI.PageControlCenter() {
                         ProxyStatus.DYING -> {
                             mainText = "正在停止"
                             subText = "请稍后"
-                            backgroundColor = Purple80ToPurpleGrey40
+                            backgroundColor = MGrey
                             textColor = Color.White
                             onClick = ::stopProxy
                         }
@@ -284,7 +282,7 @@ private fun LauncherUI.PageControlCenter() {
                 LargeColorfulText(
                     mainText = "访问控制",
                     subText = "配置代理应用",
-                    backgroundColor = Purple80,
+                    backgroundColor = LGreen,
                     textColor = Color.Black,
                     onClick = {
                         startActivity(
@@ -304,12 +302,12 @@ private fun LauncherUI.PageControlCenter() {
             if (isBanFilter) {
                 afMainText = "自动过滤已停用"
                 afSubText = "将显示代理到的所有请求"
-                afBackgroundColor = PurpleGrey40
+                afBackgroundColor = DGreen
                 afTextColor = Color.White
             } else {
                 afMainText = "自动过滤已启用"
                 afSubText = "将会自动过滤无法解析的请求"
-                afBackgroundColor = Purple80
+                afBackgroundColor = LGreen
                 afTextColor = Color.Black
             }
             Box(
@@ -345,12 +343,12 @@ private fun LauncherUI.PageControlCenter() {
                     if (enable) {
                         sslMainText = "SSL/TLS 已启用"
                         sslSubText = "进行 SSL/TLS 握手并解密 HTTPS"
-                        sslBackgroundColor = Purple80
+                        sslBackgroundColor = LGreen
                         sslTextColor = Color.Black
                     } else {
                         sslMainText = "SSL/TLS 已禁用"
                         sslSubText = "仅对 HTTPS 透明代理"
-                        sslBackgroundColor = PurpleGrey40
+                        sslBackgroundColor = DGreen
                         sslTextColor = Color.White
                     }
                     LargeColorfulText(
@@ -396,12 +394,12 @@ private fun LauncherUI.PageControlCenter() {
                     if (enable) {
                         i6MainText = "IPv6 代理已启用"
                         i6SubText = "代理 IPv4 和 IPv6 数据包"
-                        i6BackgroundColor = Purple80
+                        i6BackgroundColor = LGreen
                         i6TextColor = Color.Black
                     } else {
                         i6MainText = "IPv6 代理已禁用"
                         i6SubText = "仅代理 IPv4 数据包"
-                        i6BackgroundColor = PurpleGrey40
+                        i6BackgroundColor = DGreen
                         i6TextColor = Color.White
                     }
                     LargeColorfulText(
@@ -424,8 +422,8 @@ private fun LauncherUI.PageControlCenter() {
                     subText = "调整后立即生效",
                     backgroundColor = Color.Transparent,
                     textColor = Color.Black,
-                    barColor = Purple40,
-                    barBackgroundColor = Pink80,
+                    barColor = DGreen,
+                    barBackgroundColor = LGreen,
                     value = mockPacketLossProbability / 100f,
                     valueRange = 0f..1f,
                     onValueChange = {
@@ -446,7 +444,7 @@ private fun LauncherUI.PageControlCenter() {
                     LargeColorfulText(
                         mainText = "注意",
                         subText = "当前网络疑似不支持 IPv6",
-                        backgroundColor = DeepPureRed,
+                        backgroundColor = DRed,
                         textColor = Color.White,
                         onClick = {
                             ProxyPolicyDataStore.enableIpv6.value = !enableIpv6
