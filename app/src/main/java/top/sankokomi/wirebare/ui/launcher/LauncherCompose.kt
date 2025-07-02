@@ -216,7 +216,7 @@ private fun LauncherUI.ControlBox(
     val systemTrustCert = remember(enableSSL.value) {
         WireBareHelper.checkSystemTrustCert("318facc2.0")
     }
-    val enableSSLSubName = remember(enableSSL.value) {
+    val enableSSLSubName = remember(enableSSL.value, systemTrustCert) {
         if (!enableSSL.value) {
             "启用后会解析 HTTPS 请求/响应"
         } else {
@@ -228,7 +228,7 @@ private fun LauncherUI.ControlBox(
         }
     }
     val enableIpv6 = ProxyPolicyDataStore.enableIpv6.collectAsState()
-    val enableIpv6SubName = remember(enableIpv6.value) {
+    val enableIpv6SubName = remember(enableIpv6.value, maybeUnsupportedIpv6) {
         if (maybeUnsupportedIpv6) {
             "当前网络疑似不支持 IPv6"
         } else {
