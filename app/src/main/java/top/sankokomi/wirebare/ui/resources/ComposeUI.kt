@@ -1,14 +1,16 @@
 package top.sankokomi.wirebare.ui.resources
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -30,24 +32,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -89,7 +89,7 @@ fun AppTitleBar(
         RealBox(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(48.dp),
             contentAlignment = Alignment.CenterStart
         ) {
             RealBox(
@@ -110,10 +110,18 @@ fun AppTitleBar(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.headlineMedium
-                )
+                AnimatedContent(
+                    targetState = text,
+                    transitionSpec = {
+                        fadeIn().togetherWith(fadeOut())
+                    },
+                    label = "AppTitleBar"
+                ) {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
             }
             RealBox(
                 modifier = Modifier.align(Alignment.CenterEnd),
@@ -123,63 +131,116 @@ fun AppTitleBar(
     }
 }
 
+@Composable
+fun AppCheckableItem(
+    icon: Any,
+    itemName: String,
+    checked: Boolean,
+    subName: String = "",
+    isWarning: Boolean = false,
+    enabled: Boolean = true,
+    tint: Color? = null,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    RealColumn {
+        RealColumn {
+            RealRow(
+                modifier = Modifier
+                    .injectTouchEffect(
+                        normalBackground = Colors.onBackground,
+                        enabled = enabled
+                    ) {
+                        onCheckedChange(!checked)
+                    }
+                    .padding(horizontal = 16.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    model = icon,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(28.dp),
+                    colorFilter = tint?.let { ColorFilter.tint(it) },
+                    contentDescription = null
+                )
+                RealColumn(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .weight(1f)
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = itemName,
+                        modifier = Modifier.basicMarquee(),
+                        style = Typographies.titleSmall
+                    )
+                    AnimatedVisibility(subName.isNotEmpty()) {
+                        AnimatedContent(
+                            targetState = subName to isWarning,
+                            transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+                            label = "AppCheckableMenu"
+                        ) { (name, warning) ->
+                            Text(
+                                text = name,
+                                modifier = Modifier.basicMarquee(),
+                                style = Typographies.bodySmall,
+                                color = if (!warning) Typographies.bodySmall.color else Colors.error
+                            )
+                        }
+                    }
+                }
+                Switch(
+                    checked = checked,
+                    thumbContent = {
+                        Spacer(modifier = Modifier.size(999.dp))
+                    },
+                    colors = SwitchColors,
+                    enabled = enabled,
+                    onCheckedChange = {
+                        onCheckedChange(!checked)
+                    }
+                )
+            }
+        }
+    }
+}
+
 @Stable
-class CheckableMenuItem(
-    val itemName: State<String>,
-    val checked: MutableState<Boolean>,
-    val icon: Any
+data class TabData(
+    val icon: Any?,
+    val text: String
 )
 
 @Composable
-fun AppCheckableMenu(
-    itemList: List<CheckableMenuItem>,
-    size: Int = itemList.size
+fun AppTab(
+    tabDataList: List<TabData>,
+    onClickTab: (Int) -> Unit
 ) {
-    RealColumn {
-        for (i in 0 until size) {
-            val item = itemList[i]
-            val name = item.itemName
-            val checked = item.checked
-            val icon = item.icon
-            RealColumn {
-                if (i != 0) {
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .padding(start = 48.dp, end = 16.dp)
-                            .fillMaxWidth()
-                            .height(0.2.dp)
-                            .background(LGrayA)
-                    )
-                }
-                RealRow(
-                    modifier = Modifier
-                        .injectTouchEffect(normalBackground = Colors.onBackground)
-                        .padding(horizontal = 16.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AsyncImage(
-                        model = icon,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .size(16.dp),
-                        contentDescription = null
-                    )
+    RealRow(
+        modifier = Modifier
+            .padding(16.dp)
+            .clip(CircleShape)
+            .shadow(4.dp)
+            .background(Colors.primary)
+    ) {
+        for (index in tabDataList.indices) {
+            val tabData = tabDataList[index]
+            RealBox(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1F)
+                    .clickable(onClick = {})
+            ) {
+                if (tabData.icon != null) {
+                    DynamicImageButton(icon = tabData.icon) {
+                        onClickTab(index)
+                    }
+                } else {
                     Text(
-                        text = name.value,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 16.dp),
-                        style = Typographies.titleSmall
-                    )
-                    Switch(
-                        checked = checked.value,
-                        thumbContent = {
-                            Spacer(modifier = Modifier.size(999.dp))
-                        },
-                        colors = SwitchColors,
-                        onCheckedChange = {
-                            checked.value = !checked.value
-                        }
+                        text = tabData.text,
+                        style = Typographies.titleSmall,
+                        color = Colors.inverseSurface,
+                        modifier = Modifier.padding(vertical = 12.dp)
                     )
                 }
             }
@@ -243,7 +304,7 @@ fun TextTag(
 
 @Composable
 fun DynamicFloatImageButton(
-    painter: Painter,
+    icon: Any?,
     clickable: () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -276,9 +337,10 @@ fun DynamicFloatImageButton(
                 .background(Colors.primary),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painter,
+            AsyncImage(
+                model = icon,
                 modifier = Modifier.size((0.6f * anim.value).dp),
+                colorFilter = ColorFilter.tint(Colors.inverseSurface),
                 contentDescription = null
             )
         }
@@ -287,17 +349,17 @@ fun DynamicFloatImageButton(
 
 @Composable
 fun DynamicImageButton(
-    painter: Painter,
+    icon: Any?,
     clickable: () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val touched = interactionSource.collectIsPressedAsState().value ||
             interactionSource.collectIsHoveredAsState().value
-    val anim = remember { Animatable(initialValue = 48f) }
+    val anim = remember { Animatable(initialValue = 32f) }
     LaunchedEffect(touched) {
         anim.stop()
         anim.animateTo(
-            targetValue = if (touched) 64f else 48f,
+            targetValue = if (touched) 48f else 32f,
             animationSpec = spring(
                 dampingRatio = 0.4f,
                 stiffness = 800f
@@ -305,7 +367,7 @@ fun DynamicImageButton(
         )
     }
     Box(
-        modifier = Modifier.requiredSize(64.dp)
+        modifier = Modifier.requiredSize(56.dp)
     ) {
         Box(
             modifier = Modifier
@@ -317,9 +379,10 @@ fun DynamicImageButton(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painter,
-                modifier = Modifier.size((0.8f * anim.value).dp),
+            AsyncImage(
+                model = icon,
+                modifier = Modifier.size((anim.value).dp),
+                colorFilter = ColorFilter.tint(Colors.inverseSurface),
                 contentDescription = null
             )
         }

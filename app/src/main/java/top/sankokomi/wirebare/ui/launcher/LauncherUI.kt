@@ -116,7 +116,7 @@ class LauncherUI : VpnPrepareActivity() {
         setContent {
             WirebareUITheme(
                 statusBarColor = { it.background },
-                navigationBarColor = { it.primary }
+                navigationBarColor = { it.background }
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

@@ -16,6 +16,11 @@ val LightTypography = Typography(
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold
     ),
+    headlineSmall = TextStyle(
+        color = DGrayH,
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Bold
+    ),
     titleMedium = TextStyle(
         color = BlackZ,
         fontSize = 18.sp,
@@ -49,6 +54,11 @@ val DarkTypography = Typography(
     headlineMedium = TextStyle(
         color = WhiteZ,
         fontSize = 20.sp,
+        fontWeight = FontWeight.Bold
+    ),
+    headlineSmall = TextStyle(
+        color = LGrayH,
+        fontSize = 18.sp,
         fontWeight = FontWeight.Bold
     ),
     titleMedium = TextStyle(

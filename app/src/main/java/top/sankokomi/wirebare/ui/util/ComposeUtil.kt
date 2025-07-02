@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import top.sankokomi.wirebare.ui.resources.Colors
-import top.sankokomi.wirebare.ui.resources.LGrayB
 import kotlin.random.Random
 
 /**
@@ -36,6 +35,7 @@ val Int.composeColor: Color get() = Color(this)
 fun Modifier.injectTouchEffect(
     touchedBackground: Color = Colors.surfaceVariant,
     normalBackground: Color = Color.Transparent,
+    enabled: Boolean = true,
     onClick: () -> Unit = {}
 ): Modifier {
     val interactionSource = remember { MutableInteractionSource() }
@@ -44,5 +44,5 @@ fun Modifier.injectTouchEffect(
     return this
         .background(if (touched) touchedBackground else normalBackground)
         .hoverable(interactionSource)
-        .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
+        .clickable(interactionSource = interactionSource, indication = null, enabled = enabled, onClick = onClick)
 }

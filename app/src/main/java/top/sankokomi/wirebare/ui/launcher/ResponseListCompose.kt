@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
@@ -30,11 +29,14 @@ import top.sankokomi.wirebare.ui.record.HttpRecorder
 import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.DynamicFloatImageButton
+import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
 import top.sankokomi.wirebare.ui.resources.TextTag
 import top.sankokomi.wirebare.ui.resources.Typographies
+import top.sankokomi.wirebare.ui.resources.VisibleFadeInFadeOutAnimation
 import top.sankokomi.wirebare.ui.util.injectTouchEffect
+import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 import top.sankokomi.wirebare.ui.wireinfo.WireInfoUI
 
 @Composable
@@ -46,7 +48,21 @@ fun LauncherUI.PageProxyResponseResult(responseList: SnapshotStateList<HttpRsp>)
             modifier = Modifier.fillMaxSize()
         ) {
             item {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(statusBarHeightDp + 56.dp))
+            }
+            item {
+                VisibleFadeInFadeOutAnimation(responseList.isEmpty()) {
+                    RealBox(
+                        modifier = Modifier.fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "响应列表为空噢~",
+                            modifier = Modifier.padding(bottom = statusBarHeightDp + 80.dp),
+                            style = Typographies.headlineSmall
+                        )
+                    }
+                }
             }
             items(responseList.size) { i ->
                 val index = responseList.size - i - 1
@@ -153,18 +169,21 @@ fun LauncherUI.PageProxyResponseResult(responseList: SnapshotStateList<HttpRsp>)
             }
             item {
                 Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
         Box(
-            modifier = Modifier.align(Alignment.BottomEnd)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 80.dp)
         ) {
             val rememberScope = rememberCoroutineScope()
             DynamicFloatImageButton(
-                painter = painterResource(id = R.drawable.ic_clear)
+                icon = R.drawable.ic_clear
             ) {
                 rememberScope.launch {
                     withContext(Dispatchers.IO) {
-                        HttpRecorder.clearReqRecord()
+                        HttpRecorder.clearRspRecord()
                     }
                     responseList.clear()
                 }
