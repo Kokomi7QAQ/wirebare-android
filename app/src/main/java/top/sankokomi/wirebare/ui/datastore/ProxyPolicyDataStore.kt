@@ -18,6 +18,11 @@ object ProxyPolicyDataStore : AppDataStore("proxy_policy") {
     val enableIpv6 by AppBooleanPref("enable_ipv6")
 
     /**
+     * true：启用休眠锁防止休眠，false：禁用休眠锁
+     * */
+    val enableWakeLock by AppBooleanPref("enable_wake_lock")
+
+    /**
      * true：显示系统应用，false：不显示系统应用
      * */
     val showSystemApp by AppBooleanPref("ban_system_app")

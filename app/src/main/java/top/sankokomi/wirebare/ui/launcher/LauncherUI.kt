@@ -1,11 +1,13 @@
 package top.sankokomi.wirebare.ui.launcher
 
 import android.os.Bundle
+import android.os.PowerManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.content.getSystemService
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -50,12 +52,36 @@ class LauncherUI : VpnPrepareActivity() {
 
     val responseFlow = _responseFlow.asSharedFlow()
 
+    private var isWakeAcquired = false
+
+    private val wakeLock by lazy {
+        getSystemService<PowerManager>()?.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "WireBare::LauncherUI"
+        )
+    }
+
     fun startProxy() {
         prepareProxy()
     }
 
     fun stopProxy() {
         WireBare.stopProxy()
+    }
+
+    @Suppress("WakelockTimeout")
+    fun acquireWakeLock() {
+        if (!isWakeAcquired) {
+            isWakeAcquired = true
+            wakeLock?.acquire()
+        }
+    }
+
+    fun releaseWakeLock() {
+        if (isWakeAcquired) {
+            wakeLock?.release()
+            isWakeAcquired = false
+        }
     }
 
     override fun onPrepareSuccess() {
@@ -141,6 +167,7 @@ class LauncherUI : VpnPrepareActivity() {
 
     override fun onDestroy() {
         // 解除监听，防止内存泄露
+        releaseWakeLock()
         WireBare.removeImportantEventListener(wireBareEventListener)
         WireBare.removeVpnProxyStatusListener(wireBareStatusListener)
         super.onDestroy()

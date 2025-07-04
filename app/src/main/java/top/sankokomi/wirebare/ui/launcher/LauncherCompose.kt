@@ -207,17 +207,17 @@ private fun LauncherUI.ControlBox(
 ) {
     val tint = Colors.primary
     val switchChecked = remember { mutableStateOf(false) }
-    var switchEnabled = remember { mutableStateOf(true) }
+    val switchEnabled = remember { mutableStateOf(true) }
     val switchSubName = remember { mutableStateOf("已终止，点击以开始") }
     val banFilter = ProxyPolicyDataStore.banAutoFilter.collectAsState()
     val autoFilterChecked = !banFilter.value
-    var isWireBareActive = remember { mutableStateOf(false) }
-    val enableSSL = ProxyPolicyDataStore.enableSSL.collectAsState()
-    val systemTrustCert = remember(enableSSL.value) {
+    val isWireBareActive = remember { mutableStateOf(false) }
+    val enableSSL by ProxyPolicyDataStore.enableSSL.collectAsState()
+    val systemTrustCert = remember(enableSSL) {
         WireBareHelper.checkSystemTrustCert("318facc2.0")
     }
-    val enableSSLSubName = remember(enableSSL.value, systemTrustCert) {
-        if (!enableSSL.value) {
+    val enableSSLSubName = remember(enableSSL, systemTrustCert) {
+        if (!enableSSL) {
             "启用后会解析 HTTPS 请求/响应"
         } else {
             if (!systemTrustCert) {
@@ -237,6 +237,14 @@ private fun LauncherUI.ControlBox(
             } else {
                 "代理 IPv4 和 IPv6 流量"
             }
+        }
+    }
+    val enableWakeLock by ProxyPolicyDataStore.enableWakeLock.collectAsState()
+    LaunchedEffect(enableWakeLock) {
+        if (enableWakeLock) {
+            acquireWakeLock()
+        } else {
+            releaseWakeLock()
         }
     }
     LaunchedEffect(status.ordinal) {
@@ -286,10 +294,10 @@ private fun LauncherUI.ControlBox(
             RealColumn {
                 AppCheckableItem(
                     itemName = "SSL/TLS",
-                    checked = enableSSL.value,
+                    checked = enableSSL,
                     icon = R.drawable.ic_cert,
                     subName = enableSSLSubName,
-                    isWarning = enableSSL.value && !systemTrustCert,
+                    isWarning = enableSSL && !systemTrustCert,
                     enabled = !isWireBareActive.value,
                     tint = tint
                 ) {
@@ -312,6 +320,22 @@ private fun LauncherUI.ControlBox(
                     tint = tint
                 ) {
                     ProxyPolicyDataStore.enableIpv6.value = !ProxyPolicyDataStore.enableIpv6.value
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        AppRoundCornerBox {
+            RealColumn {
+                AppCheckableItem(
+                    itemName = "休眠锁",
+                    checked = enableWakeLock,
+                    icon = R.drawable.ic_battery,
+                    subName = "启用休眠锁可以避免系统进入休眠状态",
+                    enabled = true,
+                    tint = tint
+                ) {
+                    ProxyPolicyDataStore.enableWakeLock.value =
+                        !ProxyPolicyDataStore.enableWakeLock.value
                 }
             }
         }
