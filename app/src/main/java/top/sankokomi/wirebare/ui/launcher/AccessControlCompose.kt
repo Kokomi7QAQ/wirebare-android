@@ -115,7 +115,8 @@ fun LauncherUI.AccessControlPage() {
                     AppCheckableItem(
                         icon = R.drawable.ic_android_system,
                         itemName = "显示系统应用",
-                        checked = showSystemAppItemChecked.value
+                        checked = showSystemAppItemChecked.value,
+                        tint = Colors.primary
                     ) { showSystemApp ->
                         rememberScope.launch {
                             ProxyPolicyDataStore.showSystemApp.value = showSystemApp
@@ -131,7 +132,8 @@ fun LauncherUI.AccessControlPage() {
                     AppCheckableItem(
                         icon = R.drawable.ic_select_all,
                         itemName = "全选",
-                        checked = selectAllAppItemChecked.value
+                        checked = selectAllAppItemChecked.value,
+                        tint = Colors.primary
                     ) { isSelectAllApp ->
                         rememberScope.launch {
                             listOperateMutex.lock()
