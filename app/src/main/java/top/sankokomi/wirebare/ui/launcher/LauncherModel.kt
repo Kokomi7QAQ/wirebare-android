@@ -1,18 +1,29 @@
 package top.sankokomi.wirebare.ui.launcher
 
-import android.content.Context
 import top.sankokomi.wirebare.kernel.common.WireBare
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
 import top.sankokomi.wirebare.kernel.ssl.JKS
 import top.sankokomi.wirebare.kernel.util.Level
 import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
+import top.sankokomi.wirebare.ui.util.Global
 import top.sankokomi.wirebare.ui.wireinfo.WireBareHttpInterceptor
 
 object LauncherModel {
 
+    val wireBareJKS by lazy {
+        JKS(
+            jksStream = { Global.appContext.assets.open("wirebare.jks") },
+            alias = "wirebare",
+            password = "wirebare".toCharArray(),
+            algorithm = "RSA",
+            type = "PKCS12",
+            organization = "WB",
+            organizationUnit = "WB"
+        )
+    }
+
     fun startProxy(
-        context: Context,
         targetPackageNameArray: Array<String>,
         onRequest: (HttpRequest) -> Unit,
         onResponse: (HttpResponse) -> Unit
@@ -20,14 +31,7 @@ object LauncherModel {
         WireBare.logLevel = Level.VERBOSE
         WireBare.startProxy {
             if (ProxyPolicyDataStore.enableSSL.value) {
-                jks = JKS(
-                    { context.assets.open("wirebare.jks") },
-                    "wirebare",
-                    "wirebare".toCharArray(),
-                    "PKCS12",
-                    "WB",
-                    "WB"
-                )
+                jks = wireBareJKS
             }
             mtu = 10 * 1024
             tcpProxyServerCount = 5

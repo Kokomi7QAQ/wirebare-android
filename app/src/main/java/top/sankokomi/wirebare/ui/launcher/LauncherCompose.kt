@@ -31,7 +31,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.kernel.common.EventSynopsis
 import top.sankokomi.wirebare.kernel.common.ProxyStatus
 import top.sankokomi.wirebare.kernel.common.WireBareHelper
@@ -213,8 +215,15 @@ private fun LauncherUI.ControlBox(
     val autoFilterChecked = !banFilter.value
     val isWireBareActive = remember { mutableStateOf(false) }
     val enableSSL by ProxyPolicyDataStore.enableSSL.collectAsState()
-    val systemTrustCert = remember(enableSSL) {
-        WireBareHelper.checkSystemTrustCert("318facc2.0")
+    var systemTrustCert by remember { mutableStateOf(true) }
+    LaunchedEffect(enableSSL) {
+        systemTrustCert = if (enableSSL) {
+            withContext(Dispatchers.IO) {
+                WireBareHelper.checkSystemTrustCert(LauncherModel.wireBareJKS)
+            }
+        } else {
+            true
+        }
     }
     val enableSSLSubName = remember(enableSSL, systemTrustCert) {
         if (!enableSSL) {
