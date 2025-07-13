@@ -9,8 +9,6 @@ import java.io.File
 import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
 
-private const val TAG = "HttpRecorder"
-
 private val recordDir by lazy {
     File("${Global.appContext.externalCacheDir!!.absolutePath}${File.separator}http_record").also {
         if (!it.exists()) it.mkdirs()
@@ -57,7 +55,7 @@ object HttpRecorder {
 
     suspend fun addRequestRecord(request: HttpRequest, buffer: ByteBuffer?) {
         withContext(Dispatchers.IO) {
-            runCatching {
+            try {
                 val req = HttpReq.from(request)
                 httpRoom.httpDao().insertHttpReq(listOf(req))
                 val id = req.id
@@ -68,14 +66,14 @@ object HttpRecorder {
                 writers.computeIfAbsent(id) {
                     ConcurrentFileWriter(parseRequestRecordFile(request))
                 }.writeBytes(buffer)
-            }.onFailure {
+            } catch (_: Exception) {
             }
         }
     }
 
     suspend fun addResponseRecord(response: HttpResponse, buffer: ByteBuffer?) {
         withContext(Dispatchers.IO) {
-            runCatching {
+            try {
                 val rsp = HttpRsp.from(response)
                 httpRoom.httpDao().insertHttpRsp(listOf(rsp))
                 val id = rsp.id
@@ -86,27 +84,27 @@ object HttpRecorder {
                 writers.computeIfAbsent(id) {
                     ConcurrentFileWriter(parseResponseRecordFile(response))
                 }.writeBytes(buffer)
-            }.onFailure {
+            } catch (_: Exception) {
             }
         }
     }
 
     suspend fun clearReqRecord() {
         withContext(Dispatchers.IO) {
-            runCatching {
+            try {
                 httpRoom.httpDao().clearHttpReq()
                 recordDir.listFiles()?.filter { it.name.startsWith("req") }?.forEach(File::delete)
-            }.onFailure {
+            } catch (_: Exception) {
             }
         }
     }
 
     suspend fun clearRspRecord() {
         withContext(Dispatchers.IO) {
-            runCatching {
+            try {
                 httpRoom.httpDao().clearHttpRsp()
                 recordDir.listFiles()?.filter { it.name.startsWith("rsp") }?.forEach(File::delete)
-            }.onFailure {
+            } catch (_: Exception) {
             }
         }
     }

@@ -32,10 +32,10 @@ class ConcurrentFileWriter(
     }
 
     override fun close() {
-        runCatching {
+        try {
             output.close()
-        }.onFailure {
-            Log.e(TAG, "close FAILED", it)
+        } catch (e: Exception) {
+            Log.e(TAG, "close FAILED", e)
         }
     }
 
