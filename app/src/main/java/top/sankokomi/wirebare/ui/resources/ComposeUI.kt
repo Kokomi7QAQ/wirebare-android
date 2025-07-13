@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
@@ -178,7 +179,7 @@ fun AppCheckableItem(
                         AnimatedContent(
                             targetState = subName to isWarning,
                             transitionSpec = { fadeIn().togetherWith(fadeOut()) },
-                            label = "AppCheckableMenu"
+                            label = "AppCheckableItem"
                         ) { (name, warning) ->
                             Text(
                                 text = name,
@@ -201,6 +202,116 @@ fun AppCheckableItem(
                     }
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AppExpandableItem(
+    icon: Any?,
+    title: String,
+    body: String,
+    expand: Boolean = true,
+    maxLinesInClosed: Int = 3,
+    onLongClick: () -> Unit = {},
+    onExpandChanged: (Boolean) -> Unit = {}
+) {
+    RealColumn(
+        modifier = Modifier
+            .combinedClickable(onLongClick = onLongClick) {
+                onExpandChanged(expand)
+            }
+            .padding(16.dp)
+    ) {
+        RealRow(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                AsyncImage(
+                    model = icon,
+                    modifier = Modifier
+                        .padding(start = 6.dp, end = 8.dp)
+                        .size(20.dp),
+                    colorFilter = ColorFilter.tint(Colors.inverseSurface),
+                    contentDescription = null
+                )
+            }
+            Text(
+                text = title,
+                style = Typographies.titleLarge
+            )
+        }
+        HorizontalDivider(
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .fillMaxWidth()
+                .height(0.2.dp),
+            color = Colors.primaryContainer
+        )
+        AnimatedContent(
+            targetState = expand,
+            transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+            label = "AppExpandableItem"
+        ) {
+            Text(
+                text = body,
+                maxLines = if (!it) maxLinesInClosed else Int.MAX_VALUE,
+                overflow = TextOverflow.Ellipsis,
+                style = Typographies.bodyLarge
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AppExpandableRichItem(
+    icon: Any?,
+    title: String,
+    expand: Boolean = true,
+    onLongClick: () -> Unit = {},
+    onExpandChanged: (Boolean) -> Unit = {},
+    content: @Composable (Boolean) -> Unit
+) {
+    RealColumn(
+        modifier = Modifier
+            .combinedClickable(onLongClick = onLongClick) {
+                onExpandChanged(expand)
+            }
+            .padding(16.dp)
+    ) {
+        RealRow(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                AsyncImage(
+                    model = icon,
+                    modifier = Modifier
+                        .padding(start = 6.dp, end = 8.dp)
+                        .size(20.dp),
+                    colorFilter = ColorFilter.tint(Colors.inverseSurface),
+                    contentDescription = null
+                )
+            }
+            Text(
+                text = title,
+                style = Typographies.titleLarge
+            )
+        }
+        HorizontalDivider(
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .fillMaxWidth()
+                .height(0.2.dp),
+            color = Colors.primaryContainer
+        )
+        AnimatedContent(
+            targetState = expand,
+            transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+            label = "AppExpandableItem"
+        ) {
+            content(it)
         }
     }
 }

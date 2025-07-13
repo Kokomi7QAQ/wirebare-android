@@ -24,4 +24,14 @@
     <string name="access_control_list_desc">Apps selected in the following list will be proxied.</string>
     <string name="request_list_title">Request List</string>
     <string name="response_list_title">Response List</string>
+    <string name="request_info_title">Request Information</string>
+    <string name="request_info_url">Request URL</string>
+    <string name="request_info_ip">IP Address</string>
+    <string name="request_info_header_info">Header Information</string>
+    <string name="request_info_origin_header">Origin Header</string>
+    <string name="request_info_ip_src">Source IP</string>
+    <string name="request_info_ip_dest">Destination IP</string>
+    <string name="request_info_ip_version">IP Version</string>
+    <string name="request_info_method">Request Method</string>
+    <string name="request_info_http_version">HTTP Version</string>
 </resources>

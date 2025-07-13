@@ -21,6 +21,12 @@ val LightTypography = Typography(
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold
     ),
+    titleLarge = TextStyle(
+        color = BlackZ,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.SemiBold,
+        lineHeight = 20.sp,
+    ),
     titleMedium = TextStyle(
         color = BlackZ,
         fontSize = 18.sp,
@@ -33,8 +39,13 @@ val LightTypography = Typography(
         fontWeight = FontWeight.Medium,
         lineHeight = 16.sp,
     ),
-    bodyMedium = TextStyle(
+    bodyLarge = TextStyle(
         color = DGrayD,
+        fontSize = 16.sp,
+        lineHeight = 16.sp,
+    ),
+    bodyMedium = TextStyle(
+        color = DGrayF,
         fontSize = 14.sp,
         lineHeight = 14.sp,
     ),
@@ -61,6 +72,12 @@ val DarkTypography = Typography(
         fontSize = 18.sp,
         fontWeight = FontWeight.Bold
     ),
+    titleLarge = TextStyle(
+        color = WhiteZ,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.SemiBold,
+        lineHeight = 20.sp,
+    ),
     titleMedium = TextStyle(
         color = WhiteZ,
         fontSize = 18.sp,
@@ -73,8 +90,13 @@ val DarkTypography = Typography(
         fontWeight = FontWeight.Medium,
         lineHeight = 16.sp,
     ),
-    bodyMedium = TextStyle(
+    bodyLarge = TextStyle(
         color = LGrayD,
+        fontSize = 16.sp,
+        lineHeight = 16.sp,
+    ),
+    bodyMedium = TextStyle(
+        color = LGrayF,
         fontSize = 14.sp,
         lineHeight = 14.sp,
     ),
