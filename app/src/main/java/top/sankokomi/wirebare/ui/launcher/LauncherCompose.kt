@@ -90,7 +90,9 @@ fun LauncherUI.WireBareUIPage() {
             responseList.add(it)
         }
     }
-    queryRecord()
+    LaunchedEffect(Unit) {
+        queryRecord()
+    }
     val anim = remember { Animatable(1f) }
     RealBox(modifier = Modifier.background(Colors.background)) {
         RealColumn(
