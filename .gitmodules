@@ -1,3 +1,7 @@
 [submodule "wirebare-kernel"]
 	path = wirebare-kernel
 	url = https://github.com/Kokomi7QAQ/wirebare-kernel
+
+[submodule "wirebare-zygisk"]
+	path = wirebare-zygisk
+	url = https://github.com/Kokomi7QAQ/wirebare-zygisk

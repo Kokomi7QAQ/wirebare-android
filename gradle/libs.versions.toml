@@ -1,6 +1,9 @@
 [versions]
 minSdk = "24"
 targetSdk = "35"
+ndk = "27.0.11902837"
+versionCode = "2"
+versionName = "0.1-snapshot-dev"
 
 androidxCoreKtx = "1.15.0"
 androidxAppcompat = "1.7.0"
