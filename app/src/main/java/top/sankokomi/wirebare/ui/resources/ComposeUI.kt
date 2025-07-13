@@ -152,7 +152,7 @@ fun AppCheckableItem(
                     ) {
                         onCheckedChange(!checked)
                     }
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AsyncImage(
@@ -171,7 +171,7 @@ fun AppCheckableItem(
                 ) {
                     Text(
                         text = itemName,
-                        modifier = Modifier.basicMarquee(),
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                         style = Typographies.titleSmall
                     )
                     AnimatedVisibility(subName.isNotEmpty()) {
@@ -182,7 +182,7 @@ fun AppCheckableItem(
                         ) { (name, warning) ->
                             Text(
                                 text = name,
-                                modifier = Modifier.basicMarquee(),
+                                modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                 style = Typographies.bodySmall,
                                 color = if (!warning) Typographies.bodySmall.color else Colors.error
                             )

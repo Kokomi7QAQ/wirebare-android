@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.Dispatchers
@@ -54,16 +55,20 @@ import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
 @Composable
 fun LauncherUI.WireBareUIPage() {
+    val strControlCenter = stringResource(R.string.control_center_title)
+    val strAccessControl = stringResource(R.string.access_control_title)
+    val strRequestList = stringResource(R.string.request_list_title)
+    val strResponseList = stringResource(R.string.response_list_title)
     val tabDataList = remember {
         listOf(
-            TabData(R.drawable.ic_wirebare, "控制中心"),
-            TabData(R.drawable.ic_access_control, "访问控制"),
-            TabData(R.drawable.ic_request, "请求"),
-            TabData(R.drawable.ic_response, "响应")
+            TabData(R.drawable.ic_wirebare, strControlCenter),
+            TabData(R.drawable.ic_access_control, strAccessControl),
+            TabData(R.drawable.ic_request, strRequestList),
+            TabData(R.drawable.ic_response, strResponseList)
         )
     }
     val pagerState = rememberPagerState { tabDataList.size }
-    val titleBarText = remember { mutableStateOf("控制中心") }
+    val titleBarText = remember { mutableStateOf(tabDataList.first().text) }
     val isBanFilter by ProxyPolicyDataStore.banAutoFilter.collectAsState()
     val requestList = remember { mutableStateListOf<HttpReq>() }
     LaunchedEffect(Unit) {
@@ -210,7 +215,11 @@ private fun LauncherUI.ControlBox(
     val tint = Colors.primary
     val switchChecked = remember { mutableStateOf(false) }
     val switchEnabled = remember { mutableStateOf(true) }
-    val switchSubName = remember { mutableStateOf("已终止，点击以开始") }
+    val strSwitchDead = stringResource(R.string.control_center_main_switch_dead)
+    val strSwitchLaunching = stringResource(R.string.control_center_main_switch_launching)
+    val strSwitchActive = stringResource(R.string.control_center_main_switch_active)
+    val strSwitchDying = stringResource(R.string.control_center_main_switch_dying)
+    val switchSubName = remember { mutableStateOf(strSwitchDead) }
     val banFilter = ProxyPolicyDataStore.banAutoFilter.collectAsState()
     val autoFilterChecked = !banFilter.value
     val isWireBareActive = remember { mutableStateOf(false) }
@@ -225,26 +234,28 @@ private fun LauncherUI.ControlBox(
             true
         }
     }
+    val strSSLDisable = stringResource(R.string.control_center_ssl_disable_desc)
+    val strSSLEnable = stringResource(R.string.control_center_ssl_enable_desc)
+    val strSSLWarning = stringResource(R.string.control_center_ssl_enable_warning)
     val enableSSLSubName = remember(enableSSL, systemTrustCert) {
         if (!enableSSL) {
-            "启用后会解析 HTTPS 请求/响应"
+            strSSLDisable
         } else {
-            if (!systemTrustCert) {
-                "检测到系统未信任代理服务器证书"
-            } else {
-                "已启用 HTTPS 解析"
-            }
+            if (!systemTrustCert) strSSLWarning else strSSLEnable
         }
     }
+    val strIpv6Disable = stringResource(R.string.control_center_ipv6_disable)
+    val strIpv6Enable = stringResource(R.string.control_center_ipv6_enable)
+    val strIpv6Warning = stringResource(R.string.control_center_ipv6_warning)
     val enableIpv6 = ProxyPolicyDataStore.enableIpv6.collectAsState()
     val enableIpv6SubName = remember(enableIpv6.value, maybeUnsupportedIpv6) {
         if (maybeUnsupportedIpv6) {
-            "当前网络疑似不支持 IPv6"
+            strIpv6Warning
         } else {
             if (!enableIpv6.value) {
-                "仅代理 IPv4 流量"
+                strIpv6Disable
             } else {
-                "代理 IPv4 和 IPv6 流量"
+                strIpv6Enable
             }
         }
     }
@@ -260,10 +271,10 @@ private fun LauncherUI.ControlBox(
         switchChecked.value = status == ProxyStatus.STARTING || status == ProxyStatus.ACTIVE
         switchEnabled.value = status == ProxyStatus.ACTIVE || status == ProxyStatus.DEAD
         switchSubName.value = when (status) {
-            ProxyStatus.STARTING -> "正在启动"
-            ProxyStatus.DYING -> "正在终止"
-            ProxyStatus.DEAD -> "已终止，点击以开始"
-            ProxyStatus.ACTIVE -> "已启动，点击以终止"
+            ProxyStatus.STARTING -> strSwitchLaunching
+            ProxyStatus.DYING -> strSwitchDying
+            ProxyStatus.DEAD -> strSwitchDead
+            ProxyStatus.ACTIVE -> strSwitchActive
         }
         isWireBareActive.value = status != ProxyStatus.DEAD
     }
@@ -271,7 +282,7 @@ private fun LauncherUI.ControlBox(
         AppRoundCornerBox {
             RealColumn {
                 AppCheckableItem(
-                    itemName = "总开关",
+                    itemName = stringResource(R.string.control_center_main_switch),
                     checked = switchChecked.value,
                     icon = R.drawable.ic_wirebare,
                     subName = switchSubName.value,
@@ -286,10 +297,10 @@ private fun LauncherUI.ControlBox(
         AppRoundCornerBox {
             RealColumn {
                 AppCheckableItem(
-                    itemName = "自动过滤",
+                    itemName = stringResource(R.string.control_center_auto_filter),
                     checked = autoFilterChecked,
                     icon = R.drawable.ic_filter,
-                    subName = "启用后会跳过无法解析的请求/响应",
+                    subName = stringResource(R.string.control_center_auto_filter_desc),
                     enabled = !isWireBareActive.value,
                     tint = tint
                 ) {
@@ -302,7 +313,7 @@ private fun LauncherUI.ControlBox(
         AppRoundCornerBox {
             RealColumn {
                 AppCheckableItem(
-                    itemName = "SSL/TLS",
+                    itemName = stringResource(R.string.control_center_ssl),
                     checked = enableSSL,
                     icon = R.drawable.ic_cert,
                     subName = enableSSLSubName,
@@ -320,7 +331,7 @@ private fun LauncherUI.ControlBox(
                         .background(LGrayA)
                 )
                 AppCheckableItem(
-                    itemName = "IPv6代理",
+                    itemName = stringResource(R.string.control_center_ipv6_proxy),
                     checked = enableIpv6.value,
                     icon = R.drawable.ic_ipv6,
                     subName = enableIpv6SubName,
@@ -336,10 +347,10 @@ private fun LauncherUI.ControlBox(
         AppRoundCornerBox {
             RealColumn {
                 AppCheckableItem(
-                    itemName = "休眠锁",
+                    itemName = stringResource(R.string.control_center_wake_lock),
                     checked = enableWakeLock,
                     icon = R.drawable.ic_battery,
-                    subName = "启用休眠锁可以避免系统进入休眠状态",
+                    subName = stringResource(R.string.control_center_wake_lock_desc),
                     enabled = true,
                     tint = tint
                 ) {

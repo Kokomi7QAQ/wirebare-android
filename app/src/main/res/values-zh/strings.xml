@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">WireBare</string>
+    <string name="control_center_title">控制中心</string>
+    <string name="control_center_main_switch">总开关</string>
+    <string name="control_center_auto_filter">自动过滤</string>
+    <string name="control_center_ssl">SSL/TLS</string>
+    <string name="control_center_ipv6_proxy">IPv6代理</string>
+    <string name="control_center_wake_lock">休眠锁</string>
+    <string name="control_center_main_switch_dead">已停止，点击以开始</string>
+    <string name="control_center_main_switch_launching">正在启动</string>
+    <string name="control_center_main_switch_active">已启动，点击以终止</string>
+    <string name="control_center_main_switch_dying">正在终止</string>
+    <string name="control_center_auto_filter_desc">启用后会跳过无法解析的数据包</string>
+    <string name="control_center_ssl_disable_desc">启用后会解析HTTPS数据包</string>
+    <string name="control_center_ssl_enable_desc">已启用HTTPS解析</string>
+    <string name="control_center_ssl_enable_warning">检测到系统未信任代理服务器证书</string>
+    <string name="control_center_ipv6_disable">仅代理IPv4数据包</string>
+    <string name="control_center_ipv6_enable">代理IPv4和IPv6数据包</string>
+    <string name="control_center_ipv6_warning">当前网络疑似不支持IPv6</string>
+    <string name="control_center_wake_lock_desc">启用休眠锁可以避免系统进入休眠</string>
+    <string name="access_control_title">访问控制</string>
+    <string name="access_control_show_sys_app">显示系统应用</string>
+    <string name="access_control_select_all">全选</string>
+    <string name="access_control_list_desc">在列表中被选中的应用程序的网络数据包将被代理</string>
+    <string name="request_list_title">请求列表</string>
+    <string name="response_list_title">响应列表</string>
+</resources>

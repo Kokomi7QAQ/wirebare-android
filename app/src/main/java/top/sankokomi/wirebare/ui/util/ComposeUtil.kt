@@ -44,5 +44,10 @@ fun Modifier.injectTouchEffect(
     return this
         .background(if (touched) touchedBackground else normalBackground)
         .hoverable(interactionSource)
-        .clickable(interactionSource = interactionSource, indication = null, enabled = enabled, onClick = onClick)
+        .clickable(
+            interactionSource = interactionSource,
+            indication = null,
+            enabled = enabled,
+            onClick = onClick
+        )
 }

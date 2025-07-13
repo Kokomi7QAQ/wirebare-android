@@ -1,18 +1,15 @@
 package top.sankokomi.wirebare.ui.launcher
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,14 +22,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -46,13 +41,10 @@ import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.LGrayA
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
-import top.sankokomi.wirebare.ui.resources.RealRow
-import top.sankokomi.wirebare.ui.resources.SwitchColors
 import top.sankokomi.wirebare.ui.resources.Typographies
 import top.sankokomi.wirebare.ui.resources.VisibleFadeInFadeOutAnimation
 import top.sankokomi.wirebare.ui.util.AppData
 import top.sankokomi.wirebare.ui.util.Global
-import top.sankokomi.wirebare.ui.util.injectTouchEffect
 import top.sankokomi.wirebare.ui.util.mix
 import top.sankokomi.wirebare.ui.util.requireAppDataList
 import top.sankokomi.wirebare.ui.util.statusBarHeightDp
@@ -114,7 +106,7 @@ fun LauncherUI.AccessControlPage() {
                 RealColumn {
                     AppCheckableItem(
                         icon = R.drawable.ic_android_system,
-                        itemName = "显示系统应用",
+                        itemName = stringResource(R.string.access_control_show_sys_app),
                         checked = showSystemAppItemChecked.value,
                         tint = Colors.primary
                     ) { showSystemApp ->
@@ -131,7 +123,7 @@ fun LauncherUI.AccessControlPage() {
                     )
                     AppCheckableItem(
                         icon = R.drawable.ic_select_all,
-                        itemName = "全选",
+                        itemName = stringResource(R.string.access_control_select_all),
                         checked = selectAllAppItemChecked.value,
                         tint = Colors.primary
                     ) { isSelectAllApp ->
@@ -182,7 +174,7 @@ fun LauncherUI.AccessControlPage() {
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "在列表中被选中的应用程序的网络流量将会被代理",
+                    text = stringResource(R.string.access_control_list_desc),
                     modifier = Modifier.padding(horizontal = 32.dp),
                     style = Typographies.bodyMedium
                 )
@@ -222,7 +214,12 @@ fun LauncherUI.AccessControlPage() {
                             .height(0.2.dp)
                     )
                 }
-                val onClick = {
+                AppCheckableItem(
+                    icon = accessControl.appData.appIcon,
+                    itemName = accessControl.appData.appName,
+                    checked = accessControl.allow,
+                    subName = accessControl.appData.packageName
+                ) {
                     rememberScope.launch(Dispatchers.IO) {
                         listOperateMutex.lock()
                         val allow = accessControl.allow
@@ -234,58 +231,6 @@ fun LauncherUI.AccessControlPage() {
                         AccessControlDataStore.emit(accessControl.appData.packageName to !allow)
                         listOperateMutex.unlock()
                     }
-                }
-                RealRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .injectTouchEffect(normalBackground = Colors.onBackground) {
-                            onClick()
-                        }
-                        .padding(horizontal = 16.dp, vertical = 6.dp)
-                ) {
-                    AsyncImage(
-                        model = accessControl.appData.appIcon,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .size(24.dp),
-                        contentDescription = accessControl.appData.appName
-                    )
-                    RealColumn(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 16.dp)
-                            .align(Alignment.CenterVertically)
-                    ) {
-                        Text(
-                            text = accessControl.appData.appName,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .basicMarquee(),
-                            style = Typographies.titleSmall,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                        Spacer(modifier = Modifier.height(1.dp))
-                        Text(
-                            text = accessControl.appData.packageName,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .basicMarquee(),
-                            style = Typographies.bodySmall,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                    Switch(
-                        checked = accessControl.allow,
-                        thumbContent = {
-                            Spacer(modifier = Modifier.size(999.dp))
-                        },
-                        colors = SwitchColors,
-                        onCheckedChange = {
-                            onClick()
-                        }
-                    )
                 }
             }
         }

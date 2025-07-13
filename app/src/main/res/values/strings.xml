@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">WireBare</string>
+    <string name="control_center_title">Control Center</string>
+    <string name="control_center_main_switch">Main Switch</string>
+    <string name="control_center_auto_filter">Automatic Filters</string>
+    <string name="control_center_ssl">SSL/TLS</string>
+    <string name="control_center_ipv6_proxy">IPv6</string>
+    <string name="control_center_wake_lock">Wake Lock</string>
+    <string name="control_center_main_switch_dead">Stopped, click to launch.</string>
+    <string name="control_center_main_switch_launching">Launching.</string>
+    <string name="control_center_main_switch_active">Active, click to stop.</string>
+    <string name="control_center_main_switch_dying">Dying.</string>
+    <string name="control_center_auto_filter_desc">Packets that cann\'t be parsed will be skipped.</string>
+    <string name="control_center_ssl_disable_desc">Parse HTTPS packets or not.</string>
+    <string name="control_center_ssl_enable_desc">Enable parsing HTTPS packets.</string>
+    <string name="control_center_ssl_enable_warning">Please install certificate first.</string>
+    <string name="control_center_ipv6_disable">Proxy IPv4 packets only.</string>
+    <string name="control_center_ipv6_enable">Proxy IPv4 &amp; IPv6.</string>
+    <string name="control_center_ipv6_warning">Current network may not support IPv6.</string>
+    <string name="control_center_wake_lock_desc">Wake lock can keep the CPU running.</string>
+    <string name="access_control_title">Access Control</string>
+    <string name="access_control_show_sys_app">Show System App</string>
+    <string name="access_control_select_all">Select All</string>
+    <string name="access_control_list_desc">Apps selected in the following list will be proxied.</string>
+    <string name="request_list_title">Request List</string>
+    <string name="response_list_title">Response List</string>
 </resources>

@@ -29,19 +29,19 @@ val LightTypography = Typography(
     ),
     titleSmall = TextStyle(
         color = BlackZ,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
         fontWeight = FontWeight.Medium,
-        lineHeight = 14.sp,
+        lineHeight = 16.sp,
     ),
     bodyMedium = TextStyle(
         color = DGrayD,
-        fontSize = 12.sp,
-        lineHeight = 12.sp,
+        fontSize = 14.sp,
+        lineHeight = 14.sp,
     ),
     bodySmall = TextStyle(
         color = LGrayH,
-        fontSize = 10.sp,
-        lineHeight = 10.sp,
+        fontSize = 13.sp,
+        lineHeight = 13.sp,
     ),
     labelMedium = TextStyle(
         color = DGrayC,
@@ -69,19 +69,19 @@ val DarkTypography = Typography(
     ),
     titleSmall = TextStyle(
         color = WhiteZ,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
         fontWeight = FontWeight.Medium,
-        lineHeight = 14.sp,
+        lineHeight = 16.sp,
     ),
     bodyMedium = TextStyle(
         color = LGrayD,
-        fontSize = 12.sp,
-        lineHeight = 12.sp,
+        fontSize = 14.sp,
+        lineHeight = 14.sp,
     ),
     bodySmall = TextStyle(
         color = LGrayH,
-        fontSize = 10.sp,
-        lineHeight = 10.sp,
+        fontSize = 13.sp,
+        lineHeight = 13.sp,
     ),
     labelMedium = TextStyle(
         color = DGrayC,
