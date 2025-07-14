@@ -116,10 +116,10 @@ fun LauncherUI.AccessControlPage() {
                     }
                     HorizontalDivider(
                         modifier = Modifier
-                            .padding(start = 48.dp, end = 16.dp)
+                            .padding(start = 56.dp, end = 16.dp)
                             .fillMaxWidth()
-                            .height(0.2.dp)
-                            .background(LGrayA)
+                            .height(0.2.dp),
+                        color = Colors.background
                     )
                     AppCheckableItem(
                         icon = R.drawable.ic_select_all,
@@ -206,13 +206,21 @@ fun LauncherUI.AccessControlPage() {
                     .animateItem()
             ) {
                 if (index != 0) {
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .background(Colors.onBackground)
-                            .padding(start = 56.dp, end = 16.dp)
-                            .fillMaxWidth()
-                            .height(0.2.dp)
-                    )
+                    RealBox {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(0.2.dp),
+                            color = Colors.onBackground
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(start = 56.dp, end = 16.dp)
+                                .fillMaxWidth()
+                                .height(0.2.dp),
+                            color = Colors.background
+                        )
+                    }
                 }
                 AppCheckableItem(
                     icon = accessControl.appData.appIcon,

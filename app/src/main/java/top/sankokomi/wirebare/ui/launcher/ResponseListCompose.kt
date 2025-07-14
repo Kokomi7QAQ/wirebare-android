@@ -1,7 +1,6 @@
 package top.sankokomi.wirebare.ui.launcher
 
 import android.content.Intent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -95,13 +94,21 @@ fun LauncherUI.PageProxyResponseResult(responseList: SnapshotStateList<HttpRsp>)
                             .animateItem()
                     ) {
                         if (i != 0) {
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .background(Colors.onBackground)
-                                    .padding(start = 16.dp, end = 16.dp)
-                                    .fillMaxWidth()
-                                    .height(0.2.dp)
-                            )
+                            RealBox {
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(0.2.dp),
+                                    color = Colors.onBackground
+                                )
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .padding(start = 16.dp, end = 16.dp)
+                                        .fillMaxWidth()
+                                        .height(0.2.dp),
+                                    color = Colors.background
+                                )
+                            }
                         }
                         RealRow(
                             modifier = Modifier

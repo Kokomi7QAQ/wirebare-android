@@ -23,17 +23,18 @@ class WireInfoUI : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WirebareUITheme(
-                isShowNavigationBar = false
+                statusBarColor = { it.background },
+                navigationBarColor = { it.background }
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = Colors.background
                 ) {
-                    if (request != null) {
-                        WireInfoUIPage(request = request, sessionId = sessionId ?: "")
-                    } else if (response != null) {
-                        WireInfoUIPage(response = response, sessionId = sessionId ?: "")
-                    }
+                    WireInfoUIPage(
+                        sessionId = sessionId ?: "",
+                        request = request,
+                        response = response
+                    )
                 }
             }
         }

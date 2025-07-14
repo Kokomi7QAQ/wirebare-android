@@ -27,7 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.sankokomi.wirebare.ui.R
-import top.sankokomi.wirebare.ui.resources.AppExpandableItem
+import top.sankokomi.wirebare.ui.resources.AppExpandableTextItem
 import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.RealColumn
@@ -87,7 +87,7 @@ class WireDetailPopupUI : ComponentActivity() {
                                     .combinedClickable(
                                         onLongClick = {
                                             copyTextToClipBoard(content)
-                                            showToast(R.string.request_info_copy_success)
+                                            showToast(R.string.req_rsp_info_copy_success)
                                         },
                                         onClick = {
                                         }
@@ -97,10 +97,12 @@ class WireDetailPopupUI : ComponentActivity() {
                                 AppRoundCornerBox(
                                     background = Colors.primary
                                 ) {
-                                    AppExpandableItem(
+                                    AppExpandableTextItem(
                                         icon = R.drawable.ic_wirebare,
                                         title = title,
-                                        body = content
+                                        body = content,
+                                        expand = false,
+                                        maxLinesInClosed = Int.MAX_VALUE
                                     )
                                 }
                             }

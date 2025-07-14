@@ -15,7 +15,10 @@ class WireDetailUI : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val sessionId = intent.getStringExtra("session_id") ?: ""
-        val detailMode = intent.getIntExtra("detail_mode", DetailMode.DirectHtml.ordinal)
+        val decompressTypeCode =
+            intent.getIntExtra("decompress_type_code", DecompressType.None.code)
+        val contentTypeCode =
+            intent.getIntExtra("content_type_code", ContentType.None.code)
         enableEdgeToEdge()
         setContent {
             WirebareUITheme(
@@ -27,7 +30,11 @@ class WireDetailUI : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Colors.background
                 ) {
-                    LoadDetail(sessionId = sessionId, mode = detailMode)
+                    LoadDetail(
+                        sessionId = sessionId,
+                        decompressTypeCode = decompressTypeCode,
+                        contentTypeCode = contentTypeCode
+                    )
                 }
             }
         }

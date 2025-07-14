@@ -42,13 +42,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -214,9 +214,120 @@ fun AppCheckableItem(
     }
 }
 
+@Composable
+fun AppMenuItem(
+    icon: Any?,
+    itemName: String,
+    selected: Int,
+    selectableList: List<String>,
+    subName: String = "",
+    tint: Color = Colors.inverseSurface,
+    onSelectedChange: (Int) -> Unit
+) {
+    var expand by remember { mutableStateOf(false) }
+    RealColumn {
+        RealRow(
+            modifier = Modifier
+                .clickable {
+                    expand = !expand
+                }
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                AsyncImage(
+                    model = icon,
+                    modifier = Modifier
+                        .padding(start = 6.dp, end = 8.dp)
+                        .size(20.dp),
+                    colorFilter = ColorFilter.tint(tint),
+                    contentDescription = null
+                )
+            }
+            RealColumn(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = itemName,
+                    style = Typographies.titleLarge
+                )
+                AnimatedVisibility(subName.isNotEmpty()) {
+                    AnimatedContent(
+                        targetState = subName,
+                        transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+                        label = "AppCheckableItem"
+                    ) { name ->
+                        Text(
+                            text = name,
+                            style = Typographies.bodySmall
+                        )
+                    }
+                }
+            }
+            Text(
+                text = selectableList[selected],
+                style = Typographies.bodyLarge
+            )
+            val scaleYAnim = remember {
+                Animatable(if (expand) 1f else -1f)
+            }
+            LaunchedEffect(expand) {
+                scaleYAnim.stop()
+                scaleYAnim.animateTo(if (expand) 1f else -1f)
+            }
+            AsyncImage(
+                model = R.drawable.ic_arrow_top,
+                modifier = Modifier
+                    .graphicsLayer {
+                        scaleY = scaleYAnim.value
+                        transformOrigin = TransformOrigin.Center
+                    }
+                    .padding(horizontal = 4.dp)
+                    .size(20.dp),
+                colorFilter = ColorFilter.tint(Colors.inverseSurface),
+                contentDescription = null
+            )
+        }
+        AnimatedVisibility(expand) {
+            HorizontalDivider(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth()
+                    .height(0.2.dp),
+                color = Colors.background
+            )
+            RealColumn(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                for (index in selectableList.indices) {
+                    val strSelectable = selectableList[index]
+                    Text(
+                        text = strSelectable,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp, vertical = 12.dp)
+                            .clickable {
+                                expand = false
+                                onSelectedChange(index)
+                            },
+                        style = Typographies.titleSmall
+                    )
+                    if (index != selectableList.size - 1) {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(start = 32.dp, end = 16.dp)
+                                .fillMaxWidth()
+                                .height(0.2.dp),
+                            color = Colors.background
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AppExpandableItem(
+fun AppExpandableTextItem(
     icon: Any?,
     title: String,
     body: String,
@@ -226,11 +337,22 @@ fun AppExpandableItem(
     onExpandChanged: (Boolean) -> Unit = {}
 ) {
     var textWidth by remember { mutableIntStateOf(Int.MAX_VALUE) }
-    val result = rememberTextMeasurer().measure(
-        text = body,
-        constraints = Constraints(maxWidth = textWidth),
-        maxLines = Int.MAX_VALUE
-    )
+    val textMeasurer = rememberTextMeasurer()
+    val originTextStyle = Typographies.bodyLarge
+    val textStyle = remember(originTextStyle) {
+        originTextStyle.copy(
+            lineBreak = LineBreak.Paragraph
+        )
+    }
+    val result = remember(textWidth) {
+        textMeasurer.measure(
+            text = body,
+            constraints = Constraints(maxWidth = textWidth),
+            maxLines = Int.MAX_VALUE,
+            overflow = TextOverflow.Ellipsis,
+            style = textStyle
+        )
+    }
     AppExpandableRichItem(
         icon = icon,
         title = title,
@@ -243,9 +365,7 @@ fun AppExpandableItem(
             text = body,
             maxLines = if (!it) maxLinesInClosed else Int.MAX_VALUE,
             overflow = TextOverflow.Ellipsis,
-            style = Typographies.bodyLarge.copy(
-                lineBreak = LineBreak.Paragraph
-            ),
+            style = textStyle,
             onTextLayout = {
                 textWidth = it.size.width
             }
@@ -294,7 +414,7 @@ fun AppExpandableRichItem(
                 .padding(vertical = 8.dp)
                 .fillMaxWidth()
                 .height(0.2.dp),
-            color = Colors.primaryContainer
+            color = Colors.background
         )
         AnimatedContent(
             targetState = expand,
@@ -337,14 +457,14 @@ data class TabData(
 @Composable
 fun AppTab(
     tabDataList: List<TabData>,
+    background: Color = Colors.primary,
     onClickTab: (Int) -> Unit
 ) {
     RealRow(
         modifier = Modifier
             .padding(16.dp)
             .clip(CircleShape)
-            .shadow(4.dp)
-            .background(Colors.primary)
+            .background(background)
     ) {
         for (index in tabDataList.indices) {
             val tabData = tabDataList[index]

@@ -75,7 +75,6 @@ fun LauncherUI.WireBareUIPage() {
         requestFlow.collect {
             if (!isBanFilter) {
                 if (it.url == null) return@collect
-//                if (it.httpVersion?.startsWith("HTTP") != true) return@collect
             }
             requestList.add(it)
         }
@@ -85,7 +84,6 @@ fun LauncherUI.WireBareUIPage() {
         responseFlow.collect {
             if (!isBanFilter) {
                 if (it.url == null) return@collect
-//                if (it.httpVersion?.startsWith("HTTP") != true) return@collect
             }
             responseList.add(it)
         }
@@ -329,8 +327,8 @@ private fun LauncherUI.ControlBox(
                     modifier = Modifier
                         .padding(start = 48.dp, end = 16.dp)
                         .fillMaxWidth()
-                        .height(0.2.dp)
-                        .background(LGrayA)
+                        .height(0.2.dp),
+                    color = Colors.background
                 )
                 AppCheckableItem(
                     itemName = stringResource(R.string.control_center_ipv6_proxy),
