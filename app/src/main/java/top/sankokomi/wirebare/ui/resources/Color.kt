@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 val BlackZ = Color(0xFF131313)
 val WhiteZ = Color(0xFFFEFEFE)
+val Transparent = Color.Transparent
 
 val RedZ = Color(0xFFC80000)
 

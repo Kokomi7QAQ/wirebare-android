@@ -11,6 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import top.sankokomi.wirebare.ui.resources.Colors
 import kotlin.random.Random
 
@@ -30,6 +32,9 @@ val Color.androidColor: Int get() = toArgb()
  * 将 Int 转换为 compose 颜色
  * */
 val Int.composeColor: Color get() = Color(this)
+
+val Number.pxToDp: Dp
+    get() = (this.toFloat() / Global.appContext.resources.displayMetrics.density + 0.5f).dp
 
 @Composable
 fun Modifier.injectTouchEffect(

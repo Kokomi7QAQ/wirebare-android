@@ -3,6 +3,7 @@ package top.sankokomi.wirebare.ui.util
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import androidx.annotation.StringRes
 import java.lang.ref.WeakReference
 
 private var toastRef: WeakReference<Toast?>? = null
@@ -20,4 +21,8 @@ fun showToast(msg: String, time: Int = Toast.LENGTH_SHORT) {
             toast.show()
         }
     }
+}
+
+fun showToast(@StringRes stringRes: Int, time: Int = Toast.LENGTH_SHORT) {
+    showToast(Global.appContext.resources.getString(stringRes), time)
 }

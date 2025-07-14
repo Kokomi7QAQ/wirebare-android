@@ -1,6 +1,7 @@
 package top.sankokomi.wirebare.ui.record
 
 import android.os.Parcelable
+import androidx.compose.runtime.Stable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
@@ -8,24 +9,25 @@ import kotlinx.parcelize.Parcelize
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
 
 @Parcelize
+@Stable
 @Entity(tableName = HttpDao.RSP_TABLE_NAME)
 class HttpRsp(
     @PrimaryKey
-    var id: String,
-    var requestTime: Long?,
-    var sourcePort: Short?,
-    var destinationAddress: String?,
-    var destinationPort: Short?,
-    var url: String?,
-    var isHttps: Boolean?,
-    var httpVersion: String?,
-    var rspStatus: String?,
-    var originHead: String?,
+    val id: String,
+    val requestTime: Long?,
+    val sourcePort: Short?,
+    val destinationAddress: String?,
+    val destinationPort: Short?,
+    val url: String?,
+    val isHttps: Boolean?,
+    val httpVersion: String?,
+    val rspStatus: String?,
+    val originHead: String?,
     @field:TypeConverters(RoomTypeConverter::class)
-    var formatHead: List<String>?,
-    var host: String?,
-    var contentType: String?,
-    var contentEncoding: String?,
+    val formatHead: List<String>?,
+    val host: String?,
+    val contentType: String?,
+    val contentEncoding: String?,
 ) : Parcelable {
 
     companion object {

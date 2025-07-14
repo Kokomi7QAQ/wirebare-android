@@ -33,6 +33,10 @@
         <activity
             android:name="top.sankokomi.wirebare.ui.wireinfo.WireDetailUI"
             android:exported="false" />
+        <activity
+            android:name="top.sankokomi.wirebare.ui.wireinfo.WireDetailPopupUI"
+            android:theme="@style/Theme.WirebareAndroid.Transparent"
+            android:exported="false" />
 
         <service
             android:name="top.sankokomi.wirebare.kernel.service.SimpleWireBareProxyService"

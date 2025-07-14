@@ -40,7 +40,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -49,9 +52,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -217,50 +225,31 @@ fun AppExpandableItem(
     onLongClick: () -> Unit = {},
     onExpandChanged: (Boolean) -> Unit = {}
 ) {
-    RealColumn(
-        modifier = Modifier
-            .combinedClickable(onLongClick = onLongClick) {
-                onExpandChanged(expand)
-            }
-            .padding(16.dp)
+    var textWidth by remember { mutableIntStateOf(Int.MAX_VALUE) }
+    val result = rememberTextMeasurer().measure(
+        text = body,
+        constraints = Constraints(maxWidth = textWidth),
+        maxLines = Int.MAX_VALUE
+    )
+    AppExpandableRichItem(
+        icon = icon,
+        title = title,
+        expandable = result.lineCount > maxLinesInClosed,
+        expand = expand,
+        onLongClick = onLongClick,
+        onExpandChanged = onExpandChanged
     ) {
-        RealRow(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (icon != null) {
-                AsyncImage(
-                    model = icon,
-                    modifier = Modifier
-                        .padding(start = 6.dp, end = 8.dp)
-                        .size(20.dp),
-                    colorFilter = ColorFilter.tint(Colors.inverseSurface),
-                    contentDescription = null
-                )
+        Text(
+            text = body,
+            maxLines = if (!it) maxLinesInClosed else Int.MAX_VALUE,
+            overflow = TextOverflow.Ellipsis,
+            style = Typographies.bodyLarge.copy(
+                lineBreak = LineBreak.Paragraph
+            ),
+            onTextLayout = {
+                textWidth = it.size.width
             }
-            Text(
-                text = title,
-                style = Typographies.titleLarge
-            )
-        }
-        HorizontalDivider(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .fillMaxWidth()
-                .height(0.2.dp),
-            color = Colors.primaryContainer
         )
-        AnimatedContent(
-            targetState = expand,
-            transitionSpec = { fadeIn().togetherWith(fadeOut()) },
-            label = "AppExpandableItem"
-        ) {
-            Text(
-                text = body,
-                maxLines = if (!it) maxLinesInClosed else Int.MAX_VALUE,
-                overflow = TextOverflow.Ellipsis,
-                style = Typographies.bodyLarge
-            )
-        }
     }
 }
 
@@ -269,6 +258,7 @@ fun AppExpandableItem(
 fun AppExpandableRichItem(
     icon: Any?,
     title: String,
+    expandable: Boolean = true,
     expand: Boolean = true,
     onLongClick: () -> Unit = {},
     onExpandChanged: (Boolean) -> Unit = {},
@@ -309,9 +299,31 @@ fun AppExpandableRichItem(
         AnimatedContent(
             targetState = expand,
             transitionSpec = { fadeIn().togetherWith(fadeOut()) },
-            label = "AppExpandableItem"
+            label = "AppExpandableRichItem"
         ) {
             content(it)
+        }
+        if (expandable) {
+            val scaleYAnim = remember {
+                Animatable(if (expand) 1f else -1f)
+            }
+            LaunchedEffect(expand) {
+                scaleYAnim.stop()
+                scaleYAnim.animateTo(if (expand) 1f else -1f)
+            }
+            AsyncImage(
+                model = R.drawable.ic_arrow_top,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .graphicsLayer {
+                        scaleY = scaleYAnim.value
+                        transformOrigin = TransformOrigin.Center
+                    }
+                    .padding(horizontal = 4.dp)
+                    .size(20.dp),
+                colorFilter = ColorFilter.tint(Colors.inverseSurface),
+                contentDescription = null
+            )
         }
     }
 }

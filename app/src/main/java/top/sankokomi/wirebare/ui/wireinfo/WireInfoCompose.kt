@@ -2,12 +2,14 @@ package top.sankokomi.wirebare.ui.wireinfo
 
 import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,9 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import top.sankokomi.wirebare.kernel.common.WireBareHelper
@@ -45,6 +46,7 @@ import top.sankokomi.wirebare.ui.resources.Typographies
 import top.sankokomi.wirebare.ui.util.copyTextToClipBoard
 import top.sankokomi.wirebare.ui.util.showToast
 import top.sankokomi.wirebare.ui.util.statusBarHeightDp
+import kotlin.math.min
 
 @Composable
 fun WireInfoUI.WireInfoUIPage(
@@ -77,7 +79,11 @@ fun WireInfoUI.WireInfoUIPage(
                         icon = R.drawable.ic_link,
                         title = stringResource(R.string.request_info_url),
                         body = request.url ?: "",
-                        expand = isUrlExpand
+                        expand = isUrlExpand,
+                        onLongClick = {
+                            copyTextToClipBoard(request.url ?: "")
+                            showToast(R.string.request_info_copy_success)
+                        }
                     ) {
                         isUrlExpand = !it
                     }
@@ -116,16 +122,24 @@ fun WireInfoUI.WireInfoUIPage(
                     }
                     AppExpandableRichItem(
                         icon = R.drawable.ic_address,
-                        title = stringResource(R.string.request_info_ip)
+                        title = stringResource(R.string.request_info_ip),
+                        expandable = false
                     ) {
-                        Text(text = buildAnnotatedString {
-                            appendAnnotatedTitle(stringResource(R.string.request_info_ip_version))
-                            appendAnnotatedContent(strIpVersion)
-                            appendAnnotatedTitle(stringResource(R.string.request_info_ip_src))
-                            appendAnnotatedContent("$srcIp:$srcPort")
-                            appendAnnotatedTitle(stringResource(R.string.request_info_ip_dest))
-                            appendAnnotatedContent("$destIp:$destPort", false)
-                        })
+                        RealColumn {
+                            TextChapter(
+                                title = stringResource(R.string.request_info_ip_version),
+                                content = strIpVersion
+                            )
+                            TextChapter(
+                                title = stringResource(R.string.request_info_ip_src),
+                                content = "$srcIp:$srcPort"
+                            )
+                            TextChapter(
+                                title = stringResource(R.string.request_info_ip_dest),
+                                content = "$destIp:$destPort",
+                                appendNewLine = false
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
@@ -136,30 +150,69 @@ fun WireInfoUI.WireInfoUIPage(
                 ) {
                     AppExpandableRichItem(
                         icon = R.drawable.ic_api,
-                        title = stringResource(R.string.request_info_header_info)
+                        title = stringResource(R.string.request_info_req_line),
+                        expandable = false
                     ) {
-                        Text(text = buildAnnotatedString {
-                            appendAnnotatedTitle(stringResource(R.string.request_info_method))
-                            appendAnnotatedContent(request.method ?: "")
-                            appendAnnotatedTitle(stringResource(R.string.request_info_http_version))
-                            appendAnnotatedContent(request.httpVersion ?: "", false)
-                        })
+                        RealColumn {
+                            TextChapter(
+                                title = stringResource(R.string.request_info_method),
+                                content = request.method ?: ""
+                            )
+                            TextChapter(
+                                title = stringResource(R.string.request_info_http_version),
+                                content = request.httpVersion ?: "",
+                                appendNewLine = false
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
+                if (request.formatHead == null || request.formatHead.size < 2) {
+                    return@item
+                }
+                val headerList = remember {
+                    request.formatHead.subList(1, request.formatHead.size).map {
+                        val splitIndex = it.indexOf(": ")
+                        if (splitIndex < 0) return@map "" to it
+                        return@map it.substring(
+                            0,
+                            splitIndex
+                        ) to it.substring(
+                            splitIndex + 2,
+                            it.length
+                        )
+                    }
+                }
                 AppRoundCornerBox(
                     background = Colors.primary
                 ) {
-                    AppExpandableItem(
+                    val expandable = headerList.size > 4
+                    AppExpandableRichItem(
                         icon = R.drawable.ic_wirebare,
-                        title = stringResource(R.string.request_info_origin_header),
-                        body = request.originHead ?: "",
+                        title = stringResource(R.string.request_info_headers),
+                        expandable = expandable,
                         expand = isOriginHeaderExpand,
-                        maxLinesInClosed = 10
-                    ) {
-                        isOriginHeaderExpand = !it
+                        onExpandChanged = { isOriginHeaderExpand = !it }
+                    ) content@{ expand ->
+                        RealColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                        ) {
+                            val maxLines = min(headerList.size, if (expand) headerList.size else 4)
+                            for (index in 0 until maxLines) {
+                                val header = headerList[index]
+                                val title = header.first
+                                val content = header.second
+                                TextChapter(
+                                    title = title,
+                                    content = content,
+                                    appendNewLine = index != maxLines - 1
+                                )
+                            }
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(12.dp))
@@ -440,30 +493,39 @@ private fun WireInfoUI.DataViewer(sessionId: String) {
 
 @Composable
 @Suppress("ComposableNaming")
-private fun AnnotatedString.Builder.appendAnnotatedContent(
-    content: String,
-    appendNewLine: Boolean = true
-) {
-    append(
-        AnnotatedString(
-            text = content + if (appendNewLine) System.lineSeparator() else "",
-            spanStyle = Typographies.bodyLarge.toSpanStyle(),
-            paragraphStyle = Typographies.bodyLarge.toParagraphStyle()
-        )
-    )
-}
-
-@Composable
-@Suppress("ComposableNaming")
-private fun AnnotatedString.Builder.appendAnnotatedTitle(
+private fun TextChapter(
     title: String,
-    appendNewLine: Boolean = false
+    content: String,
+    appendNewLine: Boolean = true,
+    autoSummary: Boolean = true
 ) {
-    append(
-        AnnotatedString(
-            text = title + if (appendNewLine) System.lineSeparator() else "",
-            spanStyle = Typographies.titleLarge.toSpanStyle(),
-            paragraphStyle = Typographies.titleLarge.toParagraphStyle()
-        )
+    Text(
+        text = title,
+        style = Typographies.titleLarge
     )
+    if (content.length <= 100 || !autoSummary) {
+        Text(
+            text = content + if (appendNewLine) System.lineSeparator() else "",
+            modifier = Modifier.fillMaxWidth(),
+            style = Typographies.bodyLarge
+        )
+    } else {
+        val context = LocalContext.current
+        Text(
+            text = stringResource(
+                R.string.request_info_content_too_long
+            ).format(content.length) + if (appendNewLine) System.lineSeparator() else "",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    context.startActivity(
+                        Intent(context, WireDetailPopupUI::class.java).also {
+                            it.putExtra("title", title)
+                            it.putExtra("content", content)
+                        }
+                    )
+                },
+            style = Typographies.bodyLarge
+        )
+    }
 }

@@ -27,11 +27,13 @@
     <string name="request_info_title">请求详情</string>
     <string name="request_info_url">请求链接</string>
     <string name="request_info_ip">IP地址</string>
-    <string name="request_info_header_info">请求头信息</string>
-    <string name="request_info_origin_header">原始请求头</string>
+    <string name="request_info_req_line">请求行信息</string>
+    <string name="request_info_headers">请求头</string>
     <string name="request_info_ip_src">来源IP</string>
     <string name="request_info_ip_dest">目的IP</string>
     <string name="request_info_ip_version">IP版本</string>
     <string name="request_info_method">请求方法</string>
     <string name="request_info_http_version">HTTP版本</string>
+    <string name="request_info_content_too_long">内容太长了(%d个字符)，点击以查看</string>
+    <string name="request_info_copy_success">已复制到剪切板</string>
 </resources>
