@@ -18,6 +18,7 @@ import top.sankokomi.wirebare.ui.record.HttpBodyFormatter
 import top.sankokomi.wirebare.ui.record.ImageHttpBodyFormatter
 import top.sankokomi.wirebare.ui.record.NoneHttpBodyDecompressor
 import top.sankokomi.wirebare.ui.record.NoneHttpBodyFormatter
+import top.sankokomi.wirebare.ui.record.TextHttpBodyFormatter
 import top.sankokomi.wirebare.ui.resources.RealBox
 
 enum class DecompressType(val code: Int) {
@@ -38,12 +39,14 @@ enum class DecompressType(val code: Int) {
 
 enum class ContentType(val code: Int) {
     None(0),
-    Html(1),
-    Image(2);
+    Text(1),
+    Html(2),
+    Image(3);
 
     companion object {
         fun parse(code: Int): HttpBodyFormatter {
             return when (code) {
+                Text.code -> TextHttpBodyFormatter
                 Html.code -> HtmlHttpBodyFormatter
                 Image.code -> ImageHttpBodyFormatter
                 else -> NoneHttpBodyFormatter

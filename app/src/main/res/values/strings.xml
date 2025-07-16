@@ -50,4 +50,5 @@
     <string name="req_rsp_info_decompress_algorithm_desc">Define how to decompress</string>
     <string name="req_rsp_info_formatter_type">Formatter</string>
     <string name="req_rsp_info_formatter_desc">The content type</string>
+    <string name="req_rsp_info_text">Text</string>
 </resources>

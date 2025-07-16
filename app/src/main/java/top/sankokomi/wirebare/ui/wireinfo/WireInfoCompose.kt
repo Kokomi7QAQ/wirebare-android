@@ -162,6 +162,9 @@ private fun WireInfoUI.WireInfoFormatterUIPage(
         when {
             contentType.startsWith("image/", true) -> ContentType.Image.code
             contentType.startsWith("text/html", true) -> ContentType.Html.code
+            contentType.startsWith("text/", true) ||
+                    contentType.startsWith("application/", true) -> ContentType.Text.code
+
             else -> DecompressType.None.code
         }
     }
@@ -190,13 +193,14 @@ private fun WireInfoUI.WireInfoFormatterUIPage(
         Spacer(modifier = Modifier.height(12.dp))
         AppRoundCornerBox {
             val strNone = stringResource(R.string.req_rsp_info_none)
+            val strText = stringResource(R.string.req_rsp_info_text)
             val strHtml = stringResource(R.string.req_rsp_info_html)
             val strImage = stringResource(R.string.req_rsp_info_image)
             AppMenuItem(
                 icon = null,
                 itemName = stringResource(R.string.req_rsp_info_formatter),
                 selected = selectedFormatter,
-                selectableList = remember { listOf(strNone, strHtml, strImage) },
+                selectableList = remember { listOf(strNone, strText, strHtml, strImage) },
                 subName = stringResource(R.string.req_rsp_info_formatter_desc),
                 tint = Colors.inverseSurface,
                 onSelectedChange = {
@@ -207,11 +211,13 @@ private fun WireInfoUI.WireInfoFormatterUIPage(
         Spacer(modifier = Modifier.height(12.dp))
         RealBox(modifier = Modifier.weight(1f)) {
             AppRoundCornerBox {
-                LoadDetail(
-                    sessionId = sessionId,
-                    decompressTypeCode = selectedDecompress,
-                    contentTypeCode = selectedFormatter
-                )
+                RealBox {
+                    LoadDetail(
+                        sessionId = sessionId,
+                        decompressTypeCode = selectedDecompress,
+                        contentTypeCode = selectedFormatter
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
