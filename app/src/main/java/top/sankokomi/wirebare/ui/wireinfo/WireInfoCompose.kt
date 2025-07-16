@@ -32,7 +32,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.kernel.common.WireBareHelper
 import top.sankokomi.wirebare.kernel.net.IpVersion
 import top.sankokomi.wirebare.ui.R
@@ -254,6 +256,26 @@ private fun WireInfoUI.WireInfoRequestUIPage(
             )
             AppTitleBar(text = stringResource(R.string.request_info_title))
         }
+        val headerList = remember {
+            request.formatHead ?: return@remember emptyList()
+            request.formatHead.subList(1, request.formatHead.size).map {
+                val splitIndex = it.indexOf(": ")
+                if (splitIndex < 0) return@map "" to it
+                return@map it.substring(
+                    0,
+                    splitIndex
+                ) to it.substring(
+                    splitIndex + 2,
+                    it.length
+                )
+            }
+        }
+        var httpBodyByteSize by remember { mutableIntStateOf(0) }
+        LaunchedEffect(sessionId) {
+            withContext(Dispatchers.IO) {
+                httpBodyByteSize = readHttpBytesById(sessionId).httpBody().size
+            }
+        }
         LazyColumn {
             item {
                 Spacer(modifier = Modifier.height(56.dp + statusBarHeightDp))
@@ -292,19 +314,6 @@ private fun WireInfoUI.WireInfoRequestUIPage(
                 if (request.formatHead == null || request.formatHead.size < 2) {
                     return@item
                 }
-                val headerList = remember {
-                    request.formatHead.subList(1, request.formatHead.size).map {
-                        val splitIndex = it.indexOf(": ")
-                        if (splitIndex < 0) return@map "" to it
-                        return@map it.substring(
-                            0,
-                            splitIndex
-                        ) to it.substring(
-                            splitIndex + 2,
-                            it.length
-                        )
-                    }
-                }
                 HeaderBox(
                     stringResource(R.string.request_info_headers),
                     headerList
@@ -312,10 +321,6 @@ private fun WireInfoUI.WireInfoRequestUIPage(
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
-                var httpBodyByteSize by remember { mutableIntStateOf(0) }
-                LaunchedEffect(sessionId) {
-                    httpBodyByteSize = readHttpBytesById(sessionId).httpBody().size
-                }
                 BodySizeBox(byteSize = httpBodyByteSize)
                 Spacer(modifier = Modifier.height(12.dp))
             }
@@ -343,6 +348,26 @@ private fun WireInfoUI.WireInfoResponseUIPage(
                     .background(Colors.background)
             )
             AppTitleBar(text = stringResource(R.string.response_info_title))
+        }
+        val headerList = remember {
+            response.formatHead ?: return@remember emptyList()
+            response.formatHead.subList(1, response.formatHead.size).map {
+                val splitIndex = it.indexOf(": ")
+                if (splitIndex < 0) return@map "" to it
+                return@map it.substring(
+                    0,
+                    splitIndex
+                ) to it.substring(
+                    splitIndex + 2,
+                    it.length
+                )
+            }
+        }
+        var httpBodyByteSize by remember { mutableIntStateOf(0) }
+        LaunchedEffect(sessionId) {
+            withContext(Dispatchers.IO) {
+                httpBodyByteSize = readHttpBytesById(sessionId).httpBody().size
+            }
         }
         LazyColumn {
             item {
@@ -382,19 +407,6 @@ private fun WireInfoUI.WireInfoResponseUIPage(
                 if (response.formatHead == null || response.formatHead.size < 2) {
                     return@item
                 }
-                val headerList = remember {
-                    response.formatHead.subList(1, response.formatHead.size).map {
-                        val splitIndex = it.indexOf(": ")
-                        if (splitIndex < 0) return@map "" to it
-                        return@map it.substring(
-                            0,
-                            splitIndex
-                        ) to it.substring(
-                            splitIndex + 2,
-                            it.length
-                        )
-                    }
-                }
                 HeaderBox(
                     stringResource(R.string.response_info_headers),
                     headerList
@@ -402,10 +414,6 @@ private fun WireInfoUI.WireInfoResponseUIPage(
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
-                var httpBodyByteSize by remember { mutableIntStateOf(0) }
-                LaunchedEffect(sessionId) {
-                    httpBodyByteSize = readHttpBytesById(sessionId).httpBody().size
-                }
                 BodySizeBox(byteSize = httpBodyByteSize)
                 Spacer(modifier = Modifier.height(12.dp))
             }
@@ -536,13 +544,15 @@ fun BodySizeBox(byteSize: Int) {
     var kByte by remember { mutableStateOf("") }
     var mByte by remember { mutableStateOf("") }
     LaunchedEffect(byteSize) {
-        val formatter = DecimalFormat(
-            "#0.##",
-            DecimalFormatSymbols(Locale.US)
-        )
-        byte = "$byteSize B"
-        kByte = "${formatter.format(byteSize / 1024.0)} KB"
-        mByte = "${formatter.format(byteSize / 1024.0 / 1024.0)} MB"
+        withContext(Dispatchers.IO) {
+            val formatter = DecimalFormat(
+                "#0.##",
+                DecimalFormatSymbols(Locale.US)
+            )
+            byte = "$byteSize B"
+            kByte = "${formatter.format(byteSize / 1024.0)} KB"
+            mByte = "${formatter.format(byteSize / 1024.0 / 1024.0)} MB"
+        }
     }
     AppRoundCornerBox {
         AppExpandableTextItem(
