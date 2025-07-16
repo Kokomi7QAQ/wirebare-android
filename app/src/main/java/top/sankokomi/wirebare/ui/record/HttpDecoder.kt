@@ -27,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.kernel.util.uncompressBrotli
 import top.sankokomi.wirebare.kernel.util.uncompressGzip
-import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.Typographies
 
@@ -42,7 +41,7 @@ interface HttpBodyFormatter {
     fun FormatViewer(bytes: ByteArray)
 }
 
-private suspend fun readHttpBytesById(id: String): ByteArray {
+suspend fun readHttpBytesById(id: String): ByteArray {
     return withContext(Dispatchers.IO) {
         try {
             val origin = getHttpRecordFileById(id)
@@ -55,7 +54,7 @@ private suspend fun readHttpBytesById(id: String): ByteArray {
     }
 }
 
-private fun ByteArray.httpBody(): ByteArray {
+fun ByteArray.httpBody(): ByteArray {
     try {
         var i = -1
         for (index in 0..size - 4) {
@@ -131,7 +130,7 @@ object TextHttpBodyFormatter : HttpBodyFormatter {
             text = String(bytes, 0, bytes.size)
         }
         if (text.isNotBlank()) {
-            RealColumn (
+            RealColumn(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()

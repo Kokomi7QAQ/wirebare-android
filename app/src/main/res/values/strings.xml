@@ -51,4 +51,5 @@
     <string name="req_rsp_info_formatter_type">Formatter</string>
     <string name="req_rsp_info_formatter_desc">The content type</string>
     <string name="req_rsp_info_text">Text</string>
+    <string name="req_rsp_info_body_size">Body Size</string>
 </resources>

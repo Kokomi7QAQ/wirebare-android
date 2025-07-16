@@ -16,6 +16,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +38,8 @@ import top.sankokomi.wirebare.kernel.net.IpVersion
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
+import top.sankokomi.wirebare.ui.record.httpBody
+import top.sankokomi.wirebare.ui.record.readHttpBytesById
 import top.sankokomi.wirebare.ui.resources.AppExpandableRichItem
 import top.sankokomi.wirebare.ui.resources.AppExpandableTextItem
 import top.sankokomi.wirebare.ui.resources.AppMenuItem
@@ -51,6 +54,9 @@ import top.sankokomi.wirebare.ui.resources.Typographies
 import top.sankokomi.wirebare.ui.util.copyTextToClipBoard
 import top.sankokomi.wirebare.ui.util.showToast
 import top.sankokomi.wirebare.ui.util.statusBarHeightDp
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 import kotlin.math.min
 
 @Composable
@@ -99,9 +105,15 @@ fun WireInfoUI.WireInfoUIPage(
         ) {
             when (it) {
                 0 -> when {
-                    request != null -> WireInfoRequestUIPage(request)
+                    request != null -> WireInfoRequestUIPage(
+                        request,
+                        sessionId
+                    )
 
-                    response != null -> WireInfoResponseUIPage(response)
+                    response != null -> WireInfoResponseUIPage(
+                        response,
+                        sessionId
+                    )
 
                     else -> RealBox(modifier = Modifier.fillMaxSize()) {}
                 }
@@ -227,7 +239,8 @@ private fun WireInfoUI.WireInfoFormatterUIPage(
 
 @Composable
 private fun WireInfoUI.WireInfoRequestUIPage(
-    request: HttpReq
+    request: HttpReq,
+    sessionId: String
 ) {
     RealBox {
         RealColumn(
@@ -299,6 +312,14 @@ private fun WireInfoUI.WireInfoRequestUIPage(
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
+                var httpBodyByteSize by remember { mutableIntStateOf(0) }
+                LaunchedEffect(sessionId) {
+                    httpBodyByteSize = readHttpBytesById(sessionId).httpBody().size
+                }
+                BodySizeBox(byteSize = httpBodyByteSize)
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            item {
                 Spacer(modifier = Modifier.height(8.dp))
                 Spacer(modifier = Modifier.height(80.dp))
             }
@@ -308,7 +329,8 @@ private fun WireInfoUI.WireInfoRequestUIPage(
 
 @Composable
 private fun WireInfoUI.WireInfoResponseUIPage(
-    response: HttpRsp
+    response: HttpRsp,
+    sessionId: String
 ) {
     RealBox {
         RealColumn(
@@ -377,6 +399,14 @@ private fun WireInfoUI.WireInfoResponseUIPage(
                     stringResource(R.string.response_info_headers),
                     headerList
                 )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            item {
+                var httpBodyByteSize by remember { mutableIntStateOf(0) }
+                LaunchedEffect(sessionId) {
+                    httpBodyByteSize = readHttpBytesById(sessionId).httpBody().size
+                }
+                BodySizeBox(byteSize = httpBodyByteSize)
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
@@ -495,6 +525,33 @@ fun HeaderBox(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun BodySizeBox(byteSize: Int) {
+    var isUrlExpand by remember { mutableStateOf(false) }
+    var byte by remember { mutableStateOf("") }
+    var kByte by remember { mutableStateOf("") }
+    var mByte by remember { mutableStateOf("") }
+    LaunchedEffect(byteSize) {
+        val formatter = DecimalFormat(
+            "#0.##",
+            DecimalFormatSymbols(Locale.US)
+        )
+        byte = "$byteSize B"
+        kByte = "${formatter.format(byteSize / 1024.0)} KB"
+        mByte = "${formatter.format(byteSize / 1024.0 / 1024.0)} MB"
+    }
+    AppRoundCornerBox {
+        AppExpandableTextItem(
+            icon = R.drawable.ic_wirebare,
+            title = stringResource(R.string.req_rsp_info_body_size),
+            body = "$byte     <->     $kByte     <->     $mByte",
+            expand = isUrlExpand
+        ) {
+            isUrlExpand = !it
         }
     }
 }
