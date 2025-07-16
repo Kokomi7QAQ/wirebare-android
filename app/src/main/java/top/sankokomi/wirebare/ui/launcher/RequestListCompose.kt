@@ -121,7 +121,6 @@ fun LauncherUI.PageProxyRequestResult(requestList: SnapshotStateList<HttpReq>) {
                                             WireInfoUI::class.java
                                         ).apply {
                                             putExtra("request", request)
-                                            putExtra("session_id", request.id)
                                         }
                                     )
                                 }

@@ -64,7 +64,6 @@ import kotlin.math.min
 
 @Composable
 fun WireInfoUI.WireInfoUIPage(
-    sessionId: String,
     req: HttpReq?,
     rsp: HttpRsp?
 ) {
@@ -131,20 +130,14 @@ fun WireInfoUI.WireInfoUIPage(
                 .alpha(1f - ((1f - anim.value)))
         ) {
             when (it) {
-                0 -> WireInfoRequestUIPage(
-                    request,
-                    sessionId
-                )
+                0 -> WireInfoRequestUIPage(request)
 
-                1 -> WireInfoResponseUIPage(
-                    response,
-                    sessionId
-                )
+                1 -> WireInfoResponseUIPage(response)
 
                 2 -> WireInfoFormatterUIPage(
                     contentEncoding = response?.contentEncoding ?: "",
                     contentType = response?.contentType ?: "",
-                    sessionId = sessionId
+                    sessionId = response?.id ?: ""
                 )
             }
         }
@@ -262,8 +255,7 @@ private fun WireInfoUI.WireInfoFormatterUIPage(
 
 @Composable
 private fun WireInfoUI.WireInfoRequestUIPage(
-    request: HttpReq?,
-    sessionId: String
+    request: HttpReq?
 ) {
     if (request == null) {
         RealBox { }
@@ -285,9 +277,9 @@ private fun WireInfoUI.WireInfoRequestUIPage(
             }
         }
         var httpBodyByteSize by remember { mutableIntStateOf(0) }
-        LaunchedEffect(sessionId) {
+        LaunchedEffect(request.id) {
             withContext(Dispatchers.IO) {
-                httpBodyByteSize = readHttpBytesById(sessionId).httpBody().size
+                httpBodyByteSize = readHttpBytesById(request.id).httpBody().size
             }
         }
         LazyColumn {
@@ -348,8 +340,7 @@ private fun WireInfoUI.WireInfoRequestUIPage(
 
 @Composable
 private fun WireInfoUI.WireInfoResponseUIPage(
-    response: HttpRsp?,
-    sessionId: String
+    response: HttpRsp?
 ) {
     if (response == null) {
         RealBox { }
@@ -371,9 +362,9 @@ private fun WireInfoUI.WireInfoResponseUIPage(
             }
         }
         var httpBodyByteSize by remember { mutableIntStateOf(0) }
-        LaunchedEffect(sessionId) {
+        LaunchedEffect(response.id) {
             withContext(Dispatchers.IO) {
-                httpBodyByteSize = readHttpBytesById(sessionId).httpBody().size
+                httpBodyByteSize = readHttpBytesById(response.id).httpBody().size
             }
         }
         LazyColumn {
@@ -565,7 +556,7 @@ fun BodySizeBox(byteSize: Int) {
         AppExpandableTextItem(
             icon = R.drawable.ic_wirebare,
             title = stringResource(R.string.req_rsp_info_body_size),
-            body = "$byte     <->     $kByte     <->     $mByte",
+            body = "$byte = $kByte = $mByte",
             expand = isUrlExpand
         ) {
             isUrlExpand = !it

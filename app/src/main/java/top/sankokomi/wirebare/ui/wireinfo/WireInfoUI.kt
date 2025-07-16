@@ -19,7 +19,6 @@ class WireInfoUI : ComponentActivity() {
         super.onCreate(savedInstanceState)
         var request = IntentCompat.getParcelableExtra(intent, "request", HttpReq::class.java)
         var response = IntentCompat.getParcelableExtra(intent, "response", HttpRsp::class.java)
-        val sessionId = intent.getStringExtra("session_id")
         enableEdgeToEdge()
         setContent {
             WirebareUITheme(
@@ -31,7 +30,6 @@ class WireInfoUI : ComponentActivity() {
                     color = Colors.background
                 ) {
                     WireInfoUIPage(
-                        sessionId = sessionId ?: "",
                         req = request,
                         rsp = response
                     )
