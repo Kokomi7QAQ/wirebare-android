@@ -41,6 +41,7 @@ import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.record.httpBody
+import top.sankokomi.wirebare.ui.record.httpRoom
 import top.sankokomi.wirebare.ui.record.readHttpBytesById
 import top.sankokomi.wirebare.ui.resources.AppExpandableRichItem
 import top.sankokomi.wirebare.ui.resources.AppExpandableTextItem
@@ -64,26 +65,50 @@ import kotlin.math.min
 @Composable
 fun WireInfoUI.WireInfoUIPage(
     sessionId: String,
-    request: HttpReq?,
-    response: HttpRsp?
+    req: HttpReq?,
+    rsp: HttpRsp?
 ) {
+    var request = req
+    var response = rsp
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            when {
+                req != null -> {
+                    httpRoom.httpDao().queryRspId(req.id)?.let { rspId ->
+                        response = httpRoom.httpDao().queryHttpRspById(rspId).firstOrNull()
+                    }
+                }
+
+                rsp != null -> {
+                    httpRoom.httpDao().queryReqId(rsp.id)?.let { reqId ->
+                        request = httpRoom.httpDao().queryHttpReqById(reqId).firstOrNull()
+                    }
+                }
+            }
+        }
+    }
     val strRequestInfo = stringResource(R.string.request_info_title)
     val strResponseInfo = stringResource(R.string.response_info_title)
-    val strControlCenter = stringResource(R.string.app_name)
     val strFormatter = stringResource(R.string.req_rsp_info_formatter)
     val tabDataList = remember {
         listOf(
-            when {
-                request != null -> TabData(R.drawable.ic_request, strRequestInfo)
-                response != null -> TabData(R.drawable.ic_response, strResponseInfo)
-                else -> TabData(R.drawable.ic_wirebare, strControlCenter)
-            },
+            TabData(R.drawable.ic_request, strRequestInfo),
+            TabData(R.drawable.ic_response, strResponseInfo),
             TabData(R.drawable.ic_format, strFormatter)
         )
     }
     val pagerState = rememberPagerState { tabDataList.size }
     val titleBarText = remember { mutableStateOf(tabDataList.first().text) }
     val anim = remember { Animatable(1f) }
+    LaunchedEffect(Unit) {
+        if (rsp != null) {
+            titleBarText.value = tabDataList[1].text
+            pagerState.animateScrollToPage(
+                1,
+                animationSpec = tween(0)
+            )
+        }
+    }
     RealBox(modifier = Modifier.background(Colors.background)) {
         RealColumn(
             modifier = Modifier.zIndex(1f)
@@ -99,28 +124,24 @@ fun WireInfoUI.WireInfoUIPage(
         HorizontalPager(
             state = pagerState,
             userScrollEnabled = false,
-            beyondViewportPageCount = 2,
+            beyondViewportPageCount = 3,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = ((1f - anim.value) * 4).dp)
                 .alpha(1f - ((1f - anim.value)))
         ) {
             when (it) {
-                0 -> when {
-                    request != null -> WireInfoRequestUIPage(
-                        request,
-                        sessionId
-                    )
+                0 -> WireInfoRequestUIPage(
+                    request,
+                    sessionId
+                )
 
-                    response != null -> WireInfoResponseUIPage(
-                        response,
-                        sessionId
-                    )
+                1 -> WireInfoResponseUIPage(
+                    response,
+                    sessionId
+                )
 
-                    else -> RealBox(modifier = Modifier.fillMaxSize()) {}
-                }
-
-                1 -> WireInfoFormatterUIPage(
+                2 -> WireInfoFormatterUIPage(
                     contentEncoding = response?.contentEncoding ?: "",
                     contentType = response?.contentType ?: "",
                     sessionId = sessionId
@@ -241,21 +262,14 @@ private fun WireInfoUI.WireInfoFormatterUIPage(
 
 @Composable
 private fun WireInfoUI.WireInfoRequestUIPage(
-    request: HttpReq,
+    request: HttpReq?,
     sessionId: String
 ) {
+    if (request == null) {
+        RealBox { }
+        return
+    }
     RealBox {
-        RealColumn(
-            modifier = Modifier.zIndex(1f)
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(statusBarHeightDp)
-                    .background(Colors.background)
-            )
-            AppTitleBar(text = stringResource(R.string.request_info_title))
-        }
         val headerList = remember {
             request.formatHead ?: return@remember emptyList()
             request.formatHead.subList(1, request.formatHead.size).map {
@@ -334,21 +348,14 @@ private fun WireInfoUI.WireInfoRequestUIPage(
 
 @Composable
 private fun WireInfoUI.WireInfoResponseUIPage(
-    response: HttpRsp,
+    response: HttpRsp?,
     sessionId: String
 ) {
+    if (response == null) {
+        RealBox { }
+        return
+    }
     RealBox {
-        RealColumn(
-            modifier = Modifier.zIndex(1f)
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(statusBarHeightDp)
-                    .background(Colors.background)
-            )
-            AppTitleBar(text = stringResource(R.string.response_info_title))
-        }
         val headerList = remember {
             response.formatHead ?: return@remember emptyList()
             response.formatHead.subList(1, response.formatHead.size).map {

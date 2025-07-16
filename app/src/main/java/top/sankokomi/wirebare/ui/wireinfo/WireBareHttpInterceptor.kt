@@ -1,12 +1,12 @@
 package top.sankokomi.wirebare.ui.wireinfo
 
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpSession
 import top.sankokomi.wirebare.kernel.interceptor.http.async.AsyncHttpIndexedInterceptor
 import top.sankokomi.wirebare.kernel.interceptor.http.async.AsyncHttpInterceptChain
 import top.sankokomi.wirebare.kernel.interceptor.http.async.AsyncHttpInterceptor
 import top.sankokomi.wirebare.kernel.interceptor.http.async.AsyncHttpInterceptorFactory
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpSession
 import top.sankokomi.wirebare.ui.record.HttpRecorder
 import java.nio.ByteBuffer
 
@@ -31,9 +31,10 @@ class WireBareHttpInterceptor(
         index: Int
     ) {
         if (index == 0) {
+            HttpRecorder.addRequestRecord(session.request)
             onRequest(session.request)
         }
-        HttpRecorder.addRequestRecord(session.request, buffer)
+        HttpRecorder.saveRequestBytes(session.request, buffer)
         super.onRequest(chain, buffer, session, index)
     }
 
@@ -42,7 +43,7 @@ class WireBareHttpInterceptor(
         session: HttpSession,
         index: Int
     ) {
-        HttpRecorder.addRequestRecord(session.request, null)
+        HttpRecorder.saveRequestBytes(session.request, null)
         super.onRequestFinished(chain, session, index)
     }
 
@@ -53,9 +54,11 @@ class WireBareHttpInterceptor(
         index: Int
     ) {
         if (index == 0) {
+            HttpRecorder.addResponseRecord(session.response)
+            HttpRecorder.addReqRspPairRecord(session)
             onResponse(session.response)
         }
-        HttpRecorder.addResponseRecord(session.response, buffer)
+        HttpRecorder.saveResponseBytes(session.response, buffer)
         super.onResponse(chain, buffer, session, index)
     }
 
@@ -64,7 +67,7 @@ class WireBareHttpInterceptor(
         session: HttpSession,
         index: Int
     ) {
-        HttpRecorder.addResponseRecord(session.response, null)
+        HttpRecorder.saveResponseBytes(session.response, null)
         super.onResponseFinished(chain, session, index)
     }
 }

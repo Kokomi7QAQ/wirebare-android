@@ -17,8 +17,8 @@ class WireInfoUI : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val request = IntentCompat.getParcelableExtra(intent, "request", HttpReq::class.java)
-        val response = IntentCompat.getParcelableExtra(intent, "response", HttpRsp::class.java)
+        var request = IntentCompat.getParcelableExtra(intent, "request", HttpReq::class.java)
+        var response = IntentCompat.getParcelableExtra(intent, "response", HttpRsp::class.java)
         val sessionId = intent.getStringExtra("session_id")
         enableEdgeToEdge()
         setContent {
@@ -32,8 +32,8 @@ class WireInfoUI : ComponentActivity() {
                 ) {
                     WireInfoUIPage(
                         sessionId = sessionId ?: "",
-                        request = request,
-                        response = response
+                        req = request,
+                        rsp = response
                     )
                 }
             }

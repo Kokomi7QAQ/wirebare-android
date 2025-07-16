@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpSession
 import top.sankokomi.wirebare.ui.util.Global
 import java.io.File
 import java.nio.ByteBuffer
@@ -53,12 +54,19 @@ object HttpRecorder {
         }
     }
 
-    suspend fun addRequestRecord(request: HttpRequest, buffer: ByteBuffer?) {
+    suspend fun addRequestRecord(request: HttpRequest) {
         withContext(Dispatchers.IO) {
             try {
-                val req = HttpReq.from(request)
-                httpRoom.httpDao().insertHttpReq(listOf(req))
-                val id = req.id
+                httpRoom.httpDao().insertHttpReq(HttpReq.from(request))
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    suspend fun saveRequestBytes(request: HttpRequest, buffer: ByteBuffer?) {
+        withContext(Dispatchers.IO) {
+            try {
+                val id = request.id
                 if (buffer == null) {
                     writers.remove(id)?.close()
                     return@withContext
@@ -71,12 +79,19 @@ object HttpRecorder {
         }
     }
 
-    suspend fun addResponseRecord(response: HttpResponse, buffer: ByteBuffer?) {
+    suspend fun addResponseRecord(response: HttpResponse) {
         withContext(Dispatchers.IO) {
             try {
-                val rsp = HttpRsp.from(response)
-                httpRoom.httpDao().insertHttpRsp(listOf(rsp))
-                val id = rsp.id
+                httpRoom.httpDao().insertHttpRsp(HttpRsp.from(response))
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    suspend fun saveResponseBytes(response: HttpResponse, buffer: ByteBuffer?) {
+        withContext(Dispatchers.IO) {
+            try {
+                val id = response.id
                 if (buffer == null) {
                     writers.remove(id)?.close()
                     return@withContext
@@ -84,6 +99,18 @@ object HttpRecorder {
                 writers.computeIfAbsent(id) {
                     ConcurrentFileWriter(parseResponseRecordFile(response))
                 }.writeBytes(buffer)
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    suspend fun addReqRspPairRecord(session: HttpSession) {
+        withContext(Dispatchers.IO) {
+            try {
+                val reqId = session.request.id
+                val rspId = session.response.id
+                val id = "$reqId|$rspId"
+                httpRoom.httpDao().insertReqRspPair(HttpReqRspPair(id, reqId, rspId))
             } catch (_: Exception) {
             }
         }
