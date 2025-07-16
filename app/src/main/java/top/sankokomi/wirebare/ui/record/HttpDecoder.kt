@@ -140,7 +140,7 @@ object TextHttpBodyFormatter : HttpBodyFormatter {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = text,
-                    style = Typographies.bodySmall
+                    style = Typographies.bodyMedium
                 )
             }
         }
