@@ -27,8 +27,8 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }
@@ -48,6 +48,14 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("wirebare_debug.ks")
+            storePassword = "wirebare"
+            keyAlias = "wirebare"
+            keyPassword = "wirebare"
         }
     }
 }
