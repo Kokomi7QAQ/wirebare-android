@@ -2,9 +2,12 @@ package top.sankokomi.wirebare.ui.util
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import androidx.compose.runtime.Stable
+import androidx.core.graphics.drawable.toDrawable
 
 @Stable
 data class AppData(
@@ -13,7 +16,11 @@ data class AppData(
     val isSystemApp: Boolean
 ) : Comparable<AppData> {
     val appIcon by lazy {
-        Global.appContext.packageManager.getApplicationIcon(packageName)
+        try {
+            Global.appContext.packageManager.getApplicationIcon(packageName)
+        } catch (_: Exception) {
+            return@lazy Color.TRANSPARENT.toDrawable()
+        }
     }
 
     override fun compareTo(other: AppData): Int {
