@@ -15,12 +15,10 @@ data class AppData(
     val packageName: String,
     val isSystemApp: Boolean
 ) : Comparable<AppData> {
-    val appIcon by lazy {
-        try {
-            Global.appContext.packageManager.getApplicationIcon(packageName)
-        } catch (_: Exception) {
-            return@lazy Color.TRANSPARENT.toDrawable()
-        }
+    val appIcon = try {
+        Global.appContext.packageManager.getApplicationIcon(packageName)
+    } catch (_: Exception) {
+        Color.TRANSPARENT.toDrawable()
     }
 
     override fun compareTo(other: AppData): Int {
