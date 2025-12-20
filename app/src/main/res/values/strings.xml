@@ -22,6 +22,7 @@
     <string name="access_control_show_sys_app">Show System App</string>
     <string name="access_control_select_all">Select All</string>
     <string name="access_control_list_desc">Apps selected in the following list will be proxied.</string>
+    <string name="access_control_modify_desc">If you need to modify the access control configuration, please stop the proxy first.</string>
     <string name="request_list_title">Request List</string>
     <string name="response_list_title">Response List</string>
     <string name="request_info_title">Request Information</string>

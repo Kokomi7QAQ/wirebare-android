@@ -32,13 +32,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
+import top.sankokomi.wirebare.kernel.common.ProxyStatus
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.datastore.AccessControlDataStore
 import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
 import top.sankokomi.wirebare.ui.resources.AppCheckableItem
 import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.Colors
-import top.sankokomi.wirebare.ui.resources.LGrayA
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.Typographies
@@ -68,6 +68,7 @@ fun LauncherUI.AccessControlPage() {
     var accessCount by remember { mutableIntStateOf(0) }
     val showSystemAppItemChecked = ProxyPolicyDataStore.showSystemApp.collectAsState()
     val selectAllAppItemChecked = remember { mutableStateOf(false) }
+    var wireBareStatus by remember { mutableStateOf(ProxyStatus.DEAD) }
     LaunchedEffect(showSystemAppItemChecked.value) {
         withContext(Dispatchers.IO) {
             listOperateMutex.lock()
@@ -94,6 +95,11 @@ fun LauncherUI.AccessControlPage() {
         listOperateMutex.lock()
         selectAllAppItemChecked.value = accessCount == accessControlList.size
         listOperateMutex.unlock()
+    }
+    LaunchedEffect(Unit) {
+        proxyStatusFlow.collect {
+            wireBareStatus = it
+        }
     }
     LazyColumn(
         modifier = Modifier
@@ -125,6 +131,7 @@ fun LauncherUI.AccessControlPage() {
                         icon = R.drawable.ic_select_all,
                         itemName = stringResource(R.string.access_control_select_all),
                         checked = selectAllAppItemChecked.value,
+                        enabled = wireBareStatus == ProxyStatus.DEAD,
                         tint = Colors.primary
                     ) { isSelectAllApp ->
                         rememberScope.launch {
@@ -173,11 +180,20 @@ fun LauncherUI.AccessControlPage() {
                     }
                 }
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = stringResource(R.string.access_control_list_desc),
-                    modifier = Modifier.padding(horizontal = 32.dp),
-                    style = Typographies.bodyMedium
-                )
+                if (wireBareStatus != ProxyStatus.DEAD) {
+                    Text(
+                        text = stringResource(R.string.access_control_modify_desc),
+                        modifier = Modifier.padding(horizontal = 32.dp),
+                        color = Colors.error,
+                        style = Typographies.bodyMedium
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.access_control_list_desc),
+                        modifier = Modifier.padding(horizontal = 32.dp),
+                        style = Typographies.bodyMedium
+                    )
+                }
                 Spacer(modifier = Modifier.height(4.dp))
             }
         }
@@ -226,6 +242,7 @@ fun LauncherUI.AccessControlPage() {
                     icon = accessControl.appData.appIcon,
                     itemName = accessControl.appData.appName,
                     checked = accessControl.allow,
+                    enabled = wireBareStatus == ProxyStatus.DEAD,
                     subName = accessControl.appData.packageName
                 ) {
                     rememberScope.launch(Dispatchers.IO) {

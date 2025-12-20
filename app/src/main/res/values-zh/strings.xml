@@ -22,6 +22,7 @@
     <string name="access_control_show_sys_app">显示系统应用</string>
     <string name="access_control_select_all">全选</string>
     <string name="access_control_list_desc">在列表中被选中的应用程序的网络数据包将被代理</string>
+    <string name="access_control_modify_desc">如果需要修改访问控制配置，请先停止代理</string>
     <string name="request_list_title">请求列表</string>
     <string name="response_list_title">响应列表</string>
     <string name="request_info_title">请求详情</string>
