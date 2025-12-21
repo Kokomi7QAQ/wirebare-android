@@ -113,8 +113,7 @@ fun LauncherUI.AccessControlPage() {
                     AppCheckableItem(
                         icon = R.drawable.ic_android_system,
                         itemName = stringResource(R.string.access_control_show_sys_app),
-                        checked = showSystemAppItemChecked.value,
-                        tint = Colors.primary
+                        checked = showSystemAppItemChecked.value
                     ) { showSystemApp ->
                         rememberScope.launch {
                             ProxyPolicyDataStore.showSystemApp.value = showSystemApp
@@ -131,8 +130,7 @@ fun LauncherUI.AccessControlPage() {
                         icon = R.drawable.ic_select_all,
                         itemName = stringResource(R.string.access_control_select_all),
                         checked = selectAllAppItemChecked.value,
-                        enabled = wireBareStatus == ProxyStatus.DEAD,
-                        tint = Colors.primary
+                        enabled = wireBareStatus == ProxyStatus.DEAD
                     ) { isSelectAllApp ->
                         rememberScope.launch {
                             listOperateMutex.lock()
@@ -241,6 +239,7 @@ fun LauncherUI.AccessControlPage() {
                 AppCheckableItem(
                     icon = accessControl.appData.appIcon,
                     itemName = accessControl.appData.appName,
+                    tint = null,
                     checked = accessControl.allow,
                     enabled = wireBareStatus == ProxyStatus.DEAD,
                     subName = accessControl.appData.packageName

@@ -19,6 +19,7 @@ kotlinxCoroutines = "1.9.0"
 ktxJson = "1.9.0"
 bouncycastle = "1.67"
 androidxRoom = "2.7.2"
+vico = "2.0.0"
 
 agp = "8.5.2"
 kotlin = "2.1.10"
@@ -48,6 +49,8 @@ brotli-dec = { group = "org.brotli", name = "dec", version.ref = "brotliDec" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidxRoom"}
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidxRoom"}
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom"}
+vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
+vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 
 
 [plugins]

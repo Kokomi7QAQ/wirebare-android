@@ -36,7 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.kernel.common.WireBareHelper
-import top.sankokomi.wirebare.kernel.net.IpVersion
+import top.sankokomi.wirebare.kernel.net.IPVersion
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
@@ -454,15 +454,15 @@ fun IPBox(
         }
         val strIpVersion = remember {
             when (ipVersion) {
-                IpVersion.IPv4 -> "IPv4"
-                IpVersion.IPv6 -> "IPv6"
+                IPVersion.IPv4 -> "IPv4"
+                IPVersion.IPv6 -> "IPv6"
                 else -> ""
             }
         }
         val srcIp = remember {
             when (ipVersion) {
-                IpVersion.IPv4 -> "127.0.0.1"
-                IpVersion.IPv6 -> "::1"
+                IPVersion.IPv4 -> "127.0.0.1"
+                IPVersion.IPv6 -> "::1"
                 else -> ""
             }
         }

@@ -148,7 +148,7 @@ fun AppCheckableItem(
     subName: String = "",
     isWarning: Boolean = false,
     enabled: Boolean = true,
-    tint: Color? = null,
+    tint: Color? = Colors.primary,
     onCheckedChange: (Boolean) -> Unit
 ) {
     RealColumn {
@@ -716,54 +716,64 @@ fun LargeColorfulText(
 
 @Composable
 fun CornerSlideBar(
-    mainText: String,
-    subText: String,
-    backgroundColor: Color,
-    textColor: Color,
-    barColor: Color,
-    barBackgroundColor: Color,
+    icon: Any,
+    itemName: String,
+    subName: String,
     value: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     onValueChange: (Float) -> Unit = {},
     valueText: (Float) -> String = { "${(it * 100).toInt()}%" }
 ) {
-    RealColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(backgroundColor)
-            .clip(RoundedCornerShape(6.dp))
-            .padding(vertical = 12.dp)
-    ) {
-        Text(
-            modifier = Modifier.padding(horizontal = 20.dp),
-            text = mainText,
-            color = textColor,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 20.sp
-        )
-        RealRow {
-            Text(
+    RealColumn {
+        RealRow(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp, bottom = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = icon,
                 modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .align(Alignment.Bottom),
-                text = subText,
-                color = textColor,
-                fontSize = 14.sp,
-                lineHeight = 16.sp
+                    .align(Alignment.CenterVertically)
+                    .size(28.dp),
+                colorFilter = Colors.primary.let { ColorFilter.tint(it) },
+                contentDescription = null
             )
-            Spacer(modifier = Modifier.weight(1f))
+            RealColumn(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .weight(1f)
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(
+                    text = itemName,
+                    modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                    style = Typographies.titleSmall
+                )
+                AnimatedVisibility(subName.isNotEmpty()) {
+                    AnimatedContent(
+                        targetState = subName,
+                        transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+                        label = "CornerSlideBar"
+                    ) { name ->
+                        Text(
+                            text = name,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            style = Typographies.bodySmall
+                        )
+                    }
+                }
+            }
             Text(
-                modifier = Modifier.padding(horizontal = 20.dp),
                 text = valueText(value),
-                color = textColor,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 16.sp
+                style = Typographies.titleMedium
             )
         }
-        Spacer(modifier = Modifier.height(12.dp))
-        RealBox {
+        RealBox(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .padding(top = 4.dp, bottom = 16.dp)
+        ) {
             Slider(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -780,7 +790,7 @@ fun CornerSlideBar(
                     .fillMaxWidth()
                     .height(32.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(barBackgroundColor)
+                    .background(Colors.primary)
             )
             Row {
                 val percentage = value / (valueRange.endInclusive - valueRange.start)
@@ -791,7 +801,7 @@ fun CornerSlideBar(
                     modifier = Modifier
                         .size(32.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(barColor)
+                        .background(Colors.primaryContainer)
                 )
                 if (percentage < 1f) {
                     Spacer(modifier = Modifier.weight(1 - percentage))

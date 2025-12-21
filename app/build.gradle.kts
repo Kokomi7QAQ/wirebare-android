@@ -85,4 +85,7 @@ dependencies {
 
     implementation(libs.datastore.preference)
     implementation(libs.coil.compose.kt)
+
+    implementation(libs.vico.core)
+    implementation(libs.vico.compose)
 }

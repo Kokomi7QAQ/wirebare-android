@@ -53,4 +53,8 @@
     <string name="req_rsp_info_formatter_desc">The content type</string>
     <string name="req_rsp_info_text">Text</string>
     <string name="req_rsp_info_body_size">Body Size</string>
+    <string name="knet_title">Network Testing</string>
+    <string name="knet_req_bandwidth_limit">Request Bandwidth Limit</string>
+    <string name="knet_rsp_bandwidth_limit">Response Bandwidth Limit</string>
+    <string name="knet_bandwidth_no_limit">No Limit</string>
 </resources>

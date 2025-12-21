@@ -53,4 +53,8 @@
     <string name="req_rsp_info_formatter_desc">数据类型</string>
     <string name="req_rsp_info_text">普通文本</string>
     <string name="req_rsp_info_body_size">报文大小</string>
+    <string name="knet_title">网络测试</string>
+    <string name="knet_req_bandwidth_limit">请求带宽限额</string>
+    <string name="knet_rsp_bandwidth_limit">响应带宽限额</string>
+    <string name="knet_bandwidth_no_limit">无限制</string>
 </resources>

@@ -3,6 +3,11 @@ package top.sankokomi.wirebare.ui.datastore
 object ProxyPolicyDataStore : AppDataStore("proxy_policy") {
 
     /**
+     * 记录首页 tab 位置
+     * */
+    val mainTabIndex by AppIntPref("main_tab_index", 2)
+
+    /**
      * true：禁用自动过滤，false：启用自动过滤
      * */
     val banAutoFilter by AppBooleanPref("ban_auto_filter")
@@ -15,7 +20,7 @@ object ProxyPolicyDataStore : AppDataStore("proxy_policy") {
     /**
      * true：启用 ipv6，false：禁用 ipv6
      * */
-    val enableIpv6 by AppBooleanPref("enable_ipv6")
+    val enableIPv6 by AppBooleanPref("enable_ipv6")
 
     /**
      * true：启用休眠锁防止休眠，false：禁用休眠锁
@@ -28,8 +33,12 @@ object ProxyPolicyDataStore : AppDataStore("proxy_policy") {
     val showSystemApp by AppBooleanPref("ban_system_app")
 
     /**
-     * 模拟丢包概率
-     * 0 表示不丢包，100 表示全丢
+     * 请求带宽限额
      * */
-    val mockPacketLossProbability by AppIntPref("mock_packet_loss_probability")
+    val reqBandwidthLimit by AppLongPref("req_bandwidth_limit")
+
+    /**
+     * 响应带宽限额
+     * */
+    val rspBandwidthLimit by AppLongPref("rsp_bandwidth_limit")
 }

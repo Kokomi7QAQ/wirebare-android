@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +38,13 @@ class AppFloatPref(
     default: Float = 0f
 ) : AppPreferenceProperty<Float>(default) {
     override val prefKey: Preferences.Key<Float> = floatPreferencesKey(keyName)
+}
+
+class AppLongPref(
+    keyName: String,
+    default: Long = 0
+) : AppPreferenceProperty<Long>(default) {
+    override val prefKey: Preferences.Key<Long> = longPreferencesKey(keyName)
 }
 
 class AppIntPref(
