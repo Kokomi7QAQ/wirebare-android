@@ -57,4 +57,7 @@
     <string name="knet_req_bandwidth_limit">Request Bandwidth Limit</string>
     <string name="knet_rsp_bandwidth_limit">Response Bandwidth Limit</string>
     <string name="knet_bandwidth_no_limit">No Limit</string>
+    <string name="knet_bandwidth">Bandwidth</string>
+    <string name="knet_req_bandwidth">Request Bandwidth</string>
+    <string name="knet_rsp_bandwidth">Response Bandwidth</string>
 </resources>

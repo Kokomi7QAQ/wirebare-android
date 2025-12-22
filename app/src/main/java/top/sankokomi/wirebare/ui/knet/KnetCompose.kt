@@ -20,12 +20,12 @@ import androidx.compose.ui.unit.dp
 import top.sankokomi.wirebare.kernel.common.BandwidthLimiter
 import top.sankokomi.wirebare.kernel.common.ProxyStatus
 import top.sankokomi.wirebare.kernel.common.WireBare
+import top.sankokomi.wirebare.kernel.dashboard.WireBareDashboard
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
 import top.sankokomi.wirebare.ui.launcher.LauncherUI
 import top.sankokomi.wirebare.ui.resources.AppCheckableItem
 import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
-import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.CornerSlideBar
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.util.statusBarHeightDp
@@ -76,7 +76,6 @@ fun LauncherUI.KnetPage() {
 private fun LauncherUI.KnetBox(
     status: ProxyStatus
 ) {
-    val tint = Colors.primary
     val switchChecked = remember { mutableStateOf(false) }
     val switchEnabled = remember { mutableStateOf(true) }
     val strSwitchDead = stringResource(R.string.control_center_main_switch_dead)
@@ -161,7 +160,30 @@ private fun LauncherUI.KnetBox(
         }
         Spacer(modifier = Modifier.height(12.dp))
         AppRoundCornerBox {
-            BandwidthDashboardChart()
+            BandwidthChart(
+                icon = R.drawable.ic_bandwidth,
+                itemName = stringResource(R.string.knet_bandwidth),
+                subName = "",
+                WireBareDashboard.bandwidthFlow
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        AppRoundCornerBox {
+            BandwidthChart(
+                icon = R.drawable.ic_request,
+                itemName = stringResource(R.string.knet_req_bandwidth),
+                subName = "",
+                WireBareDashboard.reqBandwidthFlow
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        AppRoundCornerBox {
+            BandwidthChart(
+                icon = R.drawable.ic_response,
+                itemName = stringResource(R.string.knet_rsp_bandwidth),
+                subName = "",
+                WireBareDashboard.rspBandwidthFlow
+            )
         }
     }
 }

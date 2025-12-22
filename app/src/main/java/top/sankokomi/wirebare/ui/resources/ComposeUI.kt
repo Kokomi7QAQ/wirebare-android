@@ -728,7 +728,7 @@ fun CornerSlideBar(
         RealRow(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .padding(top = 16.dp, bottom = 4.dp),
+                .padding(top = 16.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(

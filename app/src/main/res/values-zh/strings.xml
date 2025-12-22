@@ -57,4 +57,7 @@
     <string name="knet_req_bandwidth_limit">请求带宽限额</string>
     <string name="knet_rsp_bandwidth_limit">响应带宽限额</string>
     <string name="knet_bandwidth_no_limit">无限制</string>
+    <string name="knet_bandwidth">带宽</string>
+    <string name="knet_req_bandwidth">请求带宽</string>
+    <string name="knet_rsp_bandwidth">响应带宽</string>
 </resources>
