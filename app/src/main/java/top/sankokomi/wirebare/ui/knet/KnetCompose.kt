@@ -193,5 +193,5 @@ private fun Float.toValue(max: Long): Long {
 }
 
 private fun Long.toPercent(max: Long): Float {
-    return (coerceIn(0, max).toFloat() / max).pow(1.0f / 3.0f).toFloat()
+    return (coerceIn(0, max).toFloat() / max).pow(1.0f / 3.0f)
 }
