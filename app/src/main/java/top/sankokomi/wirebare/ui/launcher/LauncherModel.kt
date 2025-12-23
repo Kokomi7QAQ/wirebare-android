@@ -47,7 +47,7 @@ object LauncherModel {
                 )
             )
 
-            WireBare.dynamicConfig.bandwidthStatInterval = 300L
+            WireBare.dynamicConfig.bandwidthStatInterval = 3000L
             WireBare.dynamicConfig.reqBandwidthLimiter = BandwidthLimiter(ProxyPolicyDataStore.reqBandwidthLimit.value)
             WireBare.dynamicConfig.rspBandwidthLimiter = BandwidthLimiter(ProxyPolicyDataStore.rspBandwidthLimit.value)
         }
