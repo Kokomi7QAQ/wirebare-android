@@ -60,4 +60,5 @@
     <string name="knet_bandwidth">Bandwidth</string>
     <string name="knet_req_bandwidth">Request Bandwidth</string>
     <string name="knet_rsp_bandwidth">Response Bandwidth</string>
+    <string name="knet_floating_window">Floating Window</string>
 </resources>

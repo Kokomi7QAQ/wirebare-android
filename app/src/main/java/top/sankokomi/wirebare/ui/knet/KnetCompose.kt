@@ -1,5 +1,6 @@
 package top.sankokomi.wirebare.ui.knet
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -48,27 +49,6 @@ fun LauncherUI.KnetPage() {
         Spacer(modifier = Modifier.height(statusBarHeightDp + 56.dp))
         KnetBox(wireBareStatus)
         Spacer(modifier = Modifier.height(80.dp))
-//        Box(
-//            modifier = Modifier
-//                .padding(16.dp)
-//                .clip(RoundedCornerShape(6.dp))
-//        ) {
-//            CornerSlideBar(
-//                mainText = "随机丢包概率",
-//                subText = "调整后立即生效",
-//                backgroundColor = Color.Transparent,
-//                textColor = Color.Black,
-//                barColor = LGreenC,
-//                barBackgroundColor = LGreenA,
-//                value = mockPacketLossProbability / 100f,
-//                valueRange = 0f..1f,
-//                onValueChange = {
-//                    val probability = (it * 100).roundToInt()
-//                    ProxyPolicyDataStore.mockPacketLossProbability.value = probability
-//                    WireBare.dynamicConfiguration.mockPacketLossProbability = probability
-//                }
-//            )
-//        }
     }
 }
 
@@ -84,6 +64,7 @@ private fun LauncherUI.KnetBox(
     val strSwitchDying = stringResource(R.string.control_center_main_switch_dying)
     val switchSubName = remember { mutableStateOf(strSwitchDead) }
     val isWireBareActive = remember { mutableStateOf(false) }
+    val enableFloatingWindow by ProxyPolicyDataStore.enableFloatingWindow.collectAsState()
     val strReqBandwidthLimit = stringResource(R.string.knet_req_bandwidth_limit)
     val strRspBandwidthLimit = stringResource(R.string.knet_rsp_bandwidth_limit)
     val strBandwidthNoLimit = stringResource(R.string.knet_bandwidth_no_limit)
@@ -111,6 +92,30 @@ private fun LauncherUI.KnetBox(
                     enabled = switchEnabled.value
                 ) {
                     if (it) startProxy() else stopProxy()
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        AppRoundCornerBox {
+            RealColumn {
+                AppCheckableItem(
+                    itemName = stringResource(R.string.knet_floating_window),
+                    checked = enableFloatingWindow,
+                    icon = R.drawable.ic_floating_window,
+                    subName = ""
+                ) {
+                    ProxyPolicyDataStore.enableFloatingWindow.value = it
+                    if (it) {
+                        val intent = Intent(KnetFloatingDashboardService.ACTION_SHOW).apply {
+                            `package` = packageName
+                        }
+                        startService(intent)
+                    } else {
+                        val intent = Intent(KnetFloatingDashboardService.ACTION_HIDE).apply {
+                            `package` = packageName
+                        }
+                        stopService(intent)
+                    }
                 }
             }
         }
@@ -159,31 +164,33 @@ private fun LauncherUI.KnetBox(
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
-        AppRoundCornerBox {
-            BandwidthChart(
-                icon = R.drawable.ic_bandwidth,
-                itemName = stringResource(R.string.knet_bandwidth),
-                subName = "",
-                WireBareDashboard.bandwidthFlow
-            )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        AppRoundCornerBox {
-            BandwidthChart(
-                icon = R.drawable.ic_request,
-                itemName = stringResource(R.string.knet_req_bandwidth),
-                subName = "",
-                WireBareDashboard.reqBandwidthFlow
-            )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-        AppRoundCornerBox {
-            BandwidthChart(
-                icon = R.drawable.ic_response,
-                itemName = stringResource(R.string.knet_rsp_bandwidth),
-                subName = "",
-                WireBareDashboard.rspBandwidthFlow
-            )
+        RealColumn {
+            AppRoundCornerBox {
+                BandwidthChart(
+                    icon = R.drawable.ic_bandwidth,
+                    itemName = stringResource(R.string.knet_bandwidth),
+                    subName = "",
+                    WireBareDashboard.bandwidthFlow
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            AppRoundCornerBox {
+                BandwidthChart(
+                    icon = R.drawable.ic_request,
+                    itemName = stringResource(R.string.knet_req_bandwidth),
+                    subName = "",
+                    WireBareDashboard.reqBandwidthFlow
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            AppRoundCornerBox {
+                BandwidthChart(
+                    icon = R.drawable.ic_response,
+                    itemName = stringResource(R.string.knet_rsp_bandwidth),
+                    subName = "",
+                    WireBareDashboard.rspBandwidthFlow
+                )
+            }
         }
     }
 }

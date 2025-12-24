@@ -8,6 +8,7 @@
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:name=".app.WireBareUIApp"
@@ -47,6 +48,15 @@
                 <action android:name="android.net.VpnService" />
                 <action android:name="top.sankokomi.wirebare.core.action.Start" />
                 <action android:name="top.sankokomi.wirebare.core.action.Stop" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="top.sankokomi.wirebare.ui.knet.KnetFloatingDashboardService"
+            android:exported="false"
+            android:permission="android.permission.SYSTEM_ALERT_WINDOW">
+            <intent-filter>
+                <action android:name="top.sankokomi.wirebare.action.SHOW_FLOATING_WINDOW" />
+                <action android:name="top.sankokomi.wirebare.action.HIDE_FLOATING_WINDOW" />
             </intent-filter>
         </service>
     </application>

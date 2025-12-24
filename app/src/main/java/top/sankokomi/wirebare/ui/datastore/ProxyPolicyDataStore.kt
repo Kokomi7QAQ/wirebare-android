@@ -41,4 +41,9 @@ object ProxyPolicyDataStore : AppDataStore("proxy_policy") {
      * 响应带宽限额
      * */
     val rspBandwidthLimit by AppLongPref("rsp_bandwidth_limit")
+
+    /**
+     * 悬浮窗开关
+     * */
+    val enableFloatingWindow by AppBooleanPref("enable_floating_window", false)
 }

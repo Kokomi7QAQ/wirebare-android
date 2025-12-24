@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import top.sankokomi.wirebare.ui.resources.Colors
@@ -35,6 +36,12 @@ val Int.composeColor: Color get() = Color(this)
 
 val Number.pxToDp: Dp
     get() = (this.toFloat() / Global.appContext.resources.displayMetrics.density + 0.5f).dp
+
+val Dp.dpToPx: Int
+    get() {
+        val density = Density(Global.appContext)
+        return with(density) { this@dpToPx.toPx().toInt() }
+    }
 
 @Composable
 fun Modifier.injectTouchEffect(

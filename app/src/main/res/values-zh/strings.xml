@@ -60,4 +60,5 @@
     <string name="knet_bandwidth">带宽</string>
     <string name="knet_req_bandwidth">请求带宽</string>
     <string name="knet_rsp_bandwidth">响应带宽</string>
+    <string name="knet_floating_window">悬浮窗</string>
 </resources>
