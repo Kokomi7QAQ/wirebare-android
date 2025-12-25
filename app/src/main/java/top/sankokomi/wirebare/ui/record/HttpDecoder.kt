@@ -27,8 +27,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import top.sankokomi.wirebare.kernel.util.uncompressBrotli
 import top.sankokomi.wirebare.kernel.util.uncompressGzip
+import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.Typographies
+import top.sankokomi.wirebare.ui.util.showToast
 
 @Stable
 interface HttpBodyDecompressor {
@@ -173,9 +175,22 @@ object HtmlHttpBodyFormatter : HttpBodyFormatter {
 object ImageHttpBodyFormatter : HttpBodyFormatter {
     @Composable
     override fun FormatViewer(bytes: ByteArray) {
-        var image by remember { mutableStateOf(createBitmap(1, 1)) }
+        val defaultImage = remember { createBitmap(1, 1) }
+        var image by remember { mutableStateOf(defaultImage) }
         LaunchedEffect(bytes.hashCode()) {
-            image = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            if (bytes.isEmpty()) {
+                image = defaultImage
+                return@LaunchedEffect
+            }
+            val img = withContext(Dispatchers.Default) {
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            }
+            if (img != null) {
+                image = img
+            } else {
+                image = defaultImage
+                showToast(R.string.req_rsp_info_image_error)
+            }
         }
         AsyncImage(
             model = image,

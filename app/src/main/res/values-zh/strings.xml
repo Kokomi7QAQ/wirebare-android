@@ -53,6 +53,7 @@
     <string name="req_rsp_info_formatter_desc">数据类型</string>
     <string name="req_rsp_info_text">普通文本</string>
     <string name="req_rsp_info_body_size">报文大小</string>
+    <string name="req_rsp_info_image_error">解析图片失败</string>
     <string name="knet_title">网络测试</string>
     <string name="knet_floating_window">悬浮窗</string>
     <string name="knet_floating_window_background">仅在后台启用</string>
