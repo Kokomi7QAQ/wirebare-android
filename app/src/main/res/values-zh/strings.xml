@@ -54,10 +54,19 @@
     <string name="req_rsp_info_text">普通文本</string>
     <string name="req_rsp_info_body_size">报文大小</string>
     <string name="knet_title">网络测试</string>
+    <string name="knet_floating_window">悬浮窗</string>
+    <string name="knet_floating_window_background">仅在后台启用</string>
+    <string name="knet_mini_floating_window">启用迷你悬浮窗</string>
+    <string name="knet_mini_floating_window_desc">你也可以点击悬浮窗来切换</string>
     <string name="knet_req_bandwidth_limit">请求带宽限额</string>
     <string name="knet_rsp_bandwidth_limit">响应带宽限额</string>
     <string name="knet_bandwidth_no_limit">无限制</string>
     <string name="knet_bandwidth">带宽</string>
     <string name="knet_req_bandwidth">请求带宽</string>
     <string name="knet_rsp_bandwidth">响应带宽</string>
+    <string name="unit_byte">字节</string>
+    <string name="unit_k_byte">千字节</string>
+    <string name="unit_m_byte">兆字节</string>
+    <string name="unit_second">秒</string>
+    <string name="permission_draw_overlays">请授予“显示在其他应用上层”权限以启用悬浮窗</string>
 </resources>

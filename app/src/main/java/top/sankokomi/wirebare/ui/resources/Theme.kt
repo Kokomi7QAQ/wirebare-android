@@ -5,12 +5,13 @@ import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Typography
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -21,8 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import top.sankokomi.wirebare.ui.util.navigationBarHeightDp
-import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
 @Composable
 fun WirebareUITheme(
@@ -31,6 +30,7 @@ fun WirebareUITheme(
     dynamicColor: Boolean = false,
     isShowStatusBar: Boolean = false,
     isShowNavigationBar: Boolean = true,
+    transparentBackground: Boolean = false,
     statusBarColor: (ColorScheme) -> Color = { it.background },
     navigationBarColor: (ColorScheme) -> Color = { it.background },
     content: @Composable () -> Unit
@@ -51,20 +51,34 @@ fun WirebareUITheme(
 
         darkTheme -> {
             typography = DarkTypography
-            colorScheme = DarkColorScheme
+            colorScheme = if (transparentBackground) {
+                DarkColorScheme.copy(
+                    background = Transparent
+                )
+            } else {
+                DarkColorScheme
+            }
         }
 
         else -> {
             typography = LightTypography
-            colorScheme = LightColorScheme
+            colorScheme = if (transparentBackground) {
+                LightColorScheme.copy(
+                    background = Transparent
+                )
+            } else {
+                LightColorScheme
+            }
         }
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
-            WindowCompat.getInsetsController(window, view).apply {
-                isAppearanceLightStatusBars = !darkTheme
+            val window = (view.context as? Activity)?.window
+            if (window != null) {
+                WindowCompat.getInsetsController(window, view).apply {
+                    isAppearanceLightStatusBars = !darkTheme
+                }
             }
         }
     }
@@ -73,25 +87,29 @@ fun WirebareUITheme(
         colorScheme = colorScheme,
         typography = typography
     ) {
-        Column {
-            if (isShowStatusBar) {
-                Spacer(
-                    modifier = Modifier
-                        .background(statusBarColor(colorScheme))
-                        .fillMaxWidth()
-                        .height(statusBarHeightDp)
-                )
-            }
-            Box(modifier = Modifier.weight(1f)) {
-                content()
-            }
-            if (isShowNavigationBar) {
-                Spacer(
-                    modifier = Modifier
-                        .background(navigationBarColor(colorScheme))
-                        .fillMaxWidth()
-                        .height(navigationBarHeightDp)
-                )
+        Scaffold { innerPadding ->
+            RealColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                if (isShowStatusBar) {
+                    Spacer(
+                        modifier = Modifier
+                            .background(statusBarColor(colorScheme))
+                            .fillMaxWidth()
+                            .height(innerPadding.calculateTopPadding())
+                    )
+                }
+                Box(modifier = Modifier.weight(1f)) {
+                    content()
+                }
+                if (isShowNavigationBar) {
+                    Spacer(
+                        modifier = Modifier
+                            .background(navigationBarColor(colorScheme))
+                            .fillMaxWidth()
+                            .height(innerPadding.calculateBottomPadding())
+                    )
+                }
             }
         }
     }

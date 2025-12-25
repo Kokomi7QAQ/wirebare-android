@@ -17,8 +17,8 @@ class WireInfoUI : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var request = IntentCompat.getParcelableExtra(intent, "request", HttpReq::class.java)
-        var response = IntentCompat.getParcelableExtra(intent, "response", HttpRsp::class.java)
+        val request = IntentCompat.getParcelableExtra(intent, "request", HttpReq::class.java)
+        val response = IntentCompat.getParcelableExtra(intent, "response", HttpRsp::class.java)
         enableEdgeToEdge()
         setContent {
             WirebareUITheme(

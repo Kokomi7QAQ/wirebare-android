@@ -58,7 +58,7 @@ class WireDetailPopupUI : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Transparent
                 ) {
-                    var visible = remember { mutableStateOf(false) }
+                    val visible = remember { mutableStateOf(false) }
                     this.visible = visible
                     val rememberScope = rememberCoroutineScope()
                     LaunchedEffect(Unit) {

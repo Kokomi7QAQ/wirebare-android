@@ -31,6 +31,7 @@ import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
 import top.sankokomi.wirebare.ui.util.requireAppDataList
+import top.sankokomi.wirebare.ui.window.KnetDashboardWindowService
 
 class LauncherUI : VpnPrepareActivity() {
 
@@ -151,6 +152,7 @@ class LauncherUI : VpnPrepareActivity() {
                 }
             }
         }
+        KnetDashboardWindowService.auto()
     }
 
     fun queryRecord() {

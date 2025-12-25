@@ -6,11 +6,14 @@ import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
 import top.sankokomi.wirebare.kernel.ssl.JKS
 import top.sankokomi.wirebare.kernel.util.Level
+import top.sankokomi.wirebare.ui.datastore.KnetPolicyDataStore
 import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
 import top.sankokomi.wirebare.ui.util.Global
 import top.sankokomi.wirebare.ui.wireinfo.WireBareHttpInterceptor
 
 object LauncherModel {
+
+    const val MTU = 10 * 1024
 
     val wireBareJKS by lazy {
         JKS(
@@ -34,7 +37,7 @@ object LauncherModel {
             if (ProxyPolicyDataStore.enableSSL.value) {
                 jks = wireBareJKS
             }
-            mtu = 10 * 1024
+            mtu = MTU
             tcpProxyServerCount = 5
             ipv4ProxyAddress = "10.1.10.1" to 32
             enableIPv6 = ProxyPolicyDataStore.enableIPv6.value
@@ -47,9 +50,11 @@ object LauncherModel {
                 )
             )
 
-            WireBare.dynamicConfig.bandwidthStatInterval = 3000L
-            WireBare.dynamicConfig.reqBandwidthLimiter = BandwidthLimiter(ProxyPolicyDataStore.reqBandwidthLimit.value)
-            WireBare.dynamicConfig.rspBandwidthLimiter = BandwidthLimiter(ProxyPolicyDataStore.rspBandwidthLimit.value)
+            WireBare.dynamicConfig.bandwidthStatInterval = 2000L
+            WireBare.dynamicConfig.reqBandwidthLimiter =
+                BandwidthLimiter(KnetPolicyDataStore.reqBandwidthLimit.value)
+            WireBare.dynamicConfig.rspBandwidthLimiter =
+                BandwidthLimiter(KnetPolicyDataStore.rspBandwidthLimit.value)
         }
     }
 

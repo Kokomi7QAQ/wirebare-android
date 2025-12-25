@@ -68,3 +68,11 @@ fun Window.showNavigationBar() {
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 ).inv()
 }
+
+val screenWidth: Int get() {
+    return Global.appContext.resources.displayMetrics.widthPixels
+}
+
+val screenHeight: Int get() {
+    return Global.appContext.resources.displayMetrics.heightPixels
+}

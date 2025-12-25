@@ -65,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import top.sankokomi.wirebare.ui.R
+import top.sankokomi.wirebare.ui.util.Damping
 import top.sankokomi.wirebare.ui.util.injectTouchEffect
 import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
@@ -493,14 +494,17 @@ fun AppTab(
 
 @Composable
 fun AppRoundCornerBox(
+    paddingHorizontal: Dp = 16.dp,
+    paddingVertical: Dp = 0.dp,
+    corner: Dp = 24.dp,
     background: Color = Colors.onBackground,
     content: @Composable BoxScope.() -> Unit
 ) {
     RealBox(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(24.dp))
+            .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
+            .clip(RoundedCornerShape(corner))
             .background(background),
         content = content
     )
@@ -715,11 +719,38 @@ fun LargeColorfulText(
 }
 
 @Composable
+fun CornerDampingSlideBar(
+    icon: Any,
+    itemName: String,
+    subName: String = "",
+    damping: Float = 1f,
+    max: Long = 100L,
+    value: Long = 0L,
+    onValueChange: (Long) -> Unit = {},
+    valueText: (Long) -> String = { "$it" }
+) {
+    val damping = remember { Damping(damping, max) }
+    CornerSlideBar(
+        icon = icon,
+        itemName = itemName,
+        subName = subName,
+        value = damping.toPercent(value),
+        valueRange = 0f..1f,
+        onValueChange = {
+            onValueChange(damping.toValue(it))
+        },
+        valueText = {
+            valueText(damping.toValue(it))
+        }
+    )
+}
+
+@Composable
 fun CornerSlideBar(
     icon: Any,
     itemName: String,
-    subName: String,
-    value: Float,
+    subName: String = "",
+    value: Float = 0f,
     valueRange: ClosedFloatingPointRange<Float>,
     onValueChange: (Float) -> Unit = {},
     valueText: (Float) -> String = { "${(it * 100).toInt()}%" }
@@ -766,7 +797,7 @@ fun CornerSlideBar(
             }
             Text(
                 text = valueText(value),
-                style = Typographies.titleMedium
+                style = Typographies.titleSmall
             )
         }
         RealBox(

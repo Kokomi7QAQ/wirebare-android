@@ -31,14 +31,4 @@ object ProxyPolicyDataStore : AppDataStore("proxy_policy") {
      * true：显示系统应用，false：不显示系统应用
      * */
     val showSystemApp by AppBooleanPref("ban_system_app")
-
-    /**
-     * 请求带宽限额
-     * */
-    val reqBandwidthLimit by AppLongPref("req_bandwidth_limit")
-
-    /**
-     * 响应带宽限额
-     * */
-    val rspBandwidthLimit by AppLongPref("rsp_bandwidth_limit")
 }
