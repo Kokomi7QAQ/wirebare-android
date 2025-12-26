@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.util.TypedValueCompat
 import top.sankokomi.wirebare.ui.resources.Colors
 import kotlin.random.Random
 
@@ -33,14 +34,14 @@ val Color.androidColor: Int get() = toArgb()
 val Int.composeColor: Color get() = Color(this)
 
 val Number.pxToDp: Int
-    get() = TypedValue.deriveDimension(
+    get() = TypedValueCompat.deriveDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         this.toFloat(),
         Global.appContext.resources.displayMetrics
     ).toInt()
 
 val Number.pxToSp: Int
-    get() = TypedValue.deriveDimension(
+    get() = TypedValueCompat.deriveDimension(
         TypedValue.COMPLEX_UNIT_SP,
         this.toFloat(),
         Global.appContext.resources.displayMetrics

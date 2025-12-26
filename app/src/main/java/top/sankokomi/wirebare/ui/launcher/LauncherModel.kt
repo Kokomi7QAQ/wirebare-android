@@ -14,6 +14,7 @@ import top.sankokomi.wirebare.ui.wireinfo.WireBareHttpInterceptor
 object LauncherModel {
 
     const val MTU = 10 * 1024
+    const val BANDWIDTH_LIMIT_TIMEOUT = 10000L
 
     val wireBareJKS by lazy {
         JKS(
@@ -51,10 +52,17 @@ object LauncherModel {
             )
 
             WireBare.dynamicConfig.bandwidthStatInterval = 2000L
-            WireBare.dynamicConfig.reqBandwidthLimiter =
-                BandwidthLimiter(KnetPolicyDataStore.reqBandwidthLimit.value)
-            WireBare.dynamicConfig.rspBandwidthLimiter =
-                BandwidthLimiter(KnetPolicyDataStore.rspBandwidthLimit.value)
+            val maxBandwidthLimit = 2L * MTU
+            val reqBandwidthLimit = KnetPolicyDataStore.reqBandwidthLimit.value
+            val rspBandwidthLimit = KnetPolicyDataStore.rspBandwidthLimit.value
+            WireBare.dynamicConfig.reqBandwidthLimiter = BandwidthLimiter(
+                if (reqBandwidthLimit in 1..<maxBandwidthLimit) reqBandwidthLimit else 0L,
+                BANDWIDTH_LIMIT_TIMEOUT
+            )
+            WireBare.dynamicConfig.rspBandwidthLimiter = BandwidthLimiter(
+                if (rspBandwidthLimit in 1..<maxBandwidthLimit) rspBandwidthLimit else 0L,
+                BANDWIDTH_LIMIT_TIMEOUT
+            )
         }
     }
 

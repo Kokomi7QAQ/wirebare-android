@@ -28,6 +28,7 @@ import top.sankokomi.wirebare.kernel.dashboard.WireBareDashboard
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.datastore.KnetPolicyDataStore
 import top.sankokomi.wirebare.ui.launcher.LauncherModel
+import top.sankokomi.wirebare.ui.launcher.LauncherModel.BANDWIDTH_LIMIT_TIMEOUT
 import top.sankokomi.wirebare.ui.launcher.LauncherUI
 import top.sankokomi.wirebare.ui.resources.AppCheckableItem
 import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
@@ -179,7 +180,10 @@ private fun LauncherUI.KnetBox(
                 value = reqBandwidthLimit,
                 onValueChange = {
                     KnetPolicyDataStore.reqBandwidthLimit.value = it
-                    WireBare.dynamicConfig.reqBandwidthLimiter = BandwidthLimiter(max = it)
+                    WireBare.dynamicConfig.reqBandwidthLimiter = BandwidthLimiter(
+                        max = if (it in 1..<maxBandwidthLimit) it else 0L,
+                        timeout = BANDWIDTH_LIMIT_TIMEOUT
+                    )
                 },
                 valueText = {
                     if (it !in 1..<maxBandwidthLimit) {
@@ -200,7 +204,10 @@ private fun LauncherUI.KnetBox(
                 value = rspBandwidthLimit,
                 onValueChange = {
                     KnetPolicyDataStore.rspBandwidthLimit.value = it
-                    WireBare.dynamicConfig.rspBandwidthLimiter = BandwidthLimiter(max = it)
+                    WireBare.dynamicConfig.rspBandwidthLimiter = BandwidthLimiter(
+                        max = if (it in 1..<maxBandwidthLimit) it else 0L,
+                        timeout = BANDWIDTH_LIMIT_TIMEOUT
+                    )
                 },
                 valueText = {
                     if (it !in 1..<maxBandwidthLimit) {

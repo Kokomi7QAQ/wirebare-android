@@ -3,9 +3,7 @@ package top.sankokomi.wirebare.ui.util
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.Icon
+import android.os.Build
 import androidx.compose.runtime.Stable
 import androidx.core.graphics.drawable.toDrawable
 
@@ -28,7 +26,12 @@ data class AppData(
 
 fun requireAppDataList(): List<AppData> {
     return Global.appContext.packageManager.getInstalledApplications(
-        PackageManager.MATCH_UNINSTALLED_PACKAGES
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            PackageManager.MATCH_UNINSTALLED_PACKAGES
+        } else {
+            @Suppress("DEPRECATION")
+            PackageManager.GET_UNINSTALLED_PACKAGES
+        }
     ).map {
         AppData(
             Global.appContext.packageManager.getApplicationLabel(it).toString(),
