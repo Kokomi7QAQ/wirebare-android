@@ -13,7 +13,7 @@ import top.sankokomi.wirebare.ui.wireinfo.WireBareHttpInterceptor
 
 object LauncherModel {
 
-    const val MTU = 10 * 1024
+    const val MTU = 1400
     const val BANDWIDTH_LIMIT_TIMEOUT = 10000L
 
     val wireBareJKS by lazy {
