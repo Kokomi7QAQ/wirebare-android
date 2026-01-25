@@ -29,8 +29,8 @@ import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
+import top.sankokomi.wirebare.ui.util.AppData
 import top.sankokomi.wirebare.ui.util.immersive
-import top.sankokomi.wirebare.ui.util.requireAppDataList
 import top.sankokomi.wirebare.ui.window.KnetDashboardWindowService
 
 class LauncherUI : VpnPrepareActivity() {
@@ -90,7 +90,7 @@ class LauncherUI : VpnPrepareActivity() {
             // 提前设定状态为正在启动
             _proxyStatusFlow.value = ProxyStatus.STARTING
             val showSystemApp = ProxyPolicyDataStore.showSystemApp.value
-            val appList = requireAppDataList().filter {
+            val appList = AppData.all.filter {
                 if (!showSystemApp) {
                     !it.isSystemApp
                 } else {

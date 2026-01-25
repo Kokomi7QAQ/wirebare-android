@@ -56,7 +56,10 @@ import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.StatusBarSpacer
 import top.sankokomi.wirebare.ui.resources.TabData
 import top.sankokomi.wirebare.ui.resources.Typographies
+import top.sankokomi.wirebare.ui.util.AppData
 import top.sankokomi.wirebare.ui.util.copyTextToClipBoard
+import top.sankokomi.wirebare.ui.util.none
+import top.sankokomi.wirebare.ui.util.selfOrNone
 import top.sankokomi.wirebare.ui.util.showToast
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -263,7 +266,9 @@ private fun WireInfoUI.WireInfoRequestUIPage(
         RealBox { }
         return
     }
-    RealBox {
+    RealBox(
+        modifier = Modifier.fillMaxSize()
+    ) {
         val headerList = remember {
             request.formatHead ?: return@remember emptyList()
             request.formatHead.subList(1, request.formatHead.size).map {
@@ -284,16 +289,39 @@ private fun WireInfoUI.WireInfoRequestUIPage(
                 httpBodyByteSize = readHttpBytesById(request.id).httpBody().size
             }
         }
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
             item {
                 StatusBarSpacer(56.dp)
             }
             item {
-                URLBox(request.url ?: "")
+                URLBox(request.url.selfOrNone())
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            item {
+                AppInfoBox(request.sourceProcessUid)
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
                 IPBox(request.sourcePort, request.destinationAddress, request.destinationPort)
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            item {
+                val t = stringResource(R.string.common_true)
+                val f = stringResource(R.string.common_false)
+                val content = remember {
+                    val isHttps = request.isHttps ?: return@remember none()
+                    return@remember if (isHttps) t else f
+                }
+                AppRoundCornerBox {
+                    AppExpandableTextItem(
+                        icon = R.drawable.ic_cert,
+                        title = stringResource(R.string.common_ssl),
+                        body = content,
+                        expand = true
+                    )
+                }
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
@@ -306,11 +334,11 @@ private fun WireInfoUI.WireInfoRequestUIPage(
                         RealColumn {
                             TextChapter(
                                 title = stringResource(R.string.request_info_method),
-                                content = request.method ?: ""
+                                content = request.method.selfOrNone()
                             )
                             TextChapter(
                                 title = stringResource(R.string.req_rsp_info_http_version),
-                                content = request.httpVersion ?: "",
+                                content = request.httpVersion.selfOrNone(),
                                 appendNewLine = false
                             )
                         }
@@ -329,8 +357,13 @@ private fun WireInfoUI.WireInfoRequestUIPage(
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
-                BodySizeBox(byteSize = httpBodyByteSize)
-                Spacer(modifier = Modifier.height(12.dp))
+                if (httpBodyByteSize > 0) {
+                    PacketSizeBox(
+                        title = stringResource(R.string.req_rsp_info_body_size),
+                        byteSize = httpBodyByteSize
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
             item {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -348,7 +381,9 @@ private fun WireInfoUI.WireInfoResponseUIPage(
         RealBox { }
         return
     }
-    RealBox {
+    RealBox(
+        modifier = Modifier.fillMaxSize()
+    ) {
         val headerList = remember {
             response.formatHead ?: return@remember emptyList()
             response.formatHead.subList(1, response.formatHead.size).map {
@@ -369,16 +404,42 @@ private fun WireInfoUI.WireInfoResponseUIPage(
                 httpBodyByteSize = readHttpBytesById(response.id).httpBody().size
             }
         }
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
             item {
                 StatusBarSpacer(56.dp)
             }
             item {
-                URLBox(response.url ?: "")
+                URLBox(response.url.selfOrNone())
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            item {
+                AppInfoBox(response.sourceProcessUid)
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
                 IPBox(response.sourcePort, response.destinationAddress, response.destinationPort)
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            item {
+                val t = stringResource(R.string.common_true)
+                val f = stringResource(R.string.common_false)
+                val content = remember {
+                    val isHttps = response.isHttps
+                    if (isHttps == null) {
+                        return@remember isHttps.selfOrNone()
+                    }
+                    return@remember if (isHttps) t else f
+                }
+                AppRoundCornerBox {
+                    AppExpandableTextItem(
+                        icon = R.drawable.ic_cert,
+                        title = stringResource(R.string.common_ssl),
+                        body = content,
+                        expand = true
+                    )
+                }
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
@@ -391,11 +452,11 @@ private fun WireInfoUI.WireInfoResponseUIPage(
                         RealColumn {
                             TextChapter(
                                 title = stringResource(R.string.response_info_status_code),
-                                content = response.rspStatus ?: ""
+                                content = response.rspStatus.selfOrNone()
                             )
                             TextChapter(
                                 title = stringResource(R.string.req_rsp_info_http_version),
-                                content = response.httpVersion ?: "",
+                                content = response.httpVersion.selfOrNone(),
                                 appendNewLine = false
                             )
                         }
@@ -414,8 +475,13 @@ private fun WireInfoUI.WireInfoResponseUIPage(
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
-                BodySizeBox(byteSize = httpBodyByteSize)
-                Spacer(modifier = Modifier.height(12.dp))
+                if (httpBodyByteSize > 0) {
+                    PacketSizeBox(
+                        title = stringResource(R.string.req_rsp_info_body_size),
+                        byteSize = httpBodyByteSize
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
             item {
                 Spacer(modifier = Modifier.height(8.dp))
@@ -445,6 +511,39 @@ fun URLBox(url: String) {
 }
 
 @Composable
+fun AppInfoBox(uid: Int) {
+    val appData = remember { AppData.from(uid) }
+    AppRoundCornerBox {
+        AppExpandableRichItem(
+            icon = appData,
+            title = appData.appName,
+            iconTint = null,
+            expandable = false
+        ) {
+            RealColumn {
+                TextChapter(
+                    title = "UID",
+                    content = uid.toString()
+                )
+                TextChapter(
+                    title = stringResource(R.string.req_rsp_info_app_package_name),
+                    content = appData.packageName
+                )
+                TextChapter(
+                    title = stringResource(R.string.req_rsp_info_app_is_system),
+                    content = if (appData.isSystemApp) {
+                        stringResource(R.string.common_true)
+                    } else {
+                        stringResource(R.string.common_false)
+                    },
+                    appendNewLine = false
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun IPBox(
     sourcePort: Short?,
     destinationAddress: String?,
@@ -454,13 +553,6 @@ fun IPBox(
         val ipVersion = remember {
             WireBareHelper.parseIpVersion(destinationAddress)
         }
-        val strIpVersion = remember {
-            when (ipVersion) {
-                IPVersion.IPv4 -> "IPv4"
-                IPVersion.IPv6 -> "IPv6"
-                else -> ""
-            }
-        }
         val srcIp = remember {
             when (ipVersion) {
                 IPVersion.IPv4 -> "127.0.0.1"
@@ -469,13 +561,13 @@ fun IPBox(
             }
         }
         val srcPort = remember {
-            sourcePort?.toUShort()?.toString() ?: ""
+            sourcePort?.toUShort()?.toString().selfOrNone()
         }
         val destIp = remember {
-            destinationAddress?.toString() ?: ""
+            destinationAddress.selfOrNone()
         }
         val destPort = remember {
-            destinationPort?.toUShort()?.toString() ?: ""
+            destinationPort?.toUShort()?.toString().selfOrNone()
         }
         AppExpandableRichItem(
             icon = R.drawable.ic_address,
@@ -485,7 +577,7 @@ fun IPBox(
             RealColumn {
                 TextChapter(
                     title = stringResource(R.string.req_rsp_info_ip_version),
-                    content = strIpVersion
+                    content = ipVersion?.versionName.selfOrNone()
                 )
                 TextChapter(
                     title = stringResource(R.string.req_rsp_info_ip_src),
@@ -538,8 +630,7 @@ fun HeaderBox(
 }
 
 @Composable
-fun BodySizeBox(byteSize: Int) {
-    var isUrlExpand by remember { mutableStateOf(false) }
+fun PacketSizeBox(title: String, byteSize: Int) {
     var byte by remember { mutableStateOf("") }
     var kByte by remember { mutableStateOf("") }
     var mByte by remember { mutableStateOf("") }
@@ -557,12 +648,10 @@ fun BodySizeBox(byteSize: Int) {
     AppRoundCornerBox {
         AppExpandableTextItem(
             icon = R.drawable.ic_wirebare,
-            title = stringResource(R.string.req_rsp_info_body_size),
+            title = title,
             body = "$byte = $kByte = $mByte",
-            expand = isUrlExpand
-        ) {
-            isUrlExpand = !it
-        }
+            expand = true
+        )
     }
 }
 

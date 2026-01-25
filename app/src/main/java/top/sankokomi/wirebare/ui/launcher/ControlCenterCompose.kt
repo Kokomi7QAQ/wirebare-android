@@ -169,7 +169,7 @@ private fun LauncherUI.ControlBox(
         AppRoundCornerBox {
             RealColumn {
                 AppCheckableItem(
-                    itemName = stringResource(R.string.control_center_ssl),
+                    itemName = stringResource(R.string.common_ssl),
                     checked = enableSSL,
                     icon = R.drawable.ic_cert,
                     subName = enableSSLSubName,

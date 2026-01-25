@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import kotlinx.parcelize.Parcelize
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpSession
 
 @Parcelize
 @Stable
@@ -15,6 +16,7 @@ class HttpRsp(
     @PrimaryKey
     val id: String,
     val requestTime: Long?,
+    val sourceProcessUid: Int,
     val sourcePort: Short?,
     val destinationAddress: String?,
     val destinationPort: Short?,
@@ -31,10 +33,12 @@ class HttpRsp(
 ) : Parcelable {
 
     companion object {
-        fun from(response: HttpResponse): HttpRsp {
+        fun from(session: HttpSession): HttpRsp {
+            val response = session.response
             return HttpRsp(
                 id = response.id,
                 requestTime = response.requestTime,
+                sourceProcessUid = session.tcpSession.sourceProcessUid,
                 sourcePort = response.sourcePort,
                 destinationAddress = response.destinationAddress,
                 destinationPort = response.destinationPort,

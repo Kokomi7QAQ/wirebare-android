@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import kotlinx.parcelize.Parcelize
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpSession
 
 @Parcelize
 @Stable
@@ -15,6 +15,7 @@ class HttpReq(
     @PrimaryKey
     val id: String,
     val requestTime: Long?,
+    val sourceProcessUid: Int,
     val sourcePort: Short?,
     val sourcePkgName: String?,
     val destinationAddress: String?,
@@ -31,10 +32,12 @@ class HttpReq(
 ) : Parcelable {
 
     companion object {
-        fun from(request: HttpRequest): HttpReq {
+        fun from(session: HttpSession): HttpReq {
+            val request = session.request
             return HttpReq(
                 id = request.id,
                 requestTime = request.requestTime,
+                sourceProcessUid = session.tcpSession.sourceProcessUid,
                 sourcePort = request.sourcePort,
                 sourcePkgName = request.sourcePkgName,
                 destinationAddress = request.destinationAddress,

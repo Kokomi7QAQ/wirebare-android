@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">WireBare</string>
+    <string name="common_ssl">SSL/TLS</string>
+    <string name="common_true">是</string>
+    <string name="common_false">否</string>
     <string name="control_center_title">控制中心</string>
     <string name="control_center_main_switch">总开关</string>
     <string name="control_center_auto_filter">自动过滤</string>
-    <string name="control_center_ssl">SSL/TLS</string>
     <string name="control_center_ipv6_proxy">IPv6代理</string>
     <string name="control_center_wake_lock">休眠锁</string>
     <string name="control_center_main_switch_dead">已停止，点击以开始</string>
@@ -29,6 +31,9 @@
     <string name="response_list_empty">响应列表为空</string>
     <string name="request_info_title">请求详情</string>
     <string name="req_rsp_info_url">请求链接</string>
+    <string name="req_rsp_info_app_name">应用程序包名</string>
+    <string name="req_rsp_info_app_package_name">应用程序名称</string>
+    <string name="req_rsp_info_app_is_system">系统应用</string>
     <string name="request_info_ip">IP地址</string>
     <string name="request_info_req_line">请求行信息</string>
     <string name="request_info_headers">请求头</string>

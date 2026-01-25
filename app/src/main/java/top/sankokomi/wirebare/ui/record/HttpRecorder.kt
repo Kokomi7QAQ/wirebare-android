@@ -54,10 +54,10 @@ object HttpRecorder {
         }
     }
 
-    suspend fun addRequestRecord(request: HttpRequest) {
+    suspend fun addRequestRecord(session: HttpSession) {
         withContext(Dispatchers.IO) {
             try {
-                httpRoom.httpDao().insertHttpReq(HttpReq.from(request))
+                httpRoom.httpDao().insertHttpReq(HttpReq.from(session))
             } catch (_: Exception) {
             }
         }
@@ -79,10 +79,10 @@ object HttpRecorder {
         }
     }
 
-    suspend fun addResponseRecord(response: HttpResponse) {
+    suspend fun addResponseRecord(session: HttpSession) {
         withContext(Dispatchers.IO) {
             try {
-                httpRoom.httpDao().insertHttpRsp(HttpRsp.from(response))
+                httpRoom.httpDao().insertHttpRsp(HttpRsp.from(session))
             } catch (_: Exception) {
             }
         }

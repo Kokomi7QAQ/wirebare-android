@@ -1,5 +1,6 @@
 package top.sankokomi.wirebare.ui.record
 
+import android.os.Process
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Insert
@@ -23,10 +24,21 @@ val httpRoom by lazy {
                         " (id TEXT NOT NULL, reqId TEXT NOT NULL, rspId TEXT NOT NULL, PRIMARY KEY(id))"
             )
         }
+    ).addMigrations(
+        Migration(2, 3) {
+            it.execSQL(
+                "ALTER TABLE ${HttpDao.REQ_TABLE_NAME}" +
+                        " ADD COLUMN sourceProcessUid INTEGER NOT NULL DEFAULT ${Process.INVALID_UID}"
+            )
+            it.execSQL(
+                "ALTER TABLE ${HttpDao.RSP_TABLE_NAME}" +
+                        " ADD COLUMN sourceProcessUid INTEGER NOT NULL DEFAULT ${Process.INVALID_UID}"
+            )
+        }
     ).build()
 }
 
-@Database(version = 2, entities = [HttpReq::class, HttpRsp::class, HttpReqRspPair::class])
+@Database(version = 3, entities = [HttpReq::class, HttpRsp::class, HttpReqRspPair::class])
 abstract class HttpDatabase : RoomDatabase() {
 
     companion object {

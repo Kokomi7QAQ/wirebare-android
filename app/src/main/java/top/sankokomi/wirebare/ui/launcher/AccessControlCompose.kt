@@ -47,7 +47,6 @@ import top.sankokomi.wirebare.ui.resources.VisibleFadeInFadeOutAnimation
 import top.sankokomi.wirebare.ui.util.AppData
 import top.sankokomi.wirebare.ui.util.Global
 import top.sankokomi.wirebare.ui.util.mix
-import top.sankokomi.wirebare.ui.util.requireAppDataList
 
 @Stable
 data class AccessControlData(
@@ -74,7 +73,7 @@ fun LauncherUI.AccessControlPage() {
             listOperateMutex.lock()
             val showSystemApp = showSystemAppItemChecked.value
             accessCount = 0
-            val allAppListTemp = requireAppDataList().sorted()
+            val allAppListTemp = AppData.all.sorted()
             val appListTemp = allAppListTemp.filter {
                 when {
                     it.packageName == Global.appContext.packageName -> false
@@ -237,7 +236,7 @@ fun LauncherUI.AccessControlPage() {
                     }
                 }
                 AppCheckableItem(
-                    icon = accessControl.appData.appIcon,
+                    icon = accessControl.appData,
                     itemName = accessControl.appData.appName,
                     tint = null,
                     checked = accessControl.allow,

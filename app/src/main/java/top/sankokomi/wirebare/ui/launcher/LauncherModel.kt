@@ -2,8 +2,7 @@ package top.sankokomi.wirebare.ui.launcher
 
 import top.sankokomi.wirebare.kernel.common.BandwidthLimiter
 import top.sankokomi.wirebare.kernel.common.WireBare
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
-import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
+import top.sankokomi.wirebare.kernel.interceptor.http.HttpSession
 import top.sankokomi.wirebare.kernel.ssl.JKS
 import top.sankokomi.wirebare.kernel.util.WireBareLogger
 import top.sankokomi.wirebare.ui.datastore.KnetPolicyDataStore
@@ -30,8 +29,8 @@ object LauncherModel {
 
     fun startProxy(
         targetPackageNameArray: Array<String>,
-        onRequest: (HttpRequest) -> Unit,
-        onResponse: (HttpResponse) -> Unit
+        onRequest: (HttpSession) -> Unit,
+        onResponse: (HttpSession) -> Unit
     ) {
         WireBare.logLevel = WireBareLogger.Level.VERBOSE
         WireBare.startProxy {

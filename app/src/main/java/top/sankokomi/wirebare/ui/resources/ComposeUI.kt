@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -181,6 +182,7 @@ fun AppCheckableItem(
                         .align(Alignment.CenterVertically)
                         .size(28.dp),
                     colorFilter = tint?.let { ColorFilter.tint(it) },
+                    contentScale = ContentScale.Crop,
                     contentDescription = null
                 )
                 RealColumn(
@@ -391,6 +393,7 @@ fun AppExpandableRichItem(
     title: String,
     expandable: Boolean = true,
     expand: Boolean = true,
+    iconTint: Color? = Colors.inverseSurface,
     onLongClick: () -> Unit = {},
     onExpandChanged: (Boolean) -> Unit = {},
     content: @Composable (Boolean) -> Unit
@@ -411,7 +414,7 @@ fun AppExpandableRichItem(
                     modifier = Modifier
                         .padding(start = 6.dp, end = 8.dp)
                         .size(20.dp),
-                    colorFilter = ColorFilter.tint(Colors.inverseSurface),
+                    colorFilter = iconTint?.let { ColorFilter.tint(it) },
                     contentDescription = null
                 )
             }
