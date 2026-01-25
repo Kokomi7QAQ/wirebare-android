@@ -41,13 +41,13 @@ import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
+import top.sankokomi.wirebare.ui.resources.StatusBarSpacer
 import top.sankokomi.wirebare.ui.resources.Typographies
 import top.sankokomi.wirebare.ui.resources.VisibleFadeInFadeOutAnimation
 import top.sankokomi.wirebare.ui.util.AppData
 import top.sankokomi.wirebare.ui.util.Global
 import top.sankokomi.wirebare.ui.util.mix
 import top.sankokomi.wirebare.ui.util.requireAppDataList
-import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
 @Stable
 data class AccessControlData(
@@ -107,7 +107,7 @@ fun LauncherUI.AccessControlPage() {
             .background(Colors.background),
     ) {
         item {
-            Spacer(modifier = Modifier.height(56.dp + statusBarHeightDp))
+            StatusBarSpacer(56.dp)
             AppRoundCornerBox {
                 RealColumn {
                     AppCheckableItem(

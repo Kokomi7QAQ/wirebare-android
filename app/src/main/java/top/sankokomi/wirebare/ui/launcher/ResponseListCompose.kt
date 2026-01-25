@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
@@ -31,11 +32,11 @@ import top.sankokomi.wirebare.ui.resources.DynamicFloatImageButton
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
 import top.sankokomi.wirebare.ui.resources.RealRow
+import top.sankokomi.wirebare.ui.resources.StatusBarSpacer
 import top.sankokomi.wirebare.ui.resources.TextTag
 import top.sankokomi.wirebare.ui.resources.Typographies
 import top.sankokomi.wirebare.ui.resources.VisibleFadeInFadeOutAnimation
 import top.sankokomi.wirebare.ui.util.injectTouchEffect
-import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 import top.sankokomi.wirebare.ui.wireinfo.WireInfoUI
 
 @Composable
@@ -43,25 +44,30 @@ fun LauncherUI.PageProxyResponseResult(responseList: SnapshotStateList<HttpRsp>)
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        VisibleFadeInFadeOutAnimation(responseList.isEmpty()) {
+            RealColumn(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                StatusBarSpacer(56.dp)
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = stringResource(R.string.response_list_empty),
+                    style = Typographies.bodyLarge
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                StatusBarSpacer(8.dp)
+                StatusBarSpacer(80.dp)
+            }
+        }
+        if (responseList.isEmpty()) {
+            return
+        }
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
             item {
-                Spacer(modifier = Modifier.height(statusBarHeightDp + 56.dp))
-            }
-            item {
-                VisibleFadeInFadeOutAnimation(responseList.isEmpty()) {
-                    RealBox(
-                        modifier = Modifier.fillParentMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "响应列表为空噢~",
-                            modifier = Modifier.padding(bottom = statusBarHeightDp + 80.dp),
-                            style = Typographies.headlineSmall
-                        )
-                    }
-                }
+                StatusBarSpacer(56.dp)
             }
             items(responseList.size) { i ->
                 val index = responseList.size - i - 1
@@ -131,29 +137,36 @@ fun LauncherUI.PageProxyResponseResult(responseList: SnapshotStateList<HttpRsp>)
                                     .align(Alignment.CenterVertically)
                             ) {
                                 Text(
-                                    text = response.url ?: response.destinationAddress
-                                    ?: "[格式化 URL 失败]",
+                                    text = response.url ?: response.destinationAddress ?: "NONE",
                                     modifier = Modifier.fillMaxWidth(),
                                     style = Typographies.titleMedium,
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 2
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
-                                Text(
-                                    text = response.formatHead?.getOrNull(0)
-                                        ?: "[format head failed]",
-                                    modifier = Modifier.fillMaxWidth(),
-                                    style = Typographies.bodyMedium,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 2
-                                )
+                                val headText = response.formatHead?.getOrNull(0)
+                                if (headText != null) {
+                                    Text(
+                                        text = headText,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        style = Typographies.bodyMedium,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 2
+                                    )
+                                }
                                 Spacer(modifier = Modifier.height(6.dp))
                                 RealRow {
+                                    TextTag(
+                                        text = if (response.isHttps == true) "SSL/TLS" else null,
+                                        borderColor = Colors.primaryContainer,
+                                        corner = 6.dp,
+                                        space = 8.dp
+                                    )
                                     TextTag(
                                         text = response.rspStatus,
                                         borderColor = Colors.primaryContainer,
                                         corner = 6.dp,
-                                        space = 0.dp
+                                        space = 8.dp
                                     )
                                     TextTag(
                                         text = response.contentEncoding,
@@ -165,7 +178,7 @@ fun LauncherUI.PageProxyResponseResult(responseList: SnapshotStateList<HttpRsp>)
                                         text = response.contentType,
                                         borderColor = Colors.primaryContainer,
                                         corner = 6.dp,
-                                        space = 8.dp
+                                        space = 0.dp
                                     )
                                 }
                             }

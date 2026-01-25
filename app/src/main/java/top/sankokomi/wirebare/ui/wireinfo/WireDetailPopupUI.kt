@@ -3,15 +3,12 @@ package top.sankokomi.wirebare.ui.wireinfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
@@ -30,14 +27,15 @@ import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.resources.AppExpandableTextItem
 import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.Colors
+import top.sankokomi.wirebare.ui.resources.NavBarSpacer
 import top.sankokomi.wirebare.ui.resources.RealColumn
+import top.sankokomi.wirebare.ui.resources.StatusBarSpacer
 import top.sankokomi.wirebare.ui.resources.Transparent
 import top.sankokomi.wirebare.ui.resources.VisibleFadeInFadeOutAnimation
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
 import top.sankokomi.wirebare.ui.util.copyTextToClipBoard
-import top.sankokomi.wirebare.ui.util.navigationBarHeightDp
+import top.sankokomi.wirebare.ui.util.immersive
 import top.sankokomi.wirebare.ui.util.showToast
-import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
 class WireDetailPopupUI : ComponentActivity() {
 
@@ -48,7 +46,7 @@ class WireDetailPopupUI : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val title = intent.getStringExtra("title") ?: ""
         val content = intent.getStringExtra("content") ?: ""
-        enableEdgeToEdge()
+        immersive()
         setContent {
             WirebareUITheme(
                 isShowStatusBar = false,
@@ -80,7 +78,7 @@ class WireDetailPopupUI : ComponentActivity() {
                                 },
                             verticalArrangement = Arrangement.Center
                         ) {
-                            Spacer(modifier = Modifier.height(56.dp + statusBarHeightDp))
+                            StatusBarSpacer(56.dp)
                             RealColumn(
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
@@ -106,7 +104,7 @@ class WireDetailPopupUI : ComponentActivity() {
                                     )
                                 }
                             }
-                            Spacer(modifier = Modifier.height(56.dp + navigationBarHeightDp))
+                            NavBarSpacer(56.dp)
                         }
                     }
                 }

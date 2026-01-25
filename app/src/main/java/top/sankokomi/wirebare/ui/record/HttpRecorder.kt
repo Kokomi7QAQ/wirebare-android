@@ -71,7 +71,7 @@ object HttpRecorder {
                     writers.remove(id)?.close()
                     return@withContext
                 }
-                writers.computeIfAbsent(id) {
+                writers.getOrPut(id) {
                     ConcurrentFileWriter(parseRequestRecordFile(request))
                 }.writeBytes(buffer)
             } catch (_: Exception) {
@@ -96,7 +96,7 @@ object HttpRecorder {
                     writers.remove(id)?.close()
                     return@withContext
                 }
-                writers.computeIfAbsent(id) {
+                writers.getOrPut(id) {
                     ConcurrentFileWriter(parseResponseRecordFile(response))
                 }.writeBytes(buffer)
             } catch (_: Exception) {

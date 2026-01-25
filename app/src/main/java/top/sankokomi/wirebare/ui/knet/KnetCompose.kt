@@ -34,9 +34,9 @@ import top.sankokomi.wirebare.ui.resources.AppCheckableItem
 import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.CornerDampingSlideBar
 import top.sankokomi.wirebare.ui.resources.RealColumn
+import top.sankokomi.wirebare.ui.resources.StatusBarSpacer
 import top.sankokomi.wirebare.ui.util.Global
 import top.sankokomi.wirebare.ui.util.showToast
-import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
 
 @Composable
@@ -53,30 +53,9 @@ fun LauncherUI.KnetPage() {
             .verticalScroll(rememberScrollState())
             .clip(RoundedCornerShape(6.dp))
     ) {
-        Spacer(modifier = Modifier.height(statusBarHeightDp + 56.dp))
+        StatusBarSpacer(56.dp)
         KnetBox(wireBareStatus)
         Spacer(modifier = Modifier.height(80.dp))
-//        Box(
-//            modifier = Modifier
-//                .padding(16.dp)
-//                .clip(RoundedCornerShape(6.dp))
-//        ) {
-//            CornerSlideBar(
-//                mainText = "随机丢包概率",
-//                subText = "调整后立即生效",
-//                backgroundColor = Color.Transparent,
-//                textColor = Color.Black,
-//                barColor = LGreenC,
-//                barBackgroundColor = LGreenA,
-//                value = mockPacketLossProbability / 100f,
-//                valueRange = 0f..1f,
-//                onValueChange = {
-//                    val probability = (it * 100).roundToInt()
-//                    ProxyPolicyDataStore.mockPacketLossProbability.value = probability
-//                    WireBare.dynamicConfiguration.mockPacketLossProbability = probability
-//                }
-//            )
-//        }
     }
 }
 

@@ -3,10 +3,9 @@ package top.sankokomi.wirebare.ui.launcher
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -37,8 +36,8 @@ import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
+import top.sankokomi.wirebare.ui.resources.StatusBarSpacer
 import top.sankokomi.wirebare.ui.resources.TabData
-import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
 @Composable
 fun LauncherUI.WireBareUIPage() {
@@ -86,12 +85,13 @@ fun LauncherUI.WireBareUIPage() {
         RealColumn(
             modifier = Modifier.zIndex(1f)
         ) {
-            Spacer(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(statusBarHeightDp)
                     .background(Colors.background)
-            )
+            ) {
+                StatusBarSpacer()
+            }
             AppTitleBar(text = titleBarText.value)
         }
         HorizontalPager(

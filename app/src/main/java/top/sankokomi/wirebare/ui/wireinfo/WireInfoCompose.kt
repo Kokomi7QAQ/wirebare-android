@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,11 +53,11 @@ import top.sankokomi.wirebare.ui.resources.AppTitleBar
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.RealBox
 import top.sankokomi.wirebare.ui.resources.RealColumn
+import top.sankokomi.wirebare.ui.resources.StatusBarSpacer
 import top.sankokomi.wirebare.ui.resources.TabData
 import top.sankokomi.wirebare.ui.resources.Typographies
 import top.sankokomi.wirebare.ui.util.copyTextToClipBoard
 import top.sankokomi.wirebare.ui.util.showToast
-import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -112,12 +113,13 @@ fun WireInfoUI.WireInfoUIPage(
         RealColumn(
             modifier = Modifier.zIndex(1f)
         ) {
-            Spacer(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(statusBarHeightDp)
                     .background(Colors.background)
-            )
+            ) {
+                StatusBarSpacer()
+            }
             AppTitleBar(text = titleBarText.value)
         }
         HorizontalPager(
@@ -201,7 +203,7 @@ private fun WireInfoUI.WireInfoFormatterUIPage(
     ) {
         var selectedDecompress by remember { mutableIntStateOf(compressAlgorithm) }
         var selectedFormatter by remember { mutableIntStateOf(contentType) }
-        Spacer(modifier = Modifier.height(56.dp + statusBarHeightDp))
+        StatusBarSpacer(56.dp)
         AppRoundCornerBox {
             val strNone = stringResource(R.string.req_rsp_info_none)
             val strGzip = stringResource(R.string.req_rsp_info_gzip)
@@ -284,7 +286,7 @@ private fun WireInfoUI.WireInfoRequestUIPage(
         }
         LazyColumn {
             item {
-                Spacer(modifier = Modifier.height(56.dp + statusBarHeightDp))
+                StatusBarSpacer(56.dp)
             }
             item {
                 URLBox(request.url ?: "")
@@ -369,7 +371,7 @@ private fun WireInfoUI.WireInfoResponseUIPage(
         }
         LazyColumn {
             item {
-                Spacer(modifier = Modifier.height(56.dp + statusBarHeightDp))
+                StatusBarSpacer(56.dp)
             }
             item {
                 URLBox(response.url ?: "")

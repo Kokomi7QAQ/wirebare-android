@@ -5,7 +5,7 @@ import top.sankokomi.wirebare.kernel.common.WireBare
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpRequest
 import top.sankokomi.wirebare.kernel.interceptor.http.HttpResponse
 import top.sankokomi.wirebare.kernel.ssl.JKS
-import top.sankokomi.wirebare.kernel.util.Level
+import top.sankokomi.wirebare.kernel.util.WireBareLogger
 import top.sankokomi.wirebare.ui.datastore.KnetPolicyDataStore
 import top.sankokomi.wirebare.ui.datastore.ProxyPolicyDataStore
 import top.sankokomi.wirebare.ui.util.Global
@@ -33,7 +33,7 @@ object LauncherModel {
         onRequest: (HttpRequest) -> Unit,
         onResponse: (HttpResponse) -> Unit
     ) {
-        WireBare.logLevel = Level.VERBOSE
+        WireBare.logLevel = WireBareLogger.Level.VERBOSE
         WireBare.startProxy {
             if (ProxyPolicyDataStore.enableSSL.value) {
                 jks = wireBareJKS

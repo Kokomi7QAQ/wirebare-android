@@ -31,7 +31,7 @@ import top.sankokomi.wirebare.ui.resources.AppCheckableItem
 import top.sankokomi.wirebare.ui.resources.AppRoundCornerBox
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.RealColumn
-import top.sankokomi.wirebare.ui.util.statusBarHeightDp
+import top.sankokomi.wirebare.ui.resources.StatusBarSpacer
 
 @Composable
 fun LauncherUI.PageControlCenter() {
@@ -60,7 +60,7 @@ fun LauncherUI.PageControlCenter() {
             .verticalScroll(rememberScrollState())
             .clip(RoundedCornerShape(6.dp))
     ) {
-        Spacer(modifier = Modifier.height(statusBarHeightDp + 56.dp))
+        StatusBarSpacer(56.dp)
         ControlBox(wireBareStatus, maybeUnsupportedIPv6)
         Spacer(modifier = Modifier.height(80.dp))
     }

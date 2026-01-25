@@ -3,7 +3,6 @@ package top.sankokomi.wirebare.ui.launcher
 import android.os.Bundle
 import android.os.PowerManager
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
@@ -30,6 +29,7 @@ import top.sankokomi.wirebare.ui.record.HttpReq
 import top.sankokomi.wirebare.ui.record.HttpRsp
 import top.sankokomi.wirebare.ui.resources.Colors
 import top.sankokomi.wirebare.ui.resources.WirebareUITheme
+import top.sankokomi.wirebare.ui.util.immersive
 import top.sankokomi.wirebare.ui.util.requireAppDataList
 import top.sankokomi.wirebare.ui.window.KnetDashboardWindowService
 
@@ -138,7 +138,7 @@ class LauncherUI : VpnPrepareActivity() {
         // 添加 WireBare 状态监听器
         WireBare.addVpnProxyStatusListener(wireBareStatusListener)
         WireBare.addImportantEventListener(wireBareEventListener)
-        enableEdgeToEdge()
+        immersive()
         setContent {
             WirebareUITheme(
                 statusBarColor = { it.background },

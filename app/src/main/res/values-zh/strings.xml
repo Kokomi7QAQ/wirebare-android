@@ -24,7 +24,9 @@
     <string name="access_control_list_desc">在列表中被选中的应用程序的网络数据包将被代理</string>
     <string name="access_control_modify_desc">如果需要修改访问控制配置，请先停止代理</string>
     <string name="request_list_title">请求列表</string>
+    <string name="request_list_empty">请求列表为空</string>
     <string name="response_list_title">响应列表</string>
+    <string name="response_list_empty">响应列表为空</string>
     <string name="request_info_title">请求详情</string>
     <string name="req_rsp_info_url">请求链接</string>
     <string name="request_info_ip">IP地址</string>

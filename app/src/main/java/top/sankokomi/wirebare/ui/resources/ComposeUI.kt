@@ -26,9 +26,11 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -67,16 +69,24 @@ import coil.compose.AsyncImage
 import top.sankokomi.wirebare.ui.R
 import top.sankokomi.wirebare.ui.util.Damping
 import top.sankokomi.wirebare.ui.util.injectTouchEffect
-import top.sankokomi.wirebare.ui.util.statusBarHeightDp
 
 @Composable
-fun AppStatusBar(color: Color = Color.Transparent) {
-    Spacer(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(statusBarHeightDp)
-            .background(color)
-    )
+fun StatusBarSpacer(extHeight: Dp = 0.dp) {
+    Column {
+        Spacer(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(top = extHeight)
+        )
+    }
+}
+
+@Composable
+fun NavBarSpacer(extHeight: Dp) {
+    Column {
+        Spacer(modifier = Modifier.navigationBarsPadding())
+        Spacer(modifier = Modifier.height(extHeight))
+    }
 }
 
 @Composable
@@ -533,7 +543,6 @@ fun TextTag(
     space: Dp
 ) {
     if (text.isNullOrEmpty()) return
-    Spacer(modifier = Modifier.width(space))
     Tag(
         borderColor = borderColor,
         corner = corner
@@ -547,6 +556,7 @@ fun TextTag(
                 .padding(horizontal = 4.dp)
         )
     }
+    Spacer(modifier = Modifier.width(space))
 }
 
 @Composable
