@@ -57,7 +57,12 @@ val LightTypography = Typography(
     labelMedium = TextStyle(
         color = DGrayC,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
+        lineHeight = 12.sp,
+    ),
+    labelSmall = TextStyle(
+        color = DGrayC,
+        fontSize = 10.sp,
+        lineHeight = 10.sp,
     )
 )
 
@@ -108,6 +113,11 @@ val DarkTypography = Typography(
     labelMedium = TextStyle(
         color = DGrayC,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
+        lineHeight = 12.sp,
+    ),
+    labelSmall = TextStyle(
+        color = DGrayC,
+        fontSize = 10.sp,
+        lineHeight = 10.sp,
     )
 )

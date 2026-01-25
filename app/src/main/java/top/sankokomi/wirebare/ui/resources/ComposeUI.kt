@@ -21,9 +21,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -43,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,6 +65,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
@@ -471,34 +476,71 @@ data class TabData(
 @Composable
 fun AppTab(
     tabDataList: List<TabData>,
+    selectedTabIndex: Int,
     background: Color = Colors.primary,
     onClickTab: (Int) -> Unit
 ) {
-    RealRow(
+    RealBox(
         modifier = Modifier
-            .padding(16.dp)
-            .clip(CircleShape)
-            .background(background)
+            .height(IntrinsicSize.Min)
+            .padding(8.dp)
     ) {
-        for (index in tabDataList.indices) {
-            val tabData = tabDataList[index]
-            RealBox(
-                contentAlignment = Alignment.Center,
+        RealBox(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(CircleShape)
+                .background(background)
+        ) {
+            RealRow(
                 modifier = Modifier
-                    .weight(1F)
-                    .clickable(onClick = {})
+                    .fillMaxSize()
+                    .padding(4.dp)
             ) {
-                if (tabData.icon != null) {
-                    DynamicImageButton(icon = tabData.icon) {
+                val anim = remember { Animatable(initialValue = selectedTabIndex.toFloat()) }
+                LaunchedEffect(selectedTabIndex) {
+                    anim.stop()
+                    anim.animateTo(
+                        targetValue = selectedTabIndex.toFloat(),
+                        animationSpec = spring(
+                            dampingRatio = 0.5f,
+                            stiffness = 400f
+                        )
+                    )
+                }
+                val startWeight = anim.value
+                val endWeight = tabDataList.size - 1f - anim.value
+                if (startWeight > 0f) {
+                    Spacer(modifier = Modifier.weight(startWeight))
+                }
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clip(CircleShape)
+                        .background(Colors.onBackground)
+                )
+                if (endWeight > 0f) {
+                    Spacer(modifier = Modifier.weight(endWeight))
+                }
+            }
+        }
+        RealRow(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            for (index in tabDataList.indices) {
+                val tabData = tabDataList[index]
+                RealBox(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .weight(1F)
+                        .clickable(onClick = {})
+                ) {
+                    DynamicImageButton(
+                        icon = tabData.icon,
+                        text = tabData.text
+                    ) {
                         onClickTab(index)
                     }
-                } else {
-                    Text(
-                        text = tabData.text,
-                        style = Typographies.titleSmall,
-                        color = Colors.inverseSurface,
-                        modifier = Modifier.padding(vertical = 12.dp)
-                    )
                 }
             }
         }
@@ -610,33 +652,35 @@ fun DynamicFloatImageButton(
 @Composable
 fun DynamicImageButton(
     icon: Any?,
+    text: String,
     clickable: () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val touched = interactionSource.collectIsPressedAsState().value ||
             interactionSource.collectIsHoveredAsState().value
-    val anim = remember { Animatable(initialValue = 32f) }
+    val anim = remember { Animatable(initialValue = 24f) }
     LaunchedEffect(touched) {
         anim.stop()
         anim.animateTo(
-            targetValue = if (touched) 48f else 32f,
+            targetValue = if (touched) 32f else 24f,
             animationSpec = spring(
                 dampingRatio = 0.4f,
                 stiffness = 800f
             )
         )
     }
-    Box(
-        modifier = Modifier.requiredSize(56.dp)
+    RealColumn(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = clickable
+            )
+            .padding(8.dp)
     ) {
         Box(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = clickable
-                ),
+            modifier = Modifier.requiredSize(32.dp),
             contentAlignment = Alignment.Center
         ) {
             AsyncImage(
@@ -644,6 +688,26 @@ fun DynamicImageButton(
                 modifier = Modifier.size((anim.value).dp),
                 colorFilter = ColorFilter.tint(Colors.inverseSurface),
                 contentDescription = null
+            )
+        }
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(0f),
+                style = Typographies.labelMedium,
+                minLines = 2,
+                maxLines = 2
+            )
+            Text(
+                text = text,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = Typographies.labelMedium,
+                maxLines = 2,
             )
         }
     }

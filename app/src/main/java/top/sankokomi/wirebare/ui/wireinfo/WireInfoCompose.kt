@@ -160,8 +160,17 @@ fun WireInfoUI.WireInfoUIPage(
                     )
                 )
         ) {
-            AppTab(tabDataList) { index ->
+            var selectedIndex by remember {
+                mutableIntStateOf(
+                    if (rsp != null) 1 else 0
+                )
+            }
+            AppTab(
+                tabDataList = tabDataList,
+                selectedTabIndex = selectedIndex
+            ) { index ->
                 if (pagerState.currentPage != index) {
+                    selectedIndex = index
                     rememberScope.launch {
                         anim.stop()
                         anim.animateTo(0f, tween(100))
