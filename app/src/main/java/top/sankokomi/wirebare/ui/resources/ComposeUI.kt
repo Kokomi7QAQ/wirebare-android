@@ -46,7 +46,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,7 +61,7 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
@@ -384,8 +383,8 @@ fun AppExpandableTextItem(
             maxLines = if (!it) maxLinesInClosed else Int.MAX_VALUE,
             overflow = TextOverflow.Ellipsis,
             style = textStyle,
-            onTextLayout = {
-                textWidth = it.size.width
+            onTextLayout = { result ->
+                textWidth = result.size.width
             }
         )
     }
@@ -594,7 +593,11 @@ fun TextTag(
     ) {
         Text(
             text = text,
-            style = Typographies.labelMedium,
+            style = TextStyle(
+                color = DGrayC,
+                fontSize = 12.sp,
+                lineHeight = 12.sp,
+            ),
             modifier = Modifier
                 .clip(RoundedCornerShape(4.dp))
                 .background(Colors.primary)
@@ -724,75 +727,6 @@ fun VisibleFadeInFadeOutAnimation(
         exit = fadeOut(),
         content = content
     )
-}
-
-@Composable
-fun SmallColorfulText(
-    mainText: String,
-    subText: String,
-    backgroundColor: Color,
-    textColor: Color
-) {
-    RealColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(backgroundColor)
-            .clip(RoundedCornerShape(6.dp))
-            .padding(horizontal = 16.dp, vertical = 6.dp)
-    ) {
-        Text(
-            text = mainText,
-            modifier = Modifier
-                .fillMaxWidth(),
-            color = textColor,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 15.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 2
-        )
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(
-            text = subText,
-            modifier = Modifier
-                .fillMaxWidth(),
-            color = textColor,
-            fontSize = 12.sp,
-            lineHeight = 13.sp,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 3
-        )
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun LargeColorfulText(
-    mainText: String,
-    subText: String,
-    backgroundColor: Color,
-    textColor: Color,
-    onClick: () -> Unit = {},
-    onLongClick: () -> Unit = {}
-) {
-    RealColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(backgroundColor)
-            .clip(RoundedCornerShape(6.dp))
-            .combinedClickable(onLongClick = onLongClick, onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 12.dp)
-    ) {
-        Text(
-            text = mainText,
-            color = textColor,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 20.sp
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = subText, color = textColor, fontSize = 14.sp, lineHeight = 16.sp)
-    }
 }
 
 @Composable

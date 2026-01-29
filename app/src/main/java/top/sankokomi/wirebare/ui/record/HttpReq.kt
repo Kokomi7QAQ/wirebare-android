@@ -54,4 +54,12 @@ class HttpReq(
         }
     }
 
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is HttpReq) return false
+        return id == other.id
+    }
 }

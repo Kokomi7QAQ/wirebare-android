@@ -79,7 +79,7 @@ fun <T> PageProxyResultList(
             item {
                 StatusBarSpacer(56.dp)
             }
-            items(resultList.size) { i ->
+            items(count = resultList.size) { i ->
                 val index = resultList.size - i - 1
                 val result = resultList[index]
                 val itemShape = if (resultList.size == 1) {
@@ -126,7 +126,6 @@ fun <T> PageProxyResultList(
                                 )
                             }
                         }
-                        val appData = remember { AppData.from(sourceProcessUid(result)) }
                         RealBox(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -140,13 +139,13 @@ fun <T> PageProxyResultList(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     AsyncImage(
-                                        model = appData,
+                                        model = remember(result) { AppData.from(sourceProcessUid(result)) },
                                         modifier = Modifier.size(16.dp),
                                         contentDescription = null
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
-                                        text = url(result).selfOrNone(),
+                                        text = remember(result) { url(result) }.selfOrNone(),
                                         modifier = Modifier.fillMaxWidth(),
                                         style = Typographies.titleMedium,
                                         overflow = TextOverflow.Ellipsis,
@@ -154,7 +153,7 @@ fun <T> PageProxyResultList(
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(6.dp))
-                                val headText = headText(result)
+                                val headText = remember(result) { headText(result) }
                                 if (headText != null) {
                                     Text(
                                         text = headText,
