@@ -100,4 +100,8 @@ dependencies {
 
     implementation(libs.vico.core)
     implementation(libs.vico.compose)
+
+    implementation(libs.okhttp)
+
+    implementation(libs.ktx.datetime)
 }

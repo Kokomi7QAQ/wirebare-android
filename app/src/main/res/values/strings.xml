@@ -31,6 +31,7 @@
     <string name="response_list_empty">Response list is empty</string>
     <string name="request_info_title">Request Information</string>
     <string name="req_rsp_info_url">Request URL</string>
+    <string name="req_rsp_info_req_time">Request Time</string>
     <string name="req_rsp_info_app_name">App Name</string>
     <string name="req_rsp_info_app_package_name">App Package Name</string>
     <string name="req_rsp_info_app_is_system">System App</string>

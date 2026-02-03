@@ -36,6 +36,9 @@ import androidx.compose.ui.zIndex
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import top.sankokomi.wirebare.kernel.common.WireBareHelper
 import top.sankokomi.wirebare.kernel.net.IPVersion
 import top.sankokomi.wirebare.ui.R
@@ -65,6 +68,8 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 import kotlin.math.min
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 @Composable
 fun WireInfoUI.WireInfoUIPage(
@@ -136,9 +141,7 @@ fun WireInfoUI.WireInfoUIPage(
         ) {
             when (it) {
                 0 -> WireInfoRequestUIPage(request)
-
                 1 -> WireInfoResponseUIPage(response)
-
                 2 -> WireInfoFormatterUIPage(
                     contentEncoding = response?.contentEncoding ?: "",
                     contentType = response?.contentType ?: "",
@@ -305,7 +308,27 @@ private fun WireInfoUI.WireInfoRequestUIPage(
                 StatusBarSpacer(56.dp)
             }
             item {
-                URLBox(request.url.selfOrNone())
+                SimpleTextBox(
+                    icon = R.drawable.ic_link,
+                    title = stringResource(R.string.req_rsp_info_url),
+                    value = request.url.selfOrNone()
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+            item {
+                val requestMoment = remember(request.requestTime) {
+                    val time = request.requestTime ?: return@remember none()
+                    val requestMoment = Instant.fromEpochMilliseconds(time)
+                    val datetimeInSystemZone: LocalDateTime = requestMoment.toLocalDateTime(
+                        TimeZone.currentSystemDefault()
+                    )
+                    datetimeInSystemZone.toString()
+                }
+                SimpleTextBox(
+                    icon = R.drawable.ic_time,
+                    title = stringResource(R.string.req_rsp_info_req_time),
+                    value = requestMoment
+                )
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
@@ -420,7 +443,11 @@ private fun WireInfoUI.WireInfoResponseUIPage(
                 StatusBarSpacer(56.dp)
             }
             item {
-                URLBox(response.url.selfOrNone())
+                SimpleTextBox(
+                    icon = R.drawable.ic_link,
+                    title = stringResource(R.string.req_rsp_info_url),
+                    value = response.url.selfOrNone()
+                )
                 Spacer(modifier = Modifier.height(12.dp))
             }
             item {
@@ -501,23 +528,24 @@ private fun WireInfoUI.WireInfoResponseUIPage(
 }
 
 @Composable
-fun URLBox(url: String) {
-    var isUrlExpand by remember { mutableStateOf(false) }
+fun SimpleTextBox(icon: Any, title: String, value: String) {
+    var isExpanded by remember { mutableStateOf(false) }
     AppRoundCornerBox {
         AppExpandableTextItem(
-            icon = R.drawable.ic_link,
-            title = stringResource(R.string.req_rsp_info_url),
-            body = url,
-            expand = isUrlExpand,
+            icon = icon,
+            title = title,
+            body = value,
+            expand = isExpanded,
             onLongClick = {
-                copyTextToClipBoard(url)
+                copyTextToClipBoard(value)
                 showToast(R.string.req_rsp_info_copy_success)
             }
         ) {
-            isUrlExpand = !it
+            isExpanded = !it
         }
     }
 }
+
 
 @Composable
 fun AppInfoBox(uid: Int) {
